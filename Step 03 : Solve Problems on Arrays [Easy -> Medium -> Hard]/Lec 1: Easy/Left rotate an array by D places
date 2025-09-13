@@ -1,0 +1,143 @@
+//link:-https://leetcode.com/problems/rotate-array/
+======================================== APROACH-1 =========================================================================
+class Solution {
+    /**
+     * Rotates the given array to the right by k steps.
+     *
+     * @param nums Input array of integers
+     * @param k    Number of steps to rotate
+     *
+     * Approach:
+     * ---------
+     * 1. Normalize k:
+     *    - Since rotating by n (array length) results in the same array,
+     *      take k = k % n to avoid unnecessary rotations.
+     *
+     * 2. Store last k elements:
+     *    - Save the last k elements into a temporary ArrayList.
+     *
+     * 3. Shift the remaining elements:
+     *    - Move the first (n-k) elements to the right by k positions.
+     *
+     * 4. Copy back saved elements:
+     *    - Place the stored k elements at the beginning of the array.
+     *
+     * Example:
+     * --------
+     * nums = [1,2,3,4,5,6,7], k = 3
+     * Step 1: Save last 3 → arr = [5,6,7]
+     * Step 2: Shift → nums = [1,2,3,1,2,3,4]
+     * Step 3: Place saved → nums = [5,6,7,1,2,3,4]
+     *
+     * Time Complexity: O(n) → single pass shifting
+     * Space Complexity: O(k) → temporary ArrayList for k elements
+     */
+    public void rotate(int[] nums, int k) {
+        int n = nums.length;
+
+        // Normalize k to avoid redundant rotations
+        k = k % n;
+
+        // If no rotation needed, exit early
+        if (k == 0) return;
+
+        // Step 1: Save the last k elements
+        ArrayList<Integer> arr = new ArrayList<>();
+        for (int i = n - k; i < n; i++) {
+            arr.add(nums[i]);
+        }
+
+        // Step 2: Shift the first (n-k) elements to the right by k
+        for (int i = n - k - 1; i >= 0; i--) {
+            nums[i + k] = nums[i];
+        }
+
+        // Step 3: Place the saved k elements at the start
+        for (int i = 0; i < k; i++) {
+            nums[i] = arr.get(i);
+        }
+    }
+}
+======================================== APROACH-2 =========================================================================
+class Solution {
+    /**
+     * Helper function to reverse a subarray in-place.
+     *
+     * @param arr Input array
+     * @param s   Starting index
+     * @param e   Ending index
+     *
+     * Approach:
+     * ---------
+     * Swap elements from both ends (s and e) moving towards the middle
+     * until the two pointers meet.
+     *
+     * Example:
+     * --------
+     * arr = [1,2,3,4,5], s=1, e=3 → after reverse → [1,4,3,2,5]
+     *
+     * Time Complexity: O(e - s + 1)
+     * Space Complexity: O(1) → in-place
+     */
+    public void reverse(int[] arr, int s, int e) {
+        while (s < e) {
+            int temp = arr[s];
+            arr[s] = arr[e];
+            arr[e] = temp;
+            s++;
+            e--;
+        }
+    }
+
+    /**
+     * Rotates the given array to the right by k steps using the reversal algorithm.
+     *
+     * @param nums Input array of integers
+     * @param k    Number of steps to rotate
+     *
+     * Approach (Reversal Algorithm):
+     * ------------------------------
+     * 1. Normalize k:
+     *    - Take k = k % n (where n = nums.length).
+     *    - This ensures unnecessary full rotations are avoided.
+     *
+     * 2. Reverse the whole array:
+     *    - Now the array is in reversed order.
+     *
+     * 3. Reverse the first k elements:
+     *    - This places the "rotated right part" in correct order.
+     *
+     * 4. Reverse the remaining n-k elements:
+     *    - This places the left part in correct order.
+     *
+     * Example:
+     * --------
+     * nums = [1,2,3,4,5,6,7], k = 3
+     * Step 1: Reverse all → [7,6,5,4,3,2,1]
+     * Step 2: Reverse first 3 → [5,6,7,4,3,2,1]
+     * Step 3: Reverse last 4 → [5,6,7,1,2,3,4]
+     *
+     * Final Output: [5,6,7,1,2,3,4]
+     *
+     * Time Complexity: O(n) → three reversals
+     * Space Complexity: O(1) → in-place
+     */
+    public void rotate(int[] nums, int k) {
+        int n = nums.length;
+
+        // Normalize k to avoid redundant rotations
+        k = k % n;
+
+        // If no rotation needed, exit early
+        if (k == 0) return;
+
+        // Step 1: Reverse the whole array
+        reverse(nums, 0, n - 1);
+
+        // Step 2: Reverse the first k elements
+        reverse(nums, 0, k - 1);
+
+        // Step 3: Reverse the remaining n-k elements
+        reverse(nums, k, n - 1);
+    }
+}
