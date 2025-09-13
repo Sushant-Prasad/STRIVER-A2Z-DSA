@@ -1,0 +1,101 @@
+//link:-https://www.geeksforgeeks.org/problems/union-of-two-sorted-arrays-1587115621/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=union-of-two-sorted-arrays
+
+
+=============================================APROACH-1==========================================================
+
+class Solution {
+    /**
+     * Finds the union of two integer arrays and returns it as a sorted list.
+     *
+     * @param a First input array
+     * @param b Second input array
+     * @return An ArrayList containing the sorted union of elements from both arrays
+     *
+     * Approach:
+     * ---------
+     * 1. Use a HashSet to store unique elements:
+     *    - Insert all elements from array `a`.
+     *    - Insert all elements from array `b`.
+     *    - This ensures duplicates are automatically removed.
+     *
+     * 2. Convert the HashSet into an ArrayList.
+     *
+     * 3. Sort the ArrayList to maintain ascending order.
+     *
+     * Example:
+     * --------
+     * a = [1, 2, 2, 3, 4]
+     * b = [3, 4, 4, 5, 6]
+     *
+     * After inserting into set → {1, 2, 3, 4, 5, 6}
+     * Convert to list → [1, 2, 3, 4, 5, 6]
+     *
+     * Final Output: [1, 2, 3, 4, 5, 6]
+     *
+     * Time Complexity: O((n + m) log(n + m))
+     *   - O(n + m) for inserting into HashSet
+     *   - O(k log k) for sorting (where k = unique elements)
+     * Space Complexity: O(n + m) for HashSet + result list
+     */
+    public static ArrayList<Integer> findUnion(int a[], int b[]) {
+        ArrayList<Integer> res = new ArrayList<>();
+        HashSet<Integer> set = new HashSet<>();
+
+        // Step 1: Add elements of array a into set
+        for (int i = 0; i < a.length; i++) {
+            set.add(a[i]);
+        }
+
+        // Step 2: Add elements of array b into set
+        for (int i = 0; i < b.length; i++) {
+            set.add(b[i]);
+        }
+
+        // Step 3: Copy unique elements from set into result list
+        for (int key : set) {
+            res.add(key);
+        }
+
+        // Step 4: Sort result list to maintain ascending order
+        Collections.sort(res);
+
+        return res;
+    }
+}
+
+
+
+========================================================APROACH-2=======================================
+import java.util.*;
+
+class Solution {
+    /**
+     * Finds the union of two arrays and returns it as a sorted list.
+     *
+     * Approach:
+     * ---------
+     * 1. Use TreeSet instead of HashSet:
+     *    - TreeSet automatically removes duplicates.
+     *    - TreeSet keeps elements sorted.
+     *
+     * 2. Add all elements from both arrays into the TreeSet.
+     *
+     * 3. Convert the TreeSet directly into an ArrayList.
+     *
+     * Time Complexity: O((n + m) log(n + m)) 
+     *   (log factor comes from TreeSet insertion)
+     * Space Complexity: O(n + m)
+     */
+    public static ArrayList<Integer> findUnion(int[] a, int[] b) {
+        TreeSet<Integer> set = new TreeSet<>();
+
+        // Add all elements from array a
+        for (int x : a) set.add(x);
+
+        // Add all elements from array b
+        for (int y : b) set.add(y);
+
+        // Convert TreeSet (unique + sorted) to ArrayList
+        return new ArrayList<>(set);
+    }
+}
