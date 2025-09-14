@@ -1,0 +1,94 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    /**
+     * Helper class to store information about a subtree:
+     *  - d (diameter): the longest path (in number of nodes) in the subtree
+     *  - h (height): the height of the subtree (in number of nodes)
+     */
+    public class Info {
+        int d;
+        int h;
+        Info(int d, int h) {
+            this.d = d;
+            this.h = h;
+        }
+    }
+
+    /**
+     * Title: Diameter of Binary Tree
+     *
+     * Description:
+     * ------------
+     * The diameter of a binary tree is the length of the longest path
+     * between any two nodes in the tree. The length is measured in terms
+     * of the number of edges, not nodes.
+     *
+     * Key Points:
+     * ------------
+     * - Height of a tree = number of nodes on the longest path from root to a leaf.
+     * - Diameter can either:
+     *     1. Lie entirely in the left subtree.
+     *     2. Lie entirely in the right subtree.
+     *     3. Pass through the current node (leftHeight + rightHeight + 1).
+     *
+     * Approach:
+     * ---------
+     * - Perform DFS recursion.
+     * - For each node, compute:
+     *      height = max(leftHeight, rightHeight) + 1
+     *      diameter = max(leftDiameter, rightDiameter, leftHeight + rightHeight + 1)
+     * - Return an Info object containing both height and diameter.
+     * - Final diameter is returned as (nodes - 1) to get edges.
+     *
+     * Time Complexity: O(n)
+     *   - Each node is visited once.
+     *
+     * Space Complexity: O(h)
+     *   - h = height of the tree (recursion stack).
+     *   - Worst case O(n) for skewed tree, O(log n) for balanced tree.
+     */
+
+    // Recursive function to compute height and diameter of a subtree
+    public Info diameter(TreeNode root) {
+        if (root == null) {
+            return new Info(0, 0); // diameter=0, height=0 for empty subtree
+        }
+
+        Info leftInfo = diameter(root.left);
+        Info rightInfo = diameter(root.right);
+
+        // Current node's height
+        int selfHeight = Math.max(leftInfo.h, rightInfo.h) + 1;
+
+        // Current node's diameter:
+        // either in left, in right, or passing through current node
+        int selfDiameter = Math.max(
+            Math.max(leftInfo.d, rightInfo.d),
+            leftInfo.h + rightInfo.h + 1
+        );
+
+        return new Info(selfDiameter, selfHeight);
+    }
+
+    // Main function to return diameter in terms of edges
+    public int diameterOfBinaryTree(TreeNode root) {
+        if (root == null) return 0;
+        int diaNodes = diameter(root).d; // diameter in nodes
+        return diaNodes - 1; // convert to edges
+    }
+}
