@@ -1,0 +1,95 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    private int maxSum;
+
+    /**
+     * Title: Maximum Path Sum in a Binary Tree
+     *
+     * Description:
+     * ------------
+     * The maximum path sum of a binary tree is the largest sum
+     * obtainable by any path. A path is defined as a sequence of nodes
+     * connected via parent-child links. It may start and end at any nodes,
+     * but must be continuous.
+     *
+     * Key Points:
+     * ------------
+     * - At each node, there are three possible ways the node can contribute:
+     *    1. Root alone: root.val
+     *    2. Root + one child: max(left, right) + root.val
+     *    3. Root + both children: left + right + root.val
+     *
+     * - We maintain a global variable `maxSum` to track the maximum path
+     *   encountered so far.
+     * - The recursive function returns the best path sum that can be
+     *   extended upward to the parent (root alone or root + one child).
+     *
+     * Approach:
+     * ---------
+     * - Perform DFS recursion.
+     * - For each node:
+     *    - Compute left subtree sum (l).
+     *    - Compute right subtree sum (r).
+     *    - Consider all path options through this node:
+     *        * root only
+     *        * root + one child
+     *        * root + both children
+     *    - Update global `maxSum` with the best of these.
+     *    - Return the best path sum that can extend upward (root only or root + one child).
+     *
+     * Time Complexity: O(n)
+     *   - Each node is visited once.
+     *
+     * Space Complexity: O(h)
+     *   - h = height of the tree (recursion stack).
+     *   - Worst case O(n) for skewed tree, O(log n) for balanced tree.
+     */
+
+    // Recursive helper function to calculate maximum path sum contribution from each node
+    public int sum(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        // Compute contributions from left and right subtrees
+        int l = sum(root.left);
+        int r = sum(root.right);
+
+        // Case 1: node + both children
+        int bothGood = l + r + root.val;
+
+        // Case 2: node + one child
+        int anyoneGood = Math.max(l, r) + root.val;
+
+        // Case 3: node alone
+        int rootGood = root.val;
+
+        // Update global maxSum with the best option at this node
+        maxSum = Math.max(maxSum, Math.max(bothGood, Math.max(anyoneGood, rootGood)));
+
+        // Return the best option that can be extended upward to the parent
+        return Math.max(anyoneGood, rootGood);
+    }
+
+    // Main function to compute maximum path sum in the entire binary tree
+    public int maxPathSum(TreeNode root) {
+        maxSum = Integer.MIN_VALUE; // Initialize to very small value
+        sum(root);
+        return maxSum;
+    }
+}
