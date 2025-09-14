@@ -1,0 +1,78 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    /**
+     * Title: Check if a Binary Tree is Height-Balanced
+     *
+     * @param root Root node of the binary tree
+     * @return true if the binary tree is height-balanced, false otherwise
+     *
+     * Approach:
+     * ---------
+     * - A binary tree is balanced if:
+     *    1. The difference between left and right subtree heights ≤ 1
+     *    2. Both left and right subtrees are also balanced
+     *
+     * Steps:
+     * - Define a helper function `Height(TreeNode root)` to compute subtree height.
+     * - At each node:
+     *    - Get left height (lh) and right height (rh).
+     *    - Check if |lh - rh| ≤ 1.
+     *    - Recursively check if left subtree and right subtree are balanced.
+     *
+     * Example:
+     * --------
+     * Input Tree:
+     *        1
+     *       / \
+     *      2   3
+     *     /
+     *    4
+     *
+     * Heights:
+     *   Node 2 → left=1, right=0 → OK
+     *   Node 1 → left=2, right=1 → OK
+     * Balanced ✅
+     *
+     * Time Complexity: O(n^2)  
+     *   - Each node calls height function which itself traverses subtree.
+     *   - Optimized version reduces to O(n) (with height + balance check in one pass).
+     *
+     * Space Complexity: O(h)  
+     *   - h = tree height (recursion stack).
+     */
+    public static int Height(TreeNode root) {
+        if (root == null) return 0;
+        int lh = Height(root.left);
+        int rh = Height(root.right);
+        return Math.max(lh, rh) + 1;
+    }
+
+    public boolean isBalanced(TreeNode root) {
+        if (root == null) return true;
+
+        int lh = Height(root.left);
+        int rh = Height(root.right);
+
+        // Check current node balance + recursively check subtrees
+        if (Math.abs(lh - rh) <= 1 && isBalanced(root.left) && isBalanced(root.right)) {
+            return true;
+        }
+
+        return false;
+    }
+}
