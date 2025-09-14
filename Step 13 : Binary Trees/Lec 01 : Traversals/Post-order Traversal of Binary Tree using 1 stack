@@ -1,0 +1,79 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+class Solution {
+    /**
+     * Title: Iterative Postorder Traversal of a Binary Tree
+     *
+     * @param root Root node of the binary tree
+     * @return A list of integers representing the postorder traversal (Left → Right → Root)
+     *
+     * Approach:
+     * ---------
+     * - Use a single stack to simulate recursion.
+     * - Traverse down to the leftmost node, pushing nodes into the stack.
+     * - When reaching null, check the right child of the stack's top:
+     *    - If right child exists → process it next.
+     *    - If no right child → pop the node, add its value to result.
+     * - Continue popping nodes while coming back from right subtrees.
+     *
+     * Example:
+     * --------
+     * Input Tree: 
+     *        1
+     *       / \
+     *      2   3
+     * Postorder Traversal → [2, 3, 1]
+     *
+     * Time Complexity: O(n) 
+     *   - Each node is pushed and popped at most once.
+     *
+     * Space Complexity: O(h) 
+     *   - h = height of the tree (O(n) in worst case for skewed tree).
+     */
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();   // stores result in postorder
+        Stack<TreeNode> s = new Stack<>();       // stack to simulate recursion
+        TreeNode node = root;
+
+        // Loop until all nodes are processed
+        while (node != null || !s.isEmpty()) {
+
+            // Step 1: Move to the leftmost node
+            while (node != null) {
+                s.push(node);
+                node = node.left;
+            }
+
+            // Step 2: Process right subtree or current node
+            if (s.peek().right != null) {
+                // If right child exists, process it next
+                node = s.peek().right;
+            } else {
+                // If no right child, pop current node
+                TreeNode temp = s.pop();
+                res.add(temp.val);
+
+                // Step 3: Keep popping while returning from right subtrees
+                while (!s.isEmpty() && temp == s.peek().right) {
+                    temp = s.pop();
+                    res.add(temp.val);
+                }
+            }
+        }
+        return res;
+    }
+}
