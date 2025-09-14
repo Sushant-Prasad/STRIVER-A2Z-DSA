@@ -1,0 +1,55 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+import java.util.*;
+
+class Solution {
+    /**
+     * Recursive helper function for inorder traversal.
+     * Inorder traversal order: Left → Root → Right
+     *
+     * @param root   The current node in the binary tree
+     * @param result The list storing the traversal order
+     */
+    public static void inorder(TreeNode root, ArrayList<Integer> result) {
+        // Base case: if the current node is null, return
+        if (root == null) return;
+
+        // Step 1: Traverse left subtree
+        inorder(root.left, result);
+
+        // Step 2: Visit root node
+        result.add(root.val);
+
+        // Step 3: Traverse right subtree
+        inorder(root.right, result);
+    }
+
+    /**
+     * Main function to return inorder traversal of a binary tree.
+     *
+     * @param root The root node of the binary tree
+     * @return List<Integer> containing nodes in inorder sequence
+     */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        ArrayList<Integer> result = new ArrayList<>();
+
+        // Call helper recursive function
+        inorder(root, result);
+
+        return result;
+    }
+}
