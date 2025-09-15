@@ -1,0 +1,55 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+import java.util.*;
+
+class Solution {
+    /**
+     * Recursive helper function for postorder traversal.
+     * Postorder traversal order: Left → Right → Root
+     *
+     * @param root   The current node in the binary tree
+     * @param result The list storing the traversal order
+     */
+    public static void postorder(TreeNode root, ArrayList<Integer> result) {
+        // Base case: if the current node is null, return
+        if (root == null) return;
+
+        // Step 1: Traverse left subtree
+        postorder(root.left, result);
+
+        // Step 2: Traverse right subtree
+        postorder(root.right, result);
+
+        // Step 3: Visit root node
+        result.add(root.val);
+    }
+
+    /**
+     * Main function to return postorder traversal of a binary tree.
+     *
+     * @param root The root node of the binary tree
+     * @return List<Integer> containing nodes in postorder sequence
+     */
+    public List<Integer> postorderTraversal(TreeNode root) {
+        ArrayList<Integer> result = new ArrayList<>();
+
+        // Call helper recursive function
+        postorder(root, result);
+
+        return result;
+    }
+}
