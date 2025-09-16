@@ -1,0 +1,72 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+
+import java.util.*;
+
+class Solution {
+    /**
+     * Function to perform Preorder Traversal (iterative).
+     * Preorder traversal order: Root → Left → Right
+     *
+     * Approach:
+     * - Use a stack to simulate the recursive call stack.
+     * - Push the root node first.
+     * - While stack is not empty:
+     *    1. Pop the top node and visit it (add value to result list).
+     *    2. Push the right child (if exists).
+     *    3. Push the left child (if exists).
+     * - The reason we push right first is so that the left node
+     *   is processed before right (stack = LIFO).
+     *
+     * Example:
+     * For tree:    1
+     *             / \
+     *            2   3
+     *           / \
+     *          4   5
+     *
+     * Output: [1, 2, 4, 5, 3]
+     *
+     * @param root Root node of the binary tree
+     * @return List<Integer> containing preorder traversal
+     */
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> res = new ArrayList<>();
+
+        // Base case: if tree is empty
+        if (root == null) return res;
+
+        // Stack to simulate recursion
+        Stack<TreeNode> s = new Stack<>();
+        s.push(root);
+
+        // Iterative traversal
+        while (!s.isEmpty()) {
+            TreeNode currNode = s.pop();   // Pop top node
+            res.add(currNode.val);         // Visit root
+
+            // Push right first so that left is processed first
+            if (currNode.right != null) {
+                s.push(currNode.right);
+            }
+            if (currNode.left != null) {
+                s.push(currNode.left);
+            }
+        }
+
+        return res;
+    }
+}
