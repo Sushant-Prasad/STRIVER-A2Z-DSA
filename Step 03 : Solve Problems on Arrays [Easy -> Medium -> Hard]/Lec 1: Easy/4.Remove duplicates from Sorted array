@@ -1,0 +1,47 @@
+class Solution {
+    /**
+     * Function to remove duplicates from a sorted array in-place.
+     *
+     * Approach (Two-Pointer Technique):
+     * ---------------------------------
+     * - Since the array is sorted, duplicates will be next to each other.
+     * - Maintain a pointer `j` → position for the next unique element.
+     * - Start from index 1:
+     *    - If nums[i] != nums[j-1], it means nums[i] is a new unique element.
+     *    - Place it at nums[j], then increment j.
+     * - At the end, j will represent the length of the array with unique elements.
+     *
+     * Example:
+     * --------
+     * Input:  [1, 1, 2, 2, 3]
+     * Process:
+     *   i=1 → nums[1]=1 == nums[0] → skip
+     *   i=2 → nums[2]=2 != nums[0] → nums[1]=2 → [1,2,2,2,3], j=2
+     *   i=3 → nums[3]=2 == nums[1] → skip
+     *   i=4 → nums[4]=3 != nums[1] → nums[2]=3 → [1,2,3,2,3], j=3
+     * Output length = 3, array becomes [1,2,3,_,_]
+     *
+     * Time Complexity: O(n) → single pass
+     * Space Complexity: O(1) → in-place, no extra space
+     *
+     * @param nums Sorted input array
+     * @return The number of unique elements in nums
+     */
+    public int removeDuplicates(int[] nums) {
+        int n = nums.length;
+        if (n == 0) return 0;  // empty array
+
+        int j = 1; // pointer for the position of the next unique element
+
+        // Traverse array starting from second element
+        for (int i = 1; i < n; i++) {
+            // If current element is different from the last unique element
+            if (nums[i] != nums[j - 1]) {
+                nums[j] = nums[i]; // Place it in the unique section
+                j++; // Move pointer forward
+            }
+        }
+
+        return j; // j is the count of unique elements
+    }
+}
