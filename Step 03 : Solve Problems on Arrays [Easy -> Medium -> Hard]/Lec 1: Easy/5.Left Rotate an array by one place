@@ -1,0 +1,41 @@
+// User function Template for Java
+
+class Solution {
+    /**
+     * Function to rotate an array by one position to the right.
+     *
+     * Approach:
+     * ---------
+     * - Save the last element in a temporary variable (since it will be lost after shifting).
+     * - Shift all elements one step to the right (arr[i] = arr[i-1], from end to start).
+     * - Place the saved element at the first position.
+     *
+     * Example:
+     * --------
+     * Input:  [1, 2, 3, 4, 5]
+     * Process:
+     *   temp = 5
+     *   Shift → [1,1,2,3,4]
+     *   arr[0] = 5 → [5,1,2,3,4]
+     * Output: [5, 1, 2, 3, 4]
+     *
+     * Time Complexity: O(n) → because we shift all elements once.
+     * Space Complexity: O(1) → in-place rotation, no extra space used.
+     *
+     * @param arr The input array to be rotated.
+     */
+    public void rotate(int[] arr) {
+        int n = arr.length;
+
+        // Step 1: Save the last element
+        int temp = arr[n - 1];
+
+        // Step 2: Shift elements to the right
+        for (int i = n - 1; i >= 1; i--) {
+            arr[i] = arr[i - 1];
+        }
+
+        // Step 3: Put last element in front
+        arr[0] = temp;
+    }
+}
