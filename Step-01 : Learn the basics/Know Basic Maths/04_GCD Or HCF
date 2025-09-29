@@ -1,0 +1,24 @@
+class Solution {
+    public static int gcd(int a, int b) {
+        //base case
+        if(b==0)return a;
+        return gcd(,a%b);
+    }
+}
+concept:- recursive approach
+
+1979. Find Greatest Common Divisor of Array(Leetcode)
+code:-
+import java.util.Arrays;
+class Solution {
+    public int findGCD(int[] nums) {
+       
+       int max =  Arrays.stream(nums).max().getAsInt();
+       int min = Arrays.stream(nums).min().getAsInt();
+       return gcd(max,min);
+}
+ private int gcd(int max,int min){
+            if(min == 0)return max;
+            return gcd(min,max%min);
+        }
+}
