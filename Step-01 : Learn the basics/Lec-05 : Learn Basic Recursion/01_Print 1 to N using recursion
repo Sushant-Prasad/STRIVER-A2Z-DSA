@@ -1,0 +1,10 @@
+static void printNumbers(int n) {
+        // Base case: stop when n is 0
+        if (n == 0) return;
+
+        // Recursive call first
+        printNumbers(n - 1);
+
+        // Then print current number
+        System.out.print(n + " ");
+    }
