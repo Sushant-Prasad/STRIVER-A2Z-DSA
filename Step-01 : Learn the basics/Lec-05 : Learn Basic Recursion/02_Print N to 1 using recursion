@@ -1,0 +1,10 @@
+static void printReverse(int n) {
+        // Base case: stop when n becomes 0
+        if (n == 0) return;
+
+        // Print current number first
+        System.out.print(n + " ");
+
+        // Then recursive call for n-1
+        printReverse(n - 1);
+    }
