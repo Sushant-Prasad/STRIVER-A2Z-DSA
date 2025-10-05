@@ -1,0 +1,7 @@
+public static int findSum(int n) {
+        // Base case
+        if (n == 0) return 0;
+
+        // Recursive case: add current number to sum of numbers before it
+        return n + findSum(n - 1);
+    }
