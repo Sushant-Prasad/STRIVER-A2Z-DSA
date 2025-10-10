@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+    public List<Integer> frequencyCount(int[] arr) {
+        int n = arr.length;
+
+        // List to store the frequency of numbers from 1 to n
+        ArrayList<Integer> list = new ArrayList<>();
+
+        // HashMap to store frequency of each number in arr
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        // Step 1: Count frequency of each element in arr
+        for (int i = 0; i < n; i++) {
+            map.put(arr[i], map.getOrDefault(arr[i], 0) + 1);
+        }
+
+        // Step 2: For each number from 1 to n, check its frequency
+        for (int i = 1; i <= n; i++) {
+            if (!map.containsKey(i)) {
+                list.add(0); // if number i is not present → frequency = 0
+            } else {
+                list.add(map.get(i)); // otherwise add actual frequency
+            }
+        }
+
+        // Step 3: Return the frequency list
+        return list;
+    }
+}
