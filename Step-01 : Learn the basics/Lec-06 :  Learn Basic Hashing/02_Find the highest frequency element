@@ -1,0 +1,30 @@
+import java.util.*;
+
+class Solution {
+    public int mostFreqEle(int[] arr) {
+        // HashMap to store frequency of each element
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        // Step 1: Count frequency of each element
+        for (int i = 0; i < arr.length; i++) {
+            map.put(arr[i], map.getOrDefault(arr[i], 0) + 1);
+        }
+
+        // Step 2: Find the maximum frequency
+        int maxFreq = Integer.MIN_VALUE;
+        for (int key : map.keySet()) {
+            maxFreq = Math.max(maxFreq, map.get(key));
+        }
+
+        // Step 3: Among elements with max frequency, choose the largest element
+        int maxVal = Integer.MIN_VALUE;
+        for (int key : map.keySet()) {
+            if (map.get(key) == maxFreq) {
+                maxVal = Math.max(maxVal, key);
+            }
+        }
+
+        // Return the element with maximum frequency (and largest value in case of tie)
+        return maxVal;
+    }
+}
