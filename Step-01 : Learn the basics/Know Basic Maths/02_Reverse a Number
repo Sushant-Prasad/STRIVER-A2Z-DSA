@@ -1,4 +1,4 @@
-//LINK:-https://leetcode.com/problems/palindrome-number/description/
+//LINK:-https:https://leetcode.com/problems/reverse-integer/description/
 
 class Solution {
     public int reverse(int x) {
