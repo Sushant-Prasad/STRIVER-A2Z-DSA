@@ -1,0 +1,65 @@
+/*
+link:-https://leetcode.com/problems/max-consecutive-ones/description/
+Title: Find Maximum Consecutive Ones
+-------------------------------------
+Given a binary array `nums`, find the maximum number of consecutive 1's in the array.
+
+Example:
+----------
+Input:  nums = [1, 1, 0, 1, 1, 1]
+Output: 3
+Explanation:
+- There are two sequences of consecutive 1’s: [1,1] and [1,1,1].
+- The longest sequence has a length of 3.
+
+ Approach:
+------------
+1. Initialize two variables:
+   - `count` → to keep track of the current streak of consecutive 1s.
+   - `max` → to store the maximum streak found so far.
+
+2. Traverse the array:
+   - If the current element is 1 → increment `count` and update `max` using `Math.max(max, count)`.
+   - If the current element is 0 → reset `count` to 0.
+
+3. After traversing the array, return `max` as the final result.
+
+ Example walkthrough:
+-----------------------
+nums = [1, 1, 0, 1, 1, 1]
+Iteration:
+- i=0 → count=1, max=1
+- i=1 → count=2, max=2
+- i=2 → count=0 (reset)
+- i=3 → count=1, max=2
+- i=4 → count=2, max=2
+- i=5 → count=3, max=3
+Answer → 3
+
+ Time Complexity:  O(n)
+   → We traverse the array once.
+
+ Space Complexity: O(1)
+   → Only a few integer variables are used.
+
+*/
+
+class Solution {
+    public int findMaxConsecutiveOnes(int[] nums) {
+        int n = nums.length;
+        int max = 0;     // Stores the maximum consecutive ones found so far
+        int count = 0;   // Tracks current consecutive ones
+
+        // Traverse the array
+        for (int i = 0; i < n; i++) {
+            if (nums[i] == 1) {
+                count++; // Increment current streak
+            } else {
+                count = 0; // Reset streak when 0 is encountered
+            }
+            max = Math.max(max, count); // Update maximum if needed
+        }
+
+        return max; // Return longest sequence of 1s
+    }
+}
