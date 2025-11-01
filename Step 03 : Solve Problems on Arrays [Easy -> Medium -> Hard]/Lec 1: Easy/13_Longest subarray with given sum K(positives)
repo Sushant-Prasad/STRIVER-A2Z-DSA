@@ -1,0 +1,77 @@
+link:-https://www.geeksforgeeks.org/problems/longest-sub-array-with-sum-k0809/1
+/*
+Title: Longest Subarray with Sum K
+----------------------------------
+Given an array `arr[]` of integers and an integer `k`, find the length of the longest subarray 
+whose sum equals `k`.
+
+Example:
+--------
+Input:  arr = [10, 5, 2, 7, 1, 9], k = 15
+Output: 4
+Explanation:
+Subarray [5, 2, 7, 1] has a sum of 15 and is the longest such subarray.
+
+Approach (Prefix Sum + HashMap):
+--------------------------------
+1. Maintain a running prefix sum `sum` while traversing the array.
+2. Use a HashMap to store the first occurrence of each prefix sum.
+   - Key: current prefix sum.
+   - Value: index of its first occurrence.
+3. For each element at index `i`:
+   - Add `arr[i]` to `sum`.
+   - If `sum == k`, it means the subarray from index 0 to i has sum = k, so update `ans = i + 1`.
+   - If `(sum - k)` exists in the map, it means there is a previous prefix sum such that the 
+     subarray between that index + 1 and i has sum = k.
+     → Update `ans = max(ans, i - map.get(sum - k))`.
+   - If `sum` is not already in the map, store it with the current index 
+     (to ensure we keep the earliest occurrence).
+4. Return `ans` after traversing the array.
+
+Example walkthrough:
+--------------------
+arr = [10, 5, 2, 7, 1, 9], k = 15
+i=0 → sum=10, no match
+i=1 → sum=15, ans=2 (subarray [10,5])
+i=2 → sum=17, map contains (17-15=2)? No
+i=3 → sum=24, map contains (24-15=9)? No
+i=4 → sum=25, map contains (25-15=10)? Yes, ans=max(2, 4-0)=4
+i=5 → sum=34, map contains (34-15=19)? No
+Final answer = 4
+
+Time Complexity:  O(n)
+   - Single traversal through the array.
+
+Space Complexity: O(n)
+   - For storing prefix sums in the HashMap.
+*/
+
+import java.util.HashMap;
+
+class Solution {
+    public int longestSubarray(int[] arr, int k) {
+        int n = arr.length;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        int sum = 0; // Running prefix sum
+        int ans = 0; // Stores maximum length of subarray with sum = k
+
+        for (int i = 0; i < n; i++) {
+            sum += arr[i];
+
+            // Case 1: Subarray from index 0 to i has sum = k
+            if (sum == k) {
+                ans = i + 1;
+            }
+            // Case 2: Check if a prefix sum (sum - k) exists
+            else if (map.containsKey(sum - k)) {
+                ans = Math.max(ans, i - map.get(sum - k));
+            }
+
+            // Store first occurrence of the current prefix sum
+            if (!map.containsKey(sum)) {
+                map.put(sum, i);
+            }
+        }
+        return ans;
+    }
+}
