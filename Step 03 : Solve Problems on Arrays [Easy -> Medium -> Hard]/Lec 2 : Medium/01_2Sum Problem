@@ -1,0 +1,228 @@
+# Method-1
+/*
+Title: Two Sum (Optimized Approach using HashMap)
+-------------------------------------------------
+Problem:
+Given an array of integers `nums` and an integer `target`, 
+return the indices of the two numbers such that they add up to `target`.
+
+You may assume that each input has exactly one solution, 
+and you may not use the same element twice.
+
+Example:
+--------
+Input:  nums = [2, 7, 11, 15], target = 9
+Output: [0, 1]
+Explanation:
+nums[0] + nums[1] = 2 + 7 = 9
+
+Approach (Using HashMap):
+-------------------------
+1. Create a HashMap to store numbers and their corresponding indices.
+2. Traverse the array:
+   - For each number `nums[i]`, calculate the complement as `target - nums[i]`.
+   - Check if the complement already exists in the map:
+        • If yes, we found the pair — store indices and break.
+        • If no, add the current number and its index to the map.
+3. Return the array containing both indices.
+
+Dry Run:
+--------
+nums = [3, 2, 4], target = 6
+Iteration 1: i=0, nums[i]=3, reqNo=3 → not in map → store (3,0)
+Iteration 2: i=1, nums[i]=2, reqNo=4 → not in map → store (2,1)
+Iteration 3: i=2, nums[i]=4, reqNo=2 → 2 found in map at index 1
+=> arr = [1, 2]
+Output: [1, 2]
+
+Time Complexity:  O(n)
+   - Each element is visited once and lookup in HashMap takes O(1) on average.
+
+Space Complexity: O(n)
+   - HashMap stores up to n elements in the worst case.
+*/
+
+import java.util.HashMap;
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int[] arr = new int[2]; // To store the result indices
+        HashMap<Integer, Integer> map = new HashMap<>(); // num -> index
+
+        for (int i = 0; i < nums.length; i++) {
+            int reqNo = target - nums[i]; // Required number to form the target sum
+
+            // If the required number is already seen, we found the pair
+            if (map.containsKey(reqNo)) {
+                arr[0] = map.get(reqNo);
+                arr[1] = i;
+                break; // Stop after finding the valid pair
+            } 
+            // Otherwise, store the current number with its index
+            else {
+                map.put(nums[i], i);
+            }
+        }
+        return arr; // Return the indices of the two numbers
+    }
+}
+
+
+# Method-2
+
+/*
+Title: Two Sum (Two-Pointer Approach After Sorting)
+---------------------------------------------------
+Problem Statement:
+Given an array of integers `nums` and an integer `target`, 
+return the indices of the two numbers such that they add up to `target`.
+
+Each input is guaranteed to have exactly one solution, 
+and you may not use the same element twice.
+
+Example:
+--------
+Input:  nums = [2, 7, 11, 15], target = 9
+Output: [0, 1]
+Explanation:
+nums[0] + nums[1] = 2 + 7 = 9
+
+Approach (Two-Pointer Technique):
+---------------------------------
+1. Create a 2D array `pairs` where each element stores:
+   - pairs[i][0] = value of nums[i]
+   - pairs[i][1] = original index of nums[i]
+
+2. Sort the `pairs` array based on the number values 
+   (so that we can apply the two-pointer technique).
+
+3. Initialize two pointers:
+   - left = 0
+   - right = nums.length - 1
+
+4. While left < right:
+   - Compute sum = pairs[left][0] + pairs[right][0]
+   - If sum == target:
+        → We found the required pair.
+        → Store their original indices in `arr` and break.
+   - If sum > target:
+        → Move the right pointer leftward (right--).
+   - If sum < target:
+        → Move the left pointer rightward (left++).
+
+5. Return `arr` containing the original indices.
+
+Dry Run:
+--------
+nums = [3, 2, 4], target = 6
+pairs = [(3,0), (2,1), (4,2)]
+After sorting → [(2,1), (3,0), (4,2)]
+
+Iteration:
+left=0 (2), right=2 (4)
+sum = 6 → match found → arr = [1, 2]
+Return [1, 2]
+
+Time Complexity:  O(n log n)
+   - Sorting dominates the time complexity.
+
+Space Complexity: O(n)
+   - Extra space for storing (value, index) pairs.
+*/
+
+import java.util.Arrays;
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int[] arr = new int[2]; // To store the result indices
+        int[][] pairs = new int[nums.length][2]; // {value, original index}
+
+        // Step 1: Store values with their original indices
+        for (int i = 0; i < nums.length; i++) {
+            pairs[i][0] = nums[i];
+            pairs[i][1] = i;
+        }
+
+        // Step 2: Sort based on the values
+        Arrays.sort(pairs, (a, b) -> Integer.compare(a[0], b[0]));
+
+        // Step 3: Apply Two-Pointer technique
+        int left = 0;
+        int right = nums.length - 1;
+
+        while (left < right) {
+            int sum = pairs[left][0] + pairs[right][0];
+
+            if (sum == target) {
+                arr[0] = pairs[left][1];
+                arr[1] = pairs[right][1];
+                break; // Pair found, exit loop
+            } else if (sum > target) {
+                right--; // Decrease sum
+            } else {
+                left++; // Increase sum
+            }
+        }
+
+        return arr; // Return original indices of the pair
+    }
+}
+
+# Method-3
+/*
+Title: Two Sum
+--------------
+Given an array of integers `nums` and an integer `target`, return the indices 
+of the two numbers such that they add up to `target`.
+
+You may assume that each input has exactly one solution, and you may not use 
+the same element twice. The order of indices in the output does not matter.
+
+Example:
+--------
+Input:  nums = [2, 7, 11, 15], target = 9
+Output: [0, 1]
+Explanation:
+nums[0] + nums[1] = 2 + 7 = 9
+
+Approach (Brute Force):
+-----------------------
+1. Use two nested loops to check every possible pair (i, j).
+2. For each pair, if nums[i] + nums[j] == target:
+   - Store indices i and j in the result array.
+3. Return the result array containing the indices.
+
+This approach ensures that all pairs are checked.
+
+Example Walkthrough:
+--------------------
+nums = [3, 2, 4], target = 6
+i=0, j=1 → 3 + 2 = 5 (not target)
+i=0, j=2 → 3 + 4 = 7 (not target)
+i=1, j=2 → 2 + 4 = 6 (match found)
+Result → [1, 2]
+
+Time Complexity:  O(n²)
+   - Nested loops iterate through all pairs in the array.
+
+Space Complexity: O(1)
+   - Only a fixed-size array (of size 2) is used to store the result.
+*/
+
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        int[] arr = new int[2]; // To store result indices
+
+        // Check every pair of numbers
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                // If pair sums up to target, store indices
+                if (nums[i] + nums[j] == target) {
+                    arr[0] = i;
+                    arr[1] = j;
+                }
+            }
+        }
+        return arr; // Return indices of two numbers
+    }
+}
