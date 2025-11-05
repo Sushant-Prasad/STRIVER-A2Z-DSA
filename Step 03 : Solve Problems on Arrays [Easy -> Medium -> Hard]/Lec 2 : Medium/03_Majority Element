@@ -1,0 +1,76 @@
+/*
+Title: Majority Element (Boyer–Moore Majority Vote Algorithm)
+-------------------------------------------------------------
+Problem Statement:
+Given an array `nums` of size n, find the element that appears 
+more than ⌊ n/2 ⌋ times (the majority element).
+
+You may assume that the majority element always exists in the array.
+
+Example:
+--------
+Input:  nums = [3, 2, 3]
+Output: 3
+
+Input:  nums = [2, 2, 1, 1, 1, 2, 2]
+Output: 2
+
+Approach (Boyer–Moore Voting Algorithm):
+----------------------------------------
+1. Initialize:
+   - `x` → candidate for majority element.
+   - `count` → vote count for the candidate.
+
+2. Traverse the array:
+   - If `count == 0`, choose the current element as the new candidate.
+   - If the current element equals the candidate, increment `count`.
+   - Otherwise, decrement `count`.
+
+3. At the end, the candidate `x` will be the majority element.
+
+Why It Works:
+-------------
+The idea is that the majority element appears more than n/2 times.
+Each time we cancel a majority element with a different element, 
+it still remains the most frequent in the remaining array.
+
+Dry Run:
+--------
+nums = [2, 2, 1, 1, 1, 2, 2]
+
+i=0 → count=0 → x=2, count=1  
+i=1 → nums[i]=2 → count=2  
+i=2 → nums[i]=1 → count=1  
+i=3 → nums[i]=1 → count=0  
+i=4 → count=0 → x=1, count=1  
+i=5 → nums[i]=2 → count=0  
+i=6 → count=0 → x=2, count=1  
+
+Final candidate = 2 → Majority element.
+
+Time Complexity:  O(n)
+   - Single pass through the array.
+
+Space Complexity: O(1)
+   - Constant extra space used.
+*/
+
+class Solution {
+    public int majorityElement(int[] nums) {
+        int count = 0;               // Tracks vote balance
+        int x = Integer.MIN_VALUE;   // Candidate for majority element
+
+        for (int i = 0; i < nums.length; i++) {
+            if (count == 0) {
+                x = nums[i];         // Choose a new candidate
+                count = 1;
+            } else if (x == nums[i]) {
+                count++;             // Same as candidate → increase vote
+            } else {
+                count--;             // Different element → cancel a vote
+            }
+        }
+
+        return x; // The candidate is the majority element
+    }
+}
