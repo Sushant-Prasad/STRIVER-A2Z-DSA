@@ -1,0 +1,66 @@
+/*
+Title: Maximum Subarray (Kadane’s Algorithm)
+--------------------------------------------
+Problem Statement:
+Given an integer array `nums`, find the contiguous subarray (containing at least one number)
+which has the largest sum and return its sum.
+
+Example:
+--------
+Input:  nums = [-2,1,-3,4,-1,2,1,-5,4]
+Output: 6
+Explanation:
+The subarray [4, -1, 2, 1] has the largest sum = 6.
+
+Approach (Kadane’s Algorithm - Dynamic Programming, O(n)):
+-----------------------------------------------------------
+1. Initialize:
+   - `cs` → current subarray sum.
+   - `ms` → maximum subarray sum found so far.
+
+2. Traverse the array:
+   - If `cs` becomes negative, reset it to 0 
+     (since adding a negative sum will decrease future subarray sums).
+   - Add the current element to `cs`.
+   - Update `ms` as the maximum between `ms` and `cs`.
+
+3. Return `ms` after the loop — it holds the maximum subarray sum.
+
+Dry Run:
+--------
+nums = [-2,1,-3,4,-1,2,1,-5,4]
+ms = -2, cs = 0
+
+i=0 → cs<0 → cs=0, cs+=-2 → cs=-2, ms=max(-2,-2)=-2
+i=1 → cs<0 → cs=0, cs+=1 → cs=1, ms=max(-2,1)=1
+i=2 → cs=1+(-3)=-2, ms=1
+i=3 → cs<0 → cs=0, cs+=4 → cs=4, ms=max(1,4)=4
+i=4 → cs=4+(-1)=3, ms=4
+i=5 → cs=3+2=5, ms=max(4,5)=5
+i=6 → cs=5+1=6, ms=max(5,6)=6
+i=7 → cs=6+(-5)=1, ms=6
+i=8 → cs=1+4=5, ms=max(6,5)=6
+
+Result → 6
+
+Time Complexity:  O(n)
+   - Single pass through the array.
+
+Space Complexity: O(1)
+   - Uses only constant extra space.
+*/
+
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int cs = 0;           // Current subarray sum
+        int ms = nums[0];     // Maximum subarray sum found so far
+
+        for (int i = 0; i < nums.length; i++) {
+            if (cs < 0) cs = 0;   // Reset if current sum becomes negative
+            cs += nums[i];        // Extend current subarray
+            ms = Math.max(ms, cs); // Update maximum sum
+        }
+
+        return ms; // Return the maximum subarray sum
+    }
+}
