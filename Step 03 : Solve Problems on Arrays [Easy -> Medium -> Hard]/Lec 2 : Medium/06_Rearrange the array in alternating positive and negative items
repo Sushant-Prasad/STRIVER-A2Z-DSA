@@ -1,0 +1,52 @@
+/*
+Title: Rearrange Array Elements by Sign
+---------------------------------------
+Problem Statement:
+Given an integer array `nums` consisting of equal numbers of positive and negative integers,
+rearrange the array so that positive and negative numbers alternate, 
+starting with a positive number.
+
+Example:
+--------
+Input:  nums = [3,1,-2,-5,2,-4]
+Output: [3,-2,1,-5,2,-4]
+
+Approach (Index Placement):
+---------------------------
+1. Create a new array `result` of the same size as `nums`.
+2. Maintain two indices:
+   - `pi` (positive index) = 0 → to place positive numbers at even indices.
+   - `ni` (negative index) = 1 → to place negative numbers at odd indices.
+3. Traverse the input array:
+   - If the current element is positive → place it at result[pi] and increment pi by 2.
+   - If the current element is negative → place it at result[ni] and increment ni by 2.
+4. Return the `result` array.
+
+Time Complexity:  O(n)
+   - Single traversal of the array.
+
+Space Complexity: O(n)
+   - Additional array to store rearranged elements.
+*/
+
+class Solution {
+    public int[] rearrangeArray(int[] nums) {
+        int n = nums.length;
+        int[] result = new int[n];
+
+        int pi = 0; // index for next positive number
+        int ni = 1; // index for next negative number
+
+        for (int i = 0; i < n; i++) {
+            if (nums[i] > 0) {
+                result[pi] = nums[i];
+                pi += 2;
+            } else {
+                result[ni] = nums[i];
+                ni += 2;
+            }
+        }
+
+        return result;
+    }
+}
