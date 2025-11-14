@@ -1,0 +1,95 @@
+/*
+link:-https://www.geeksforgeeks.org/problems/longest-consecutive-subsequence2449/1
+Title: Longest Consecutive Subsequence
+--------------------------------------
+Problem Statement:
+Given an unsorted array of integers `arr[]`, find the length of the 
+longest subsequence of consecutive integers that appear in the array.
+
+Example:
+--------
+Input:  arr = [2, 6, 1, 9, 4, 5, 3]
+Output: 6
+Explanation:
+The consecutive numbers are [1, 2, 3, 4, 5, 6].
+
+Input:  arr = [1, 9, 3, 10, 4, 20, 2]
+Output: 4
+Explanation:
+The consecutive numbers are [1, 2, 3, 4].
+
+-------------------------------------------------
+Approach (HashSet - O(n) Solution):
+-------------------------------------------------
+1. Store all elements in a HashSet for O(1) average-time lookups.
+2. For each number `i` in the set:
+   - Check if `i - 1` is **not** in the set.
+     (This means `i` is the start of a new consecutive sequence.)
+   - If it is a sequence start:
+       - Initialize a counter `count = 1`.
+       - Continuously check for the presence of `i + 1`, `i + 2`, … 
+         until the sequence breaks.
+       - Keep updating the count.
+   - Update the global maximum (`res`) if the current count is greater.
+3. Return the maximum consecutive sequence length.
+
+-------------------------------------------------
+Dry Run Example:
+-------------------------------------------------
+arr = [2, 6, 1, 9, 4, 5, 3]
+
+Set = {1, 2, 3, 4, 5, 6, 9}
+
+Iteration:
+- i=1 → start of sequence → [1,2,3,4,5,6] → count = 6 → res = 6
+- i=2,3,4,5,6 → skipped (since i-1 exists)
+- i=9 → start of new sequence → count = 1 → res = 6
+
+Output → 6
+
+-------------------------------------------------
+Time Complexity:  O(n)
+   - Each element is processed at most twice (insert + lookup).
+
+Space Complexity: O(n)
+   - For storing elements in the HashSet.
+*/
+
+import java.util.HashSet;
+
+class Solution {
+
+    // Function to return length of longest subsequence of consecutive integers.
+    public int longestConsecutive(int[] arr) {
+        int n = arr.length;
+        if (n == 0) return 0;  // Edge case: empty array
+
+        int res = 0;
+        HashSet<Integer> set = new HashSet<>();
+
+        // Step 1: Add all elements to the set
+        for (int num : arr) {
+            set.add(num);
+        }
+
+        // Step 2: Find sequence starts
+        for (int num : set) {
+            // Start counting only if num-1 doesn't exist (sequence start)
+            if (!set.contains(num - 1)) {
+                int count = 1;
+                int current = num;
+
+                // Step 3: Count consecutive numbers
+                while (set.contains(current + 1)) {
+                    current++;
+                    count++;
+                }
+
+                // Step 4: Update maximum length
+                res = Math.max(res, count);
+            }
+        }
+
+        return res;
+    }
+}
