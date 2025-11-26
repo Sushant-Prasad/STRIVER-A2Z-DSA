@@ -1,0 +1,395 @@
+# method-1:-
+/*
+Title: Set Matrix Zeroes
+------------------------
+Problem Statement:
+Given an m x n integer matrix, if an element is 0, set its entire row and column to 0.
+
+You must modify the matrix in-place (no return value).
+
+Example:
+--------
+Input:
+matrix = [
+  [1, 1, 1],
+  [1, 0, 1],
+  [1, 1, 1]
+]
+
+Output:
+[
+  [1, 0, 1],
+  [0, 0, 0],
+  [1, 0, 1]
+]
+
+------------------------------------------------------------
+Approach (Brute Force using Auxiliary Matrix):
+------------------------------------------------------------
+1. Create a temporary matrix `temp` (same size as input matrix) 
+   to store the original values.
+
+2. Copy all elements from `matrix` into `temp`.
+
+3. Traverse each cell (i, j):
+   - If `temp[i][j] == 0`, set:
+       → all elements in row `i` of `matrix` to 0
+       → all elements in column `j` of `matrix` to 0
+
+4. Using `temp` ensures that previously modified rows/columns 
+   do not affect future iterations.
+
+------------------------------------------------------------
+Dry Run Example:
+------------------------------------------------------------
+Input:
+matrix = [
+  [1, 1, 1],
+  [1, 0, 1],
+  [1, 1, 1]
+]
+
+Step 1: Copy to temp.
+Step 2: When (i=1, j=1) → temp[1][1] == 0
+        → Set entire 1st row and 1st column in matrix to 0.
+
+Result:
+matrix = [
+  [1, 0, 1],
+  [0, 0, 0],
+  [1, 0, 1]
+]
+
+------------------------------------------------------------
+Time Complexity:  O(m * n * (m + n))
+   - O(m * n) to scan elements.
+   - For each zero found, O(m + n) to update row and column.
+
+Space Complexity: O(m * n)
+   - Additional 2D array `temp` used to store a copy of the matrix.
+
+------------------------------------------------------------
+Optimization Note:
+This is a correct brute-force approach.
+However, space can be optimized to O(1) by using the first row 
+and first column as markers — a more optimal approach.
+*/
+
+class Solution {
+    public void setZeroes(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
+
+        // Step 1: Copy the matrix into a temporary array
+        int[][] temp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                temp[i][j] = matrix[i][j];
+            }
+        }
+
+        // Step 2: For each zero in temp, set corresponding row and column to zero in matrix
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (temp[i][j] == 0) {
+                    // Set entire column to zero
+                    for (int k = 0; k < m; k++) {
+                        matrix[k][j] = 0;
+                    }
+                    // Set entire row to zero
+                    for (int k = 0; k < n; k++) {
+                        matrix[i][k] = 0;
+                    }
+                }
+            }
+        }
+    }
+}
+# Method-2:-
+/*
+Title: Set Matrix Zeroes (Using Row & Column Marker Arrays)
+-----------------------------------------------------------
+Problem Statement:
+Given an m x n integer matrix, if an element is 0, set its entire row and column to 0.
+
+You must modify the matrix in-place (without returning anything).
+
+Example:
+--------
+Input:
+matrix = [
+  [1, 1, 1],
+  [1, 0, 1],
+  [1, 1, 1]
+]
+
+Output:
+[
+  [1, 0, 1],
+  [0, 0, 0],
+  [1, 0, 1]
+]
+
+-----------------------------------------------------------
+Approach (Using Marker Arrays):
+-----------------------------------------------------------
+We use two auxiliary boolean arrays `row[]` and `col[]` to mark which rows and
+columns must be set to zero.
+
+Algorithm Steps:
+----------------
+1. Initialize:
+   - `row[m]` and `col[n]` as boolean arrays to track which rows and columns
+     contain a zero.
+
+2. Traverse the entire matrix:
+   - Whenever `matrix[i][j] == 0`:
+        → Set `row[i] = true` (mark this row for zeroing)
+        → Set `col[j] = true` (mark this column for zeroing)
+
+3. Traverse the matrix again:
+   - For each cell `(i, j)`:
+        → If either `row[i] == true` or `col[j] == true`, set `matrix[i][j] = 0`.
+
+This ensures all affected rows and columns become zero without disturbing
+the original zero-detection step.
+
+-----------------------------------------------------------
+Dry Run Example:
+-----------------------------------------------------------
+Input:
+matrix = [
+  [1, 1, 1],
+  [1, 0, 1],
+  [1, 1, 1]
+]
+
+Step 1: Identify zeros
+row = [false, true, false]
+col = [false, true, false]
+
+Step 2: Update matrix
+For each cell:
+- If row[i] or col[j] is true → set matrix[i][j] = 0
+
+Result:
+matrix = [
+  [1, 0, 1],
+  [0, 0, 0],
+  [1, 0, 1]
+]
+
+-----------------------------------------------------------
+Time Complexity:  O(m * n)
+   - One full scan to detect zeros, one full scan to apply changes.
+
+Space Complexity: O(m + n)
+   - Two additional arrays used to mark rows and columns.
+
+-----------------------------------------------------------
+Note:
+This approach is cleaner and more efficient than the brute-force
+method using a temporary copy. 
+To further optimize space to O(1), you can use the first row and
+first column as markers.
+*/
+
+class Solution {
+    public void setZeroes(int[][] matrix) {
+        int m = matrix.length;     // number of rows
+        int n = matrix[0].length;  // number of columns
+
+        // Step 1: Create marker arrays
+        boolean[] row = new boolean[m];
+        boolean[] col = new boolean[n];
+
+        // Step 2: Mark rows and columns that contain a zero
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 0) {
+                    row[i] = true;
+                    col[j] = true;
+                }
+            }
+        }
+
+        // Step 3: Set matrix cells to zero based on markers
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (row[i] || col[j]) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+    }
+}
+# Method-3:-
+
+/*
+Title: Set Matrix Zeroes (Optimized O(1) Space Solution)
+--------------------------------------------------------
+Problem Statement:
+Given an m x n matrix, if any element is 0, set its entire row and column to 0.
+You must perform the operation in-place without using extra space for another matrix.
+
+Example:
+--------
+Input:
+matrix = [
+  [1, 1, 1],
+  [1, 0, 1],
+  [1, 1, 1]
+]
+
+Output:
+[
+  [1, 0, 1],
+  [0, 0, 0],
+  [1, 0, 1]
+]
+
+--------------------------------------------------------
+Intuition:
+If we directly set rows and columns to zero when a 0 is found,
+we might overwrite information that we still need to process later.
+
+Hence, we use the **first row and first column** of the matrix itself
+as markers (flags) to record which rows and columns should be zeroed.
+
+We also need two separate boolean flags to remember whether
+the **first row** and **first column** themselves need to be zeroed out,
+since we’re using them as markers.
+
+--------------------------------------------------------
+Algorithm Steps:
+1. **Identify the marker flags**:
+   - Traverse the first row and first column separately.
+   - If any element in the first row/column is 0,
+     mark the corresponding flag (`firstRowZero`, `firstColZero`).
+
+2. **Mark zeros in the rest of the matrix**:
+   - For every element `matrix[i][j]` (excluding the first row/column),
+     if it is 0, mark the start of its row and column by setting:
+       - `matrix[i][0] = 0`  → row marker
+       - `matrix[0][j] = 0`  → column marker
+
+3. **Apply the markers**:
+   - For every cell (excluding the first row/column),
+     if its corresponding row or column marker is 0,
+     set `matrix[i][j] = 0`.
+
+4. **Zero out the first row and column** if their flags are true.
+
+--------------------------------------------------------
+Dry Run Example:
+--------------------------------------------------------
+Input:
+matrix = [
+  [1, 1, 1],
+  [1, 0, 1],
+  [1, 1, 1]
+]
+
+Step 1: Check first row & column:
+firstRowZero = false, firstColZero = false
+
+Step 2: Mark zeros:
+matrix[1][1] == 0 → mark row & column:
+matrix becomes:
+[
+  [1, 0, 1],
+  [0, 0, 1],
+  [1, 1, 1]
+]
+
+Step 3: Apply markers:
+Zero out all cells where row or column markers are 0.
+matrix becomes:
+[
+  [1, 0, 1],
+  [0, 0, 0],
+  [1, 0, 1]
+]
+
+Step 4: Apply firstRowZero/firstColZero if needed.
+→ No change needed here.
+
+Output:
+[
+  [1, 0, 1],
+  [0, 0, 0],
+  [1, 0, 1]
+]
+
+--------------------------------------------------------
+Time Complexity:  O(m × n)
+   - One pass to mark zeros, one pass to apply changes.
+
+Space Complexity: O(1)
+   - Uses constant extra space (only two boolean flags).
+
+--------------------------------------------------------
+This is the **optimal in-place solution** for the Set Matrix Zeroes problem.
+*/
+
+class Solution {
+    public void setZeroes(int[][] matrix) {
+        int m = matrix.length;        // number of rows
+        if (m == 0) return;
+        int n = matrix[0].length;     // number of columns
+        if (n == 0) return;
+
+        boolean firstRowZero = false; // flag for first row
+        boolean firstColZero = false; // flag for first column
+
+        // Step 1: Check if the first row contains any zero
+        for (int j = 0; j < n; j++) {
+            if (matrix[0][j] == 0) {
+                firstRowZero = true;
+                break;
+            }
+        }
+
+        // Step 2: Check if the first column contains any zero
+        for (int i = 0; i < m; i++) {
+            if (matrix[i][0] == 0) {
+                firstColZero = true;
+                break;
+            }
+        }
+
+        // Step 3: Use first row & column as markers for other cells
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (matrix[i][j] == 0) {
+                    matrix[i][0] = 0; // mark row
+                    matrix[0][j] = 0; // mark column
+                }
+            }
+        }
+
+        // Step 4: Set inner cells to zero based on markers
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (matrix[i][0] == 0 || matrix[0][j] == 0) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+
+        // Step 5: If first row had a zero, set entire row to zero
+        if (firstRowZero) {
+            for (int j = 0; j < n; j++) {
+                matrix[0][j] = 0;
+            }
+        }
+
+        // Step 6: If first column had a zero, set entire column to zero
+        if (firstColZero) {
+            for (int i = 0; i < m; i++) {
+                matrix[i][0] = 0;
+            }
+        }
+    }
+}
+
