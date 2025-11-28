@@ -1,0 +1,121 @@
+/*
+Title: Spiral Matrix Traversal
+-------------------------------
+Problem Statement:
+Given an m x n matrix, return all elements of the matrix 
+in spiral order (clockwise direction).
+
+Example:
+--------
+Input:
+matrix = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
+]
+
+Output:
+[1, 2, 3, 6, 9, 8, 7, 4, 5]
+
+----------------------------------------
+Approach (Layer-by-Layer Traversal):
+----------------------------------------
+We traverse the matrix in layers, starting from the outermost 
+boundary and moving inward in a spiral pattern.
+
+We maintain four boundaries:
+- startRow → top boundary of the current layer
+- endRow   → bottom boundary
+- startCol → left boundary
+- endCol   → right boundary
+
+At each iteration:
+1. Traverse the top row (left → right)
+2. Traverse the right column (top → bottom)
+3. Traverse the bottom row (right → left), if not already covered
+4. Traverse the left column (bottom → top), if not already covered
+5. Move inward by updating:
+   - startRow++, startCol++, endRow--, endCol--
+
+The loop continues while startRow ≤ endRow and startCol ≤ endCol.
+
+----------------------------------------
+Dry Run Example:
+----------------------------------------
+Input:
+matrix = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
+]
+
+Step 1:
+Top → [1, 2, 3]
+Right → [6, 9]
+Bottom → [8, 7]
+Left → [4]
+Result = [1, 2, 3, 6, 9, 8, 7, 4]
+
+Move inward:
+startRow = 1, startCol = 1, endRow = 1, endCol = 1
+
+Step 2:
+Top → [5]
+Result = [1, 2, 3, 6, 9, 8, 7, 4, 5]
+
+----------------------------------------
+Time Complexity:  O(m * n)
+   - Each element is visited once.
+Space Complexity: O(1)
+   - Constant space, ignoring the output list.
+*/
+
+import java.util.*;
+
+class Solution {
+    public List<Integer> spiralOrder(int[][] matrix) {
+        int n = matrix.length;        // number of rows
+        int m = matrix[0].length;     // number of columns
+
+        List<Integer> ans = new ArrayList<>();
+
+        // Define the boundaries of the current layer
+        int startRow = 0, startCol = 0, endRow = n - 1, endCol = m - 1;
+
+        // Traverse layers until all elements are processed
+        while (startRow <= endRow && startCol <= endCol) {
+
+            // 1. Traverse Top Row (left → right)
+            for (int i = startCol; i <= endCol; i++) {
+                ans.add(matrix[startRow][i]);
+            }
+
+            // 2. Traverse Right Column (top → bottom)
+            for (int i = startRow + 1; i <= endRow; i++) {
+                ans.add(matrix[i][endCol]);
+            }
+
+            // 3. Traverse Bottom Row (right → left)
+            if (startRow != endRow) {  // Avoid double traversal if only one row remains
+                for (int i = endCol - 1; i >= startCol; i--) {
+                    ans.add(matrix[endRow][i]);
+                }
+            }
+
+            // 4. Traverse Left Column (bottom → top)
+            if (startCol != endCol) {  // Avoid double traversal if only one column remains
+                for (int i = endRow - 1; i >= startRow + 1; i--) {
+                    ans.add(matrix[i][startCol]);
+                }
+            }
+
+            // Move boundaries inward for next layer
+            startRow++;
+            startCol++;
+            endRow--;
+            endCol--;
+        }
+
+        return ans;
+    }
+}
