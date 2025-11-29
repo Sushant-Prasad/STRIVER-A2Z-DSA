@@ -1,0 +1,101 @@
+/*
+Title: Subarray Sum Equals K
+-----------------------------
+Problem Statement:
+Given an integer array `nums` and an integer `k`, return the total number of continuous 
+subarrays whose sum equals to `k`.
+
+Example:
+--------
+Input:  nums = [1, 1, 1], k = 2
+Output: 2
+Explanation:
+The subarrays [1,1] (from index 0–1) and [1,1] (from index 1–2) both have sum 2.
+
+----------------------------------------------------
+Approach (Using Prefix Sum + HashMap):
+----------------------------------------------------
+We use a running prefix sum and a HashMap to store how many times each 
+prefix sum value has occurred so far.
+
+Key idea:
+----------
+If the current prefix sum is `sum` and there exists a prefix sum `sum - k` 
+in the map, then the subarray between those two prefix sums has sum `k`.
+
+For example:
+- prefixSum[i] = cumulative sum up to index i.
+- prefixSum[j] = cumulative sum up to index j (j > i)
+If prefixSum[j] - prefixSum[i] = k, then the subarray (i+1...j) has sum k.
+
+----------------------------------------------------
+Algorithm Steps:
+----------------------------------------------------
+1. Initialize:
+   - `sum = 0`: to store current prefix sum.
+   - `ans = 0`: to count valid subarrays.
+   - `map`: to store frequencies of prefix sums encountered so far.
+
+2. Base case:
+   - Put (0, 1) into the map to handle subarrays starting at index 0.
+
+3. Traverse the array:
+   - Update `sum += nums[i]`.
+   - Check if `(sum - k)` exists in map → 
+       if yes, add its frequency to `ans`.
+       (each occurrence means one valid subarray).
+   - Update map: increment frequency of current `sum`.
+
+4. Return `ans`.
+
+----------------------------------------------------
+Dry Run Example:
+----------------------------------------------------
+nums = [1, 2, 3], k = 3
+
+Initialization:
+map = {0=1}, sum = 0, ans = 0
+
+Iteration:
+i=0 → sum=1 → sum-k=-2 → not found → map={0=1,1=1}
+i=1 → sum=3 → sum-k=0 → found once → ans=1 → map={0=1,1=1,3=1}
+i=2 → sum=6 → sum-k=3 → found once → ans=2 → map={0=1,1=1,3=1,6=1}
+
+Output: ans = 2  (subarrays [1,2] and [3])
+
+----------------------------------------------------
+Time Complexity:  O(n)
+   - Each element is processed once; map lookups are O(1) on average.
+
+Space Complexity: O(n)
+   - For storing prefix sums and their frequencies.
+
+----------------------------------------------------
+This is the optimal solution for the "Subarray Sum Equals K" problem.
+*/
+
+import java.util.HashMap;
+
+class Solution {
+    public int subarraySum(int[] nums, int k) {
+        int n = nums.length;
+        int sum = 0;                // Running prefix sum
+        int ans = 0;                // Count of valid subarrays
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        // Base case: prefix sum 0 has occurred once (empty prefix)
+        map.put(0, 1);
+
+        for (int i = 0; i < n; i++) {
+            sum += nums[i];
+
+            // If (sum - k) exists, there are subarrays ending at i with sum = k
+            ans += map.getOrDefault(sum - k, 0);
+
+            // Record current prefix sum in the map
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+
+        return ans;
+    }
+}
