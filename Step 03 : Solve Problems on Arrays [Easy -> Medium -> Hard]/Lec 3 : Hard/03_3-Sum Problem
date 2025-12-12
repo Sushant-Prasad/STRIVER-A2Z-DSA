@@ -1,0 +1,134 @@
+import java.util.*;
+
+/*
+ * ---------------------------------------------------------------
+ *  Title: 3Sum Problem (LeetCode #15)
+ * ---------------------------------------------------------------
+ *
+ *  Problem Statement:
+ *  Given an integer array nums, return all unique triplets [a, b, c]
+ *  such that:
+ *
+ *        a + b + c == 0
+ *
+ *  Each triplet must be unique (no duplicate combinations),
+ *  and the solution can be returned in any order.
+ *
+ * ---------------------------------------------------------------
+ *  Note:
+ *  - Triplets must be unique → use sorting + pointer skipping.
+ *  - Array may contain negative, zero, and positive numbers.
+ * ---------------------------------------------------------------
+ *
+ *  Example:
+ *      Input:  nums = [-1, 0, 1, 2, -1, -4]
+ *      Output: [[-1, -1, 2], [-1, 0, 1]]
+ *
+ * ---------------------------------------------------------------
+ *  Approach (Optimal Two-Pointer Technique):
+ *
+ *  1. Sort the array
+ *  2. Iterate each number nums[i] as the first element.
+ *     - Skip duplicates for nums[i]
+ *  3. For remaining range (i+1 → end), apply 2-pointer:
+ *         left + right = -nums[i]
+ *
+ *  4. If sum == target, store triplet.
+ *     Move both pointers and skip duplicates.
+ *
+ *  Sorting + two pointers ensures:
+ *     → O(n²) time complexity (optimal)
+ *     → Avoids duplicates cleanly.
+ *
+ * ---------------------------------------------------------------
+ *  Dry Run Example:
+ *
+ *   nums = [-1, 0, 1, 2, -1, -4]
+ *   After sorting → [-4, -1, -1, 0, 1, 2]
+ *
+ *  i = 1 → nums[i] = -1
+ *  target = 1
+ *
+ *     left = 2 (nums[2] = -1)
+ *     right = 5 (nums[5] = 2)
+ *
+ *     sum = -1 + 2 = 1 → matches target → triplet = [-1, -1, 2]
+ *     Move both pointers and skip duplicates.
+ *
+ *  Next:
+ *
+ *     left = 3 (0), right = 4 (1)
+ *     sum = 1 → matches target → triplet = [-1, 0, 1]
+ *
+ *  Done.
+ *
+ * ---------------------------------------------------------------
+ *  Time Complexity:
+ *      Sorting:      O(n log n)
+ *      Two-pointer:  O(n²)
+ *
+ *      Total: **O(n²)** (Best possible for this problem)
+ *
+ *  Space Complexity:
+ *      O(1) extra space (excluding result list)
+ * ---------------------------------------------------------------
+ */
+
+class Solution {
+
+    /**
+     * twoSum method finds pairs (nums[i], nums[j]) such that:
+     * nums[i] + nums[j] == target
+     * It adds triplets (-target, nums[i], nums[j]) to result list.
+     */
+    private void twoSum(int target, int k, int[] nums, List<List<Integer>> res) {
+        int i = k;
+        int j = nums.length - 1;
+
+        while (i < j) {
+            int sum = nums[i] + nums[j];
+
+            if (sum == target) {
+                // Found a valid triplet
+                res.add(Arrays.asList(-target, nums[i], nums[j]));
+
+                // Move both pointers
+                i++;
+                j--;
+
+                // Skip duplicate values on the left
+                while (i < j && nums[i] == nums[i - 1]) i++;
+
+                // Skip duplicate values on the right
+                while (i < j && nums[j] == nums[j + 1]) j--;
+
+            } else if (sum > target) {
+                j--;  // Need a smaller sum
+            } else {
+                i++;  // Need a larger sum
+            }
+        }
+    }
+
+    /**
+     * Main 3Sum function invoking twoSum for each nums[i]
+     */
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> res = new ArrayList<>();
+
+        if (nums == null || nums.length < 3) return res;
+
+        Arrays.sort(nums);  // Sorting enables two-pointer technique
+
+        for (int i = 0; i < nums.length - 2; i++) {
+
+            // Skip duplicate first elements
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+
+            // Find two numbers such that nums[i] + nums[l] + nums[r] = 0
+            twoSum(-nums[i], i + 1, nums, res);
+        }
+
+        return res;
+    }
+}
