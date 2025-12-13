@@ -1,0 +1,113 @@
+import java.util.*;
+
+/*
+ * --------------------------------------------------------------------
+ *  Title: 4Sum Problem  (LeetCode #18)
+ * --------------------------------------------------------------------
+ *  Problem Statement:
+ *  Given an array nums and an integer target, return all unique
+ *  quadruplets [a, b, c, d] such that:
+ *
+ *        a + b + c + d == target
+ *
+ *  Conditions:
+ *    - Quadruplets must be unique (no duplicates allowed)
+ *    - Order inside quadruplets does not matter
+ *    - Array may contain duplicates, positives, or negatives
+ * --------------------------------------------------------------------
+ *
+ *  Approach:
+ *  1. Sort the array → required for duplicate skipping + two-pointer.
+ *
+ *  2. Fix two numbers using nested loops: nums[i], nums[j]
+ *     - Skip duplicates for nums[i] and nums[j]
+ *
+ *  3. For the remaining range (j+1 → end),
+ *     use a **two-pointer approach** to find pairs such that:
+ *
+ *         n1 + n2 + nums[l] + nums[r] == target
+ *
+ *  4. Store each valid quadruplet and skip duplicate values.
+ *
+ *  Important Note:
+ *    - Use **long** for the sum to avoid integer overflow:
+ *        nums can be up to 1e9 → adding four values exceeds int range.
+ *
+ * --------------------------------------------------------------------
+ *
+ *  Time Complexity:
+ *       O(n³)       (because of two loops + two-pointer)
+ *
+ *  Space Complexity:
+ *       O(1) extra space (excluding result list)
+ *
+ * --------------------------------------------------------------------
+ */
+
+class Solution {
+
+    /**
+     * Two-pointer helper method.
+     * Finds pairs nums[i], nums[j] such that:
+     *
+     *     n1 + n2 + nums[i] + nums[j] == target
+     *
+     * Adds the resulting quadruplets into res.
+     */
+    private void twoSum(int n1, int n2, int target, int start, int[] nums, List<List<Integer>> res) {
+        int l = start;
+        int r = nums.length - 1;
+
+        while (l < r) {
+            // Use long to prevent overflow
+            long sum = (long) n1 + n2 + nums[l] + nums[r];
+
+            if (sum == target) {
+                // Found valid quadruplet
+                res.add(Arrays.asList(n1, n2, nums[l], nums[r]));
+
+                l++;
+                r--;
+
+                // Skip duplicate nums[l]
+                while (l < r && nums[l] == nums[l - 1]) l++;
+
+                // Skip duplicate nums[r]
+                while (l < r && nums[r] == nums[r + 1]) r--;
+
+            } else if (sum > target) {
+                r--;  // Need smaller sum
+            } else {
+                l++;  // Need larger sum
+            }
+        }
+    }
+
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+
+        int n = nums.length;
+        if (n < 4) return new ArrayList<>();
+
+        Arrays.sort(nums);  // sorting helps with duplicate handling + 2-pointer
+        List<List<Integer>> res = new ArrayList<>();
+
+        // First number of quadruplet (i)
+        for (int i = 0; i < n - 3; i++) {
+
+            // Skip duplicates for first number
+            if (i > 0 && nums[i] == nums[i - 1]) continue;
+
+            // Second number of quadruplet (j)
+            for (int j = i + 1; j < n - 2; j++) {
+
+                // Skip duplicates for second number
+                if (j > i + 1 && nums[j] == nums[j - 1]) continue;
+
+                // Use two-pointer to find the remaining pair
+                twoSum(nums[i], nums[j], target, j + 1, nums, res);
+            }
+        }
+
+        return res;
+    }
+}
