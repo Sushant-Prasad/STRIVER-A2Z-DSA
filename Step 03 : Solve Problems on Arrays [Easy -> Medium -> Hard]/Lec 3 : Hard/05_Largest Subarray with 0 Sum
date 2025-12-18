@@ -1,0 +1,68 @@
+import java.util.*;
+//https://www.geeksforgeeks.org/problems/largest-subarray-with-0-sum/1
+class Solution {
+
+    /*
+     * -------------------------------------------------------------------
+     *  Title: Longest Subarray With Sum = 0
+     * -------------------------------------------------------------------
+     *
+     *  Problem:
+     *  Given an integer array arr[], return the length of the longest
+     *  contiguous subarray whose sum equals 0.
+     *
+     * -------------------------------------------------------------------
+     *  Approach: Prefix Sum + HashMap
+     *
+     *  Idea:
+     *    - Maintain a running prefix sum.
+     *    - If prefixSum becomes 0 → the subarray [0..i] has sum 0.
+     *    - If a prefixSum value repeats at index j and earlier at index i:
+     *          prefixSum[j] == prefixSum[i]
+     *      then the subarray (i+1 .. j) has sum 0.
+     *
+     *  Why it works:
+     *      sum(i+1..j) = prefix[j] − prefix[i] = 0
+     *
+     *  We store only the **first occurrence** of each prefix sum
+     *  to maximize the subarray length.
+     *
+     * -------------------------------------------------------------------
+     *  Time Complexity:  O(n)
+     *  Space Complexity: O(n)
+     * -------------------------------------------------------------------
+     */
+
+    int maxLength(int arr[]) {
+
+        int n = arr.length;
+
+        // Map to store (prefixSum -> first index where it appeared)
+        Map<Integer, Integer> map = new HashMap<>();
+
+        int maxLength = 0;
+        int sum = 0;
+
+        for (int i = 0; i < n; i++) {
+
+            // Update prefix sum
+            sum += arr[i];
+
+            // Case 1: Subarray from index 0 to i sums to 0
+            if (sum == 0) {
+                maxLength = Math.max(maxLength, i + 1);
+            }
+
+            // Case 2: Same prefix sum seen before → subarray (previousIndex+1 .. i) has sum = 0
+            if (map.containsKey(sum)) {
+                int previousIndex = map.get(sum);
+                maxLength = Math.max(maxLength, i - previousIndex);
+            } else {
+                // Store the FIRST occurrence of this prefix sum
+                map.put(sum, i);
+            }
+        }
+
+        return maxLength;
+    }
+}
