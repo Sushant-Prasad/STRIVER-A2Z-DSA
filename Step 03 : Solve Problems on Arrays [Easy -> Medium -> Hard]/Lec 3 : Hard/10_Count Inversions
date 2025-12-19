@@ -1,0 +1,113 @@
+class Solution {
+//https://www.geeksforgeeks.org/problems/inversion-of-array-1587115620/1
+    /*
+     * -------------------------------------------------------------------------
+     *  TITLE: Count Inversions in an Array using Merge Sort
+     * -------------------------------------------------------------------------
+     *
+     *  PROBLEM STATEMENT:
+     *  Count how many pairs (i, j) exist in the array such that:
+     *
+     *         i < j  AND  arr[i] > arr[j]
+     *
+     *  Such pairs are called "inversions".
+     *
+     * -------------------------------------------------------------------------
+     *  APPROACH:
+     *  Use a modified Merge Sort to count inversions efficiently.
+     *
+     *  Why Merge Sort?
+     *  - Brute force takes O(n²)
+     *  - Merge sort counts inversions while merging two sorted halves
+     *  - While merging:
+     *       If arr[i] > arr[j], then elements arr[i..mid] are all > arr[j]
+     *       → number of inversions formed = (mid - i + 1)
+     *
+     *  Total Time:  O(n log n)
+     *  Space:       O(n) due to temporary array
+     *
+     * -------------------------------------------------------------------------
+     */
+
+    private static int merge(int[] arr, int l, int mid, int r) {
+
+        ArrayList<Integer> temp = new ArrayList<>();
+        int i = l;          // pointer for left half
+        int j = mid + 1;    // pointer for right half
+        int count = 0;      // inversion counter
+
+        /*
+         * Merge the two sorted halves AND count inversions.
+         */
+        while (i <= mid && j <= r) {
+
+            if (arr[i] > arr[j]) {
+
+                temp.add(arr[j]);
+                j++;
+
+                /*
+                 * KEY LOGIC:
+                 * If arr[i] > arr[j], then all elements from arr[i..mid]
+                 * are greater than arr[j].
+                 *
+                 * So, number of inversions contributed:
+                 *          mid - i + 1
+                 */
+                count += (mid - i + 1);
+
+            } else {
+                temp.add(arr[i]);
+                i++;
+            }
+        }
+
+        // Add remaining elements of left half
+        while (i <= mid) {
+            temp.add(arr[i]);
+            i++;
+        }
+
+        // Add remaining elements of right half
+        while (j <= r) {
+            temp.add(arr[j]);
+            j++;
+        }
+
+        /*
+         * Copy merged result back into arr[l..r]
+         */
+        for (int k = 0; k < temp.size(); k++) {
+            arr[l + k] = temp.get(k);
+        }
+
+        return count;
+    }
+
+
+    /*
+     * Recursive merge sort that returns the inversion count for arr[l..r]
+     */
+    private static int mergeSort(int[] arr, int l, int r) {
+
+        if (l >= r) return 0;  // base case: single element → no inversions
+
+        int mid = l + (r - l) / 2;
+
+        int leftCount  = mergeSort(arr, l, mid);        // sort left half
+        int rightCount = mergeSort(arr, mid + 1, r);    // sort right half
+        int selfCount  = merge(arr, l, mid, r);         // count + merge
+
+        return leftCount + rightCount + selfCount;
+    }
+
+
+    /*
+     * Public function to count inversions in the array.
+     */
+    static int inversionCount(int arr[]) {
+
+        int invCount = mergeSort(arr, 0, arr.length - 1);
+        return invCount;
+    }
+}
