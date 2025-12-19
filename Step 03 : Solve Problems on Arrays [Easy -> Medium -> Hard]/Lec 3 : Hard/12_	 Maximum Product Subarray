@@ -1,0 +1,77 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: Maximum Product Subarray
+     *  PROBLEM:
+     *      Given an integer array nums, find the contiguous subarray within
+     *      the array that has the largest product.
+     *
+     *  KEY CHALLENGE:
+     *      - Negative numbers flip sign.
+     *      - Zero breaks the product.
+     *      - Traditional Kadane’s algorithm (for sum) does not work.
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *  A subarray with maximum product can come from:
+     *      - Left → Right scan
+     *      - Right → Left scan
+     *
+     *  Why two directions?
+     *      Negative numbers can flip the product.
+     *      Example:
+     *              nums = [-1, -2, -3]
+     *
+     *      Left to right gives:
+     *              -1, 2, -6
+     *      Right to left gives:
+     *              -3, 6, -2
+     *
+     *  So scanning both directions ensures we catch the correct maximum.
+     *
+     * -------------------------------------------------------------------------
+     *  SPECIAL NOTE:
+     *
+     *      leftProd = (leftProd == 0 ? 1 : leftProd)
+     *      rightProd = (rightProd == 0 ? 1 : rightProd)
+     *
+     *  WHY RESET PRODUCT TO 1 AFTER ZERO?
+     *      - Any product multiplied by zero becomes zero.
+     *      - After encountering zero, a new subarray must start.
+     *      - Resetting to 1 allows a fresh product calculation.
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:  O(n)
+     *  SPACE COMPLEXITY: O(1)
+     * =========================================================================
+     */
+
+    public int maxProduct(int[] nums) {
+
+        int maxCount = nums[0];
+        int n = nums.length;
+
+        int leftProd = 1;     // product when scanning left → right
+        int rightProd = 1;    // product when scanning right → left
+
+        for (int i = 0; i < n; i++) {
+
+            // If product becomes zero, reset to 1 to start fresh
+            leftProd = (leftProd == 0) ? 1 : leftProd;
+            rightProd = (rightProd == 0) ? 1 : rightProd;
+
+            // Multiply current element (forward)
+            leftProd *= nums[i];
+
+            // Multiply from right side (reverse scan)
+            rightProd *= nums[n - i - 1];
+
+            // Track the maximum product found so far
+            maxCount = Math.max(maxCount, Math.max(leftProd, rightProd));
+        }
+
+        return maxCount;
+    }
+}
