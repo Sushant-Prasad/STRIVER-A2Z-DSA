@@ -1,0 +1,93 @@
+import java.util.*;
+
+class Solution {
+
+    /*
+     * -------------------------------------------------------------------------
+     *  Title: Merge Overlapping Intervals
+     * -------------------------------------------------------------------------
+     *  Problem:
+     *      Given a list of intervals where each interval is [start, end],
+     *      merge all overlapping intervals and return the result.
+     *
+     * -------------------------------------------------------------------------
+     *  Approach:
+     *      1. Sort intervals by their START value.
+     *
+     *      2. Traverse sorted intervals and compare each interval with the
+     *         last merged interval stored in the result list.
+     *
+     *      3. If current interval does NOT overlap:
+     *            → Add it as a new interval.
+     *
+     *         Else (if overlapping):
+     *            → Merge by extending the END of the last interval.
+     *
+     * -------------------------------------------------------------------------
+     *  NOTE 1 — Why Sorting Works:
+     *      Sorting by start times ensures that:
+     *          - Any overlapping intervals appear next to each other.
+     *          - Merge can be done in one linear scan.
+     *
+     *      We use:
+     *          Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+     *
+     *      This sorts intervals by a[0] (their start).
+     *
+     * -------------------------------------------------------------------------
+     *  NOTE 2 — Understanding `res.get(res.size() - 1)[1]`:
+     *
+     *      res is a List<int[]> storing merged intervals.
+     *
+     *      res.get(res.size() - 1)
+     *          → gives the LAST merged interval
+     *
+     *      res.get(...)[1]
+     *          → accesses the END of the last merged interval
+     *
+     *      This is essential because merging depends on comparing:
+     *
+     *          currentStart > lastMergedEnd   → no overlap
+     *          currentStart <= lastMergedEnd  → intervals overlap → merge
+     *
+     * -------------------------------------------------------------------------
+     *  Time Complexity:   O(n log n)   (due to sorting)
+     *  Space Complexity:  O(n)         (for result list)
+     * -------------------------------------------------------------------------
+     */
+
+    public int[][] merge(int[][] intervals) {
+
+        int n = intervals.length;
+
+        // Step 1: Sort intervals by start value
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+
+        List<int[]> res = new ArrayList<>();
+
+        // Step 2: Add the first interval initially
+        res.add(intervals[0]);
+
+        // Step 3: Traverse and merge
+        for (int i = 1; i < n; i++) {  // start from 1 because 0 is already added
+
+            int currStart = intervals[i][0];
+            int currEnd = intervals[i][1];
+
+            // Get end of last merged interval
+            int lastMergedEnd = res.get(res.size() - 1)[1];
+
+            // If current interval does NOT overlap → add it
+            if (currStart > lastMergedEnd) {
+                res.add(intervals[i]);
+            } else {
+                // Overlap exists → merge by extending the last interval's end
+                res.get(res.size() - 1)[1] =
+                        Math.max(lastMergedEnd, currEnd);
+            }
+        }
+
+        // Convert list to 2D array
+        return res.toArray(new int[res.size()][]);
+    }
+}
