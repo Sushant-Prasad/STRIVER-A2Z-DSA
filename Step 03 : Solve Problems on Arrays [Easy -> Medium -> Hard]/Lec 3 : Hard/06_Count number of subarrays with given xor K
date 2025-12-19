@@ -1,0 +1,71 @@
+import java.util.*;
+//link:-https://www.geeksforgeeks.org/problems/count-subarray-with-given-xor/1
+class Solution {
+
+    /*
+     * --------------------------------------------------------------------
+     *  Title: Count Subarrays With XOR Equal to K
+     * --------------------------------------------------------------------
+     *
+     *  Problem:
+     *  Given an integer array arr[] and an integer k,
+     *  return the number of subarrays whose XOR is exactly k.
+     *
+     * --------------------------------------------------------------------
+     *  Concept:
+     *  Use PREFIX XOR + HashMap (similar to prefix-sum technique)
+     *
+     *  Let:
+     *       prefixXor[i] = arr[0] ^ arr[1] ^ ... ^ arr[i]
+     *
+     *  For a subarray (l..r) XOR to equal k, the key property is:
+     *
+     *          prefixXor[r] ^ prefixXor[l-1] = k
+     *
+     *  Rearranging:
+     *
+     *          prefixXor[l-1] = prefixXor[r] ^ k
+     *
+     *  So for each current prefixXor (call it xor),
+     *  the number of previously seen prefixXor values (xor ^ k)
+     *  contributes to the count of valid subarrays ending at 'i'.
+     *
+     *  Additionally,
+     *      if xor == k → subarray from index 0 to i is valid.
+     *
+     * --------------------------------------------------------------------
+     *  Time Complexity:   O(n)
+     *  Space Complexity:  O(n)
+     * --------------------------------------------------------------------
+     */
+
+    public long subarrayXor(int arr[], int k) {
+
+        int n = arr.length;
+        int xor = 0;                          // running prefix XOR
+        long ans = 0;                          // count of valid subarrays
+
+        // Map: prefixXor -> number of times it has occurred
+        Map<Integer, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < n; i++) {
+
+            // Update running prefix xor
+            xor ^= arr[i];
+
+            // Case 1: prefix itself equals k → subarray [0..i] is valid
+            if (xor == k) {
+                ans++;
+            }
+
+            // Case 2: check if there exists a previous prefix xor (xor ^ k)
+            // If yes, all such occurrences form valid subarrays
+            ans += map.getOrDefault(xor ^ k, 0);
+
+            // Store current prefix xor into map (increment its count)
+            map.put(xor, map.getOrDefault(xor, 0) + 1);
+        }
+
+        return ans;
+    }
+}
