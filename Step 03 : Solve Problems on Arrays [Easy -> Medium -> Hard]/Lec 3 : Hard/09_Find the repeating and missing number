@@ -1,0 +1,75 @@
+class Solution {
+//link:-https://leetcode.com/problems/find-missing-and-repeated-values/
+    /*
+     * -------------------------------------------------------------
+     *  TITLE: Find Missing and Repeated Values in an n x n Grid
+     * -------------------------------------------------------------
+     *
+     *  PROBLEM STATEMENT:
+     *  A grid contains numbers from 1 to n*n, but exactly:
+     *      - One number is repeated twice
+     *      - One number is missing
+     *
+     *  Return an array of size 2:
+     *      [repeatedNumber, missingNumber]
+     *
+     * -------------------------------------------------------------
+     *  APPROACH:
+     *  - Create a frequency array freq[] of size n*n + 1
+     *  - Count how many times each number appears in the grid
+     *  - The number with frequency == 2 is repeated
+     *  - The number with frequency == 0 is missing
+     * -------------------------------------------------------------
+     *
+     *  TIME COMPLEXITY:  O(n²)
+     *  SPACE COMPLEXITY: O(n²)
+     * -------------------------------------------------------------
+     */
+
+    public int[] findMissingAndRepeatedValues(int[][] grid) {
+
+        int n = grid.length;
+        int size = n * n;
+
+        // Frequency array where freq[x] counts how many times number x appears
+        int[] freq = new int[size + 1];
+
+        int repeated = -1, missing = -1;
+
+        // Count the frequency of each number in the grid
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int num = grid[i][j];
+                freq[num]++; // increase frequency of this number
+            }
+        }
+
+        // Determine repeated and missing numbers
+        for (int num = 1; num <= size; num++) {
+            if (freq[num] == 2) repeated = num; // appears twice
+            if (freq[num] == 0) missing = num;  // never appeared
+        }
+
+        /*
+         * -------------------------------------------------------------
+         *  SPECIAL NOTE ABOUT THIS LINE:
+         *
+         *      new int[]{repeated, missing}
+         *
+         *  This creates a NEW int array with exactly two elements:
+         *
+         *      index 0 → repeated number
+         *      index 1 → missing number
+         *
+         *  Equivalent to writing:
+         *
+         *      int[] result = new int[2];
+         *      result[0] = repeated;
+         *      result[1] = missing;
+         *
+         *  But the short form is cleaner and directly returns the array.
+         * -------------------------------------------------------------
+         */
+        return new int[]{repeated, missing};
+    }
+}
