@@ -1,31 +1,112 @@
-// Question Link: https://www.geeksforgeeks.org/problems/count-digits5716/1
+// Question Link:
+// https://www.geeksforgeeks.org/problems/count-digits5716/1
 
- 
-class Solution{
+class Solution {
 
-    // Time Complexity = O(logn) or O(no. of digits), Space Complexity = O(1)
+    // =========================================================================
+    //  TITLE:
+    //  Count Digits that Evenly Divide a Number
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a number N, count the number of digits in N
+    //  that evenly divide N.
+    //
+    //  A digit is said to evenly divide N if:
+    //      • digit ≠ 0
+    //      • N % digit == 0
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • We need to check each digit of the number individually.
+    //  • A digit can divide the number only if it is not zero.
+    //  • Modulo (%) operation helps check divisibility.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Store the original number N.
+    //  2. Extract digits one by one using modulo (% 10).
+    //  3. Ignore digit 0 (division by zero not allowed).
+    //  4. If N is divisible by the digit → increment count.
+    //  5. Remove last digit using division (/ 10).
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC ⭐:
+    //  --------------------------
+    //  • temp % 10 → extracts the last digit
+    //  • temp / 10 → removes the last digit
+    //  • We use a copy of N (temp) so that original N remains unchanged
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      N = 12
+    //
+    //  Digits:
+    //      2 → 12 % 2 == 0 ✔
+    //      1 → 12 % 1 == 0 ✔
+    //
+    //  Output:
+    //      2
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  N = 1012
+    //
+    //  temp = 1012
+    //  rem = 2 → 1012 % 2 == 0 → count = 1
+    //  rem = 1 → 1012 % 1 == 0 → count = 2
+    //  rem = 0 → skipped
+    //  rem = 1 → 1012 % 1 == 0 → count = 3
+    //
+    //  Result → 3
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Handles division by zero safely
+    //  ✔ Uses basic arithmetic operations
+    //  ✔ Efficient and simple logic
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(log₁₀N)  → number of digits in N
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
     static int evenlyDivides(int N) {
-        // Initialize temporary variable with the original number
+
+        // Copy of original number to extract digits
         int temp = N;
-        // Initialize counter for digits that evenly divide N
+
+        // Counter for digits that evenly divide N
         int count = 0;
-        
-        // Loop through each digit of the number
+
+        // Loop until all digits are processed
         while (temp != 0) {
-            // Get the last digit
+
+            // Extract last digit
             int rem = temp % 10;
-            
-            // Check if remainder is not 0 and the digit divides the number evenly
+
+            // Check:
+            // 1. digit is not zero
+            // 2. digit divides N evenly
             if (rem != 0 && N % rem == 0) {
-                // Increment count if it divides evenly
                 count++;
             }
-            
-            // Remove the last digit from the number
+
+            // Remove last digit
             temp /= 10;
         }
-        
-        // Return the count of digits that evenly divide the number
+
+        // Return final count
         return count;
     }
 }
