@@ -1,0 +1,65 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: Binary Search (LeetCode 704. Binary Search)
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      Given a sorted array 'nums' and a target value,
+     *      return the index of target if found.
+     *      Otherwise, return -1.
+     *
+     *  IMPORTANT:
+     *      - Array is sorted in NON-DECREASING order.
+     *      - Must use O(log n) binary search.
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *      Classic binary search:
+     *
+     *      1. Compare target with nums[mid].
+     *      2. If target < nums[mid] → search left half.
+     *      3. If target > nums[mid] → search right half.
+     *      4. If equal → return mid.
+     *
+     *      Repeat until start > end, then target doesn't exist.
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:  O(log n)
+     *  SPACE COMPLEXITY: O(1)
+     * =========================================================================
+     */
+
+    public int search(int[] nums, int target) {
+
+        int n = nums.length;
+        int start = 0;
+        int end = n - 1;
+
+        // Standard binary search loop
+        while (start <= end) {
+
+            // Avoids overflow for large values of start, end
+            int mid = start + (end - start) / 2;
+
+            // Case 1: Found target
+            if (nums[mid] == target) {
+                return mid;
+            }
+
+            // Case 2: Target is on the right half
+            if (target > nums[mid]) {
+                start = mid + 1;
+            } 
+            // Case 3: Target is on the left half
+            else {
+                end = mid - 1;
+            }
+        }
+
+        // Target not found
+        return -1;
+    }
+}
