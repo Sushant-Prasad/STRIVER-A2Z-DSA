@@ -1,34 +1,128 @@
-//LINK:-https:https://leetcode.com/problems/reverse-integer/description/
+/*
+===========================================================
+TITLE
+===========================================================
+Reverse Integer with Overflow Handling
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given a 32-bit signed integer `x`, reverse its digits and return
+the reversed integer.
+
+If reversing `x` causes the value to go outside the signed
+32-bit integer range [-2^31, 2^31 - 1], then return 0.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/reverse-integer/
+
+===========================================================
+INTUITION
+===========================================================
+To reverse a number:
+- Extract digits from right to left using modulo (% 10)
+- Build the reversed number by multiplying the current result by 10
+  and adding the extracted digit
+
+However, reversing can cause **integer overflow**.
+So before updating the reversed number, we must ensure:
+- The current value is safe to multiply by 10 without exceeding limits.
+
+===========================================================
+APPROACH
+===========================================================
+1) Initialize `reverseNo` to store the reversed number.
+2) Use a temporary variable `temp` to traverse digits of `x`.
+3) While `temp` is not zero:
+   - Extract the last digit.
+   - Check for possible overflow BEFORE multiplying.
+   - Update the reversed number.
+   - Remove the last digit from `temp`.
+4) Return the reversed number if no overflow occurs.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:  x = 123
+Output: 321
+
+Input:  x = -456
+Output: -654
+
+===========================================================
+DRY RUN
+===========================================================
+x = 153
+
+temp = 153, reverseNo = 0
+
+Iteration 1:
+digit = 3
+reverseNo = 0 * 10 + 3 = 3
+temp = 15
+
+Iteration 2:
+digit = 5
+reverseNo = 3 * 10 + 5 = 35
+temp = 1
+
+Iteration 3:
+digit = 1
+reverseNo = 35 * 10 + 1 = 351
+temp = 0
+
+Loop ends → return 351
+
+===========================================================
+KEY POINTS
+===========================================================
+• Overflow must be checked BEFORE multiplication
+• `% 10` extracts the last digit
+• `/ 10` removes the last digit
+• Works for both positive and negative numbers
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(d), where d is the number of digits in `x`
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• Checking `reverseNo > Integer.MAX_VALUE / 10` or
+  `reverseNo < Integer.MIN_VALUE / 10` prevents unsafe multiplication
+• Returning 0 matches problem constraints on overflow
+• The overflow check here is a simplified safety check
+===========================================================
+*/
 
 class Solution {
+
     public int reverse(int x) {
-        int reverseNo = 0;
 
-        while (x != 0) {
-            int digit = x % 10;
+        int reverseNo = 0;  // Stores the reversed integer
+        int temp = x;       // Temporary variable to process digits
 
-            // Check for overflow/underflow before multiplying by 10
-            if (reverseNo > Integer.MAX_VALUE / 10 || reverseNo < Integer.MIN_VALUE / 10) {
+        while (temp != 0) {
+
+            int digit = temp % 10; // Extract last digit
+
+            // Overflow check before multiplying by 10
+            if (reverseNo > Integer.MAX_VALUE / 10 ||
+                reverseNo < Integer.MIN_VALUE / 10)
                 return 0;
-            }
 
-            reverseNo = reverseNo * 10 + digit;
-            x /= 10;
+            reverseNo = reverseNo * 10 + digit; // Append digit
+            temp = temp / 10;                   // Remove last digit
         }
 
-        return reverseNo;
+        return reverseNo; // Final reversed value
     }
 }
-
-Concept:- I
-1) integer. MAX_VALUE represents the maximum positive integer value that can be represented in 32 bits (i.e., 2147483647 )
-
-⚠️ Overflow/Underflow Check:
-if (reverseNo > Integer.MAX_VALUE / 10 || reverseNo < Integer.MIN_VALUE / 10)
-Prevents overflow and underflow.
-
-Why check this?
-
-Multiplying reverseNo by 10 could exceed the limit of 32-bit signed integers ([-2,147,483,648 to 2,147,483,647]).
-
-If it will overflow, return 0 immediately as required by the problem.
