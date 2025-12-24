@@ -1,65 +1,126 @@
-class Solution {
-    /**
-     * Function to check if the given array is sorted in non-decreasing order.
-     *
-     * Approach:
-     * ---------
-     * - Iterate through the array from index 0 to n-2.
-     * - For each pair of adjacent elements arr[i] and arr[i+1]:
-     *     → If arr[i+1] < arr[i], then the array is not sorted.
-     * - If no such violation is found, the array is sorted.
-     *
-     * Example:
-     * --------
-     * Input: [1, 2, 3, 4, 5]
-     * Output: true
-     *
-     * Input: [3, 5, 2, 6]
-     * Output: false (since 2 < 5)
-     *
-     * Time Complexity: O(n) → single traversal
-     * Space Complexity: O(1) → constant extra space
-     */
-    public boolean isSorted(int[] arr) {
-        for (int i = 0; i < arr.length - 1; i++) {
-            // If next element is smaller, array is not sorted
-            if (arr[i + 1] < arr[i]) {
-                return false;
-            }
-        }
-        return true; // No violation found → sorted
-    }
-}
+/*
+===========================================================
+TITLE
+===========================================================
+Check If an Array Is Sorted and Rotated
 
-1752. Check if Array Is Sorted and Rotated
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer array `nums`, determine whether the array is
+**sorted in non-decreasing order and then rotated some number of times**
+(including zero rotations).
+
+Return:
+• true  → if the array is sorted and rotated
+• false → otherwise
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/
+
+===========================================================
+INTUITION
+===========================================================
+A sorted array rotated any number of times has a key property:
+- There can be **at most one place** where the order breaks,
+  i.e., `nums[i] > nums[i+1]`.
+
+If the array is not rotated at all (already sorted),
+there will be **zero such breaks**.
+
+To handle rotation circularly, compare each element with the next,
+and for the last element compare it with the first element.
+
+===========================================================
+APPROACH
+===========================================================
+1) Initialize a counter `peak` to count order breaks.
+2) Traverse the array from index `0` to `n-1`.
+3) For each index `i`, compare:
+   - `nums[i]` with `nums[(i+1) % n]`
+4) If `nums[i] > nums[(i+1) % n]`, increment `peak`.
+5) If the number of such breaks is more than 1, return false.
+6) Otherwise, return true.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+nums = [3, 4, 5, 1, 2]
+
+Order breaks:
+5 > 1  → one break
+
+Output:
+true
+
+Input:
+nums = [2, 1, 3, 4]
+
+Order breaks:
+2 > 1
+4 > 2  → two breaks
+
+Output:
+false
+
+===========================================================
+DRY RUN
+===========================================================
+nums = [1, 2, 3, 4]
+
+i = 0 → 1 <= 2 → ok
+i = 1 → 2 <= 3 → ok
+i = 2 → 3 <= 4 → ok
+i = 3 → 4 <= 1 → break → peak = 1
+
+peak <= 1 → return true
+
+===========================================================
+KEY POINTS
+===========================================================
+• Only one order violation is allowed
+• Circular comparison handled using `(i + 1) % n`
+• Works for rotated and non-rotated arrays
+• No sorting required
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n), where n is the length of the array
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• `(i + 1) % n` safely wraps the last index to the first element
+• `peak <= 1` ensures sorted or sorted-rotated condition
+• Handles duplicate values correctly (non-decreasing order)
+===========================================================
+*/
+
 class Solution {
-    /**
-     * Function to check if the array is sorted and rotated.
-     * 
-     * Approach:
-     * - Traverse the array and count the number of "peak"
-     *   where nums[i] > nums[(i+1) % n].
-     * - If there is:
-     *    → 0 peak → array is sorted (not rotated).
-     *    → 1 peak → array is sorted and rotated.
-     *    → >1 peaks → not sorted & rotated.
-     *
-     * Example:
-     * [3,4,5,1,2] → one peak (5 > 1) → true
-     * [1,2,3,4,5] → zero peaks → true
-     * [2,1,3,4]   → two peaks → false
-     */
+
     public boolean check(int[] nums) {
-        int n = nums.length;
-        int peak = 0;
 
+        int peak = 0;          // Counts number of order breaks
+        int n = nums.length;   // Length of the array
+
+        // Traverse the array and check adjacent elements circularly
         for (int i = 0; i < n; i++) {
-            if (nums[i] > nums[(i + 1) % n]) {
-                peak++;
-            }
+
+            // Compare current element with next (circular comparison)
+            if (nums[i] > nums[(i + 1) % n])
+                peak++; // Found a break in sorted order
         }
 
-        return peak <= 1; // allow 0 (sorted) or 1 (sorted+rotated)
+        // Array is sorted and rotated if breaks are at most one
+        return peak <= 1;
     }
 }
-
