@@ -1,13 +1,110 @@
-//link:-https://www.geeksforgeeks.org/problems/largest-element-in-array4009/1?page=1&sprint=bb436fe6ca33efc91d996a51a723a90a&sortBy=submissions
+/*
+===========================================================
+TITLE
+===========================================================
+Find the Largest Element in an Array
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer array `arr`, find and return the **largest**
+(maximum) element present in the array.
+
+It is guaranteed that the array contains at least one element.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://practice.geeksforgeeks.org/problems/largest-element-in-array4009/1
+
+===========================================================
+INTUITION
+===========================================================
+To find the largest element:
+- Start by assuming the first element is the maximum.
+- Traverse the array and compare each element with the current maximum.
+- Update the maximum whenever a larger value is found.
+
+This ensures that by the end of the traversal,
+the maximum variable holds the largest element.
+
+===========================================================
+APPROACH
+===========================================================
+1) Initialize `max` with the first element of the array.
+2) Traverse the array from index 0 to end.
+3) For each element:
+   - Compare it with `max`
+   - Update `max` using `Math.max()` if needed
+4) Return the final value of `max`.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+arr = [1, 8, 7, 56, 90]
+
+Output:
+90
+
+===========================================================
+DRY RUN
+===========================================================
+arr = [3, 5, 2, 9, 1]
+
+Initial:
+max = 3
+
+i = 0 → max = max(3, 3) = 3
+i = 1 → max = max(3, 5) = 5
+i = 2 → max = max(5, 2) = 5
+i = 3 → max = max(5, 9) = 9
+i = 4 → max = max(9, 1) = 9
+
+Return max = 9
+
+===========================================================
+KEY POINTS
+===========================================================
+• Single traversal is sufficient
+• Uses built-in `Math.max()` for clarity
+• Works for both positive and negative numbers
+• No sorting required
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n), where n is the number of elements in the array
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• Assumes array is non-empty
+• Initializing with `arr[0]` avoids incorrect results
+  when array contains all negative values
+===========================================================
+*/
 
 class Solution {
+
     public static int largest(int[] arr) {
-        // code here
-        int max = Integer.MIN_VALUE;
-        int n = arr.length;
-        for(int i =0;i<n;i++){
-            max=Math.max(max,arr[i]);
+
+        // Initialize max with first element
+        int max = arr[0];
+
+        // Traverse the array to find maximum
+        for (int i = 0; i < arr.length; i++) {
+
+            // Update max if current element is larger
+            max = Math.max(max, arr[i]);
         }
+
+        // Return the largest element
         return max;
     }
 }
