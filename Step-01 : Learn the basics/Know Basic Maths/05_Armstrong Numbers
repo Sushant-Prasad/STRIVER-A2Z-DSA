@@ -1,14 +1,124 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Check Whether a Number Is an Armstrong Number
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer `n`, determine whether it is an Armstrong number.
+
+An Armstrong number (for 3-digit numbers) is a number such that:
+- The sum of the cubes of its digits is equal to the number itself.
+
+Return:
+• true  → if `n` is an Armstrong number
+• false → otherwise
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://practice.geeksforgeeks.org/problems/armstrong-numbers2727/1
+
+===========================================================
+INTUITION
+===========================================================
+To verify whether a number is an Armstrong number:
+- Break the number into individual digits.
+- Cube each digit and add them.
+- If the final sum equals the original number, it is an Armstrong number.
+
+===========================================================
+APPROACH
+===========================================================
+1) Store the original number in a temporary variable.
+2) Initialize a variable `sum` to store the sum of cubes.
+3) Loop until the temporary number becomes 0:
+   - Extract the last digit using `% 10`
+   - Add cube of the digit to `sum`
+   - Remove the last digit using `/ 10`
+4) Compare the final sum with the original number.
+5) Return the comparison result.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:  n = 153
+Digits: 1, 5, 3
+
+1³ + 5³ + 3³
+= 1 + 125 + 27
+= 153
+
+Output: true
+
+===========================================================
+DRY RUN
+===========================================================
+n = 370
+
+temp = 370, sum = 0
+
+Iteration 1:
+digit = 0
+sum = 0³ = 0
+temp = 37
+
+Iteration 2:
+digit = 7
+sum = 0 + 343 = 343
+temp = 3
+
+Iteration 3:
+digit = 3
+sum = 343 + 27 = 370
+temp = 0
+
+sum == n → true
+
+===========================================================
+KEY POINTS
+===========================================================
+• `% 10` extracts the last digit
+• `/ 10` removes the last digit
+• `Math.pow(digit, 3)` computes cube of digit
+• Logic applies to 3-digit Armstrong numbers
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(d), where d is the number of digits in `n`
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• This solution assumes Armstrong definition for 3-digit numbers
+• For generalized Armstrong numbers, power should be number of digits
+===========================================================
+*/
+
 // User function Template for Java
 class Solution {
+
     static boolean armstrongNumber(int n) {
-        // code here
-       int temp = n;
-       int sum = 0;
-       while(temp!=0){
-           int digit = temp%10;
-            sum+= Math.pow(digit,3);
-           temp/=10;
-       }
-       return sum==n;
+
+        int temp = n;  // Temporary variable to extract digits
+        int sum = 0;   // Stores sum of cubes of digits
+
+        while (temp != 0) {
+
+            int digit = temp % 10;            // Extract last digit
+            sum += Math.pow(digit, 3);        // Add cube of digit
+            temp /= 10;                       // Remove last digit
+        }
+
+        // Check if sum of cubes equals original number
+        return sum == n;
     }
 }
