@@ -1,48 +1,139 @@
-//link:-https://www.geeksforgeeks.org/problems/second-largest3735/1?page=1&sprint=bb436fe6ca33efc91d996a51a723a90a&sortBy=submissions
+/*
+===========================================================
+TITLE
+===========================================================
+Find the Second Largest Element in an Array
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer array `arr`, find and return the **second largest**
+distinct element in the array.
+
+If the second largest element does not exist, return `-1`.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://practice.geeksforgeeks.org/problems/second-largest3735/1
+
+===========================================================
+INTUITION
+===========================================================
+To find the second largest element efficiently:
+- We do NOT need to sort the array.
+- While traversing the array, we can keep track of:
+  • the largest element seen so far
+  • the second largest distinct element
+
+Whenever a new larger element is found:
+- The old largest becomes the second largest.
+
+===========================================================
+APPROACH
+===========================================================
+1) Initialize two variables:
+   - `largest` to store the maximum value
+   - `secondLargest` to store the second maximum value
+2) Traverse the array once:
+   - If current element is greater than `largest`:
+     • Update `secondLargest` to `largest`
+     • Update `largest` to current element
+   - Else if current element is:
+     • less than `largest` AND
+     • greater than `secondLargest`
+     → update `secondLargest`
+3) Return `secondLargest`.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+arr = [12, 35, 1, 10, 34, 1]
+
+Largest        = 35
+Second Largest = 34
+
+Output:
+34
+
+===========================================================
+DRY RUN
+===========================================================
+arr = [5, 20, 20, 4]
+
+Initial:
+largest = -1
+secondLargest = -1
+
+i = 0 → 5 > -1
+largest = 5, secondLargest = -1
+
+i = 1 → 20 > 5
+largest = 20, secondLargest = 5
+
+i = 2 → 20 == largest → ignored
+
+i = 3 → 4 < 20 and 4 < 5 → ignored
+
+Return secondLargest = 5
+
+===========================================================
+KEY POINTS
+===========================================================
+• Single traversal is sufficient
+• Sorting is not required
+• Handles duplicate largest values correctly
+• Returns -1 if second largest does not exist
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n), where n is the number of elements in the array
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• `arr[i] < largest` ensures distinct second largest value
+• Initializing with -1 works when array contains non-negative values
+• For arrays with all negative values, initialization should be
+  done using `Integer.MIN_VALUE`
+===========================================================
+*/
 
 class Solution {
-    /**
-     * Function to find the second largest element in the array.
-     *
-     * @param arr Input array of positive integers
-     * @return Second largest element, or -1 if it doesn't exist
-     *
-     * Approach:
-     * ---------
-     * 1. Maintain two variables:
-     *    - `largest` = stores the largest element so far.
-     *    - `secondLargest` = stores the second largest element so far.
-     *
-     * 2. Traverse the array:
-     *    - If current element > largest:
-     *        → Update secondLargest = largest
-     *        → Update largest = current element
-     *    - Else if current element < largest AND current element > secondLargest:
-     *        → Update secondLargest = current element
-     *
-     * 3. At the end, check:
-     *    - If secondLargest is still -1 → return -1 (no valid second largest).
-     *
-     * Time Complexity: O(n) → single pass
-     * Space Complexity: O(1) → only two extra variables
-     */
+
     public int getSecondLargest(int[] arr) {
-        int n = arr.length;
 
-        int largest = -1;        // stores largest element
-        int secondLargest = -1;  // stores second largest element
+        // Stores the largest element found so far
+        int largest = -1;
 
-        for (int i = 0; i < n; i++) {
+        // Stores the second largest distinct element
+        int secondLargest = -1;
+
+        // Traverse the array
+        for (int i = 0; i < arr.length; i++) {
+
+            // If current element is greater than largest
             if (arr[i] > largest) {
-                // Update both when a new largest is found
-                secondLargest = largest;
-                largest = arr[i];
-            } else if (arr[i] < largest && arr[i] > secondLargest) {
-                // Update only secondLargest if it's less than largest
+
+                secondLargest = largest; // Update second largest
+                largest = arr[i];        // Update largest
+            }
+
+            // If current element lies between largest and secondLargest
+            else if (arr[i] < largest && arr[i] > secondLargest) {
+
                 secondLargest = arr[i];
             }
         }
 
-        return secondLargest; // will be -1 if no valid second largest found
+        // Return second largest element (or -1 if not found)
+        return secondLargest;
     }
 }
