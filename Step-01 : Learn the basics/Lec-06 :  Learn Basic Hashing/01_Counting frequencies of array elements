@@ -1,30 +1,135 @@
-import java.util.*;
+/*
+===========================================================
+TITLE
+===========================================================
+Frequency Count of Elements from 1 to N in an Array
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer array `arr` of size `n`, where elements range from
+1 to `n`, count the frequency of each number from `1` to `n`.
+
+Return a list where:
+• The value at index `i` (1-based) represents the frequency of number `i`
+• If a number does not appear in the array, its frequency is `0`
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://www.geeksforgeeks.org/problems/frequency-of-array-elements-1587115620/1
+
+===========================================================
+INTUITION
+===========================================================
+To count frequencies efficiently:
+- We need a way to store how many times each number appears.
+- A HashMap is suitable because it allows:
+  • Fast insertion
+  • Fast lookup
+- After counting frequencies, we must output results in the order
+  from 1 to n (not based on array order).
+
+===========================================================
+APPROACH
+===========================================================
+1) Create a HashMap to store frequency of each element.
+2) Traverse the array and update frequency using:
+   `map.getOrDefault(value, 0) + 1`
+3) Create a result list.
+4) For numbers from 1 to n:
+   - If the number exists in the map, add its frequency
+   - Otherwise, add 0
+5) Return the result list.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+arr = [2, 3, 2, 3, 5]
+
+n = 5
+
+Frequencies:
+1 → 0
+2 → 2
+3 → 2
+4 → 0
+5 → 1
+
+Output:
+[0, 2, 2, 0, 1]
+
+===========================================================
+DRY RUN
+===========================================================
+arr = [1, 1, 3]
+
+Step 1: Build frequency map
+map = {1=2, 3=1}
+
+Step 2: Build result list (1 to 3)
+i = 1 → map contains 1 → add 2
+i = 2 → not in map → add 0
+i = 3 → map contains 3 → add 1
+
+Result = [2, 0, 1]
+
+===========================================================
+KEY POINTS
+===========================================================
+• HashMap stores frequencies efficiently
+• Output order is always from 1 to n
+• Missing numbers are represented by 0
+• Indexing is handled logically (1-based values)
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n)
+
+- One pass to build the map
+- One pass to build the result list
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(n), due to HashMap and result list
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• `getOrDefault` avoids null checks
+• `containsKey` ensures safe retrieval
+• This approach is clear and interview-friendly
+• Can be optimized to O(1) extra space using array tricks if allowed
+===========================================================
+*/
 
 class Solution {
+
     public List<Integer> frequencyCount(int[] arr) {
-        int n = arr.length;
 
-        // List to store the frequency of numbers from 1 to n
-        ArrayList<Integer> list = new ArrayList<>();
+        List<Integer> res = new ArrayList<>(); // Stores final frequency result
+        HashMap<Integer, Integer> map = new HashMap<>(); // Frequency map
 
-        // HashMap to store frequency of each number in arr
-        HashMap<Integer, Integer> map = new HashMap<>();
+        // Count frequency of each element in the array
+        for (int i = 0; i < arr.length; i++) {
 
-        // Step 1: Count frequency of each element in arr
-        for (int i = 0; i < n; i++) {
+            // Increment count of arr[i]
             map.put(arr[i], map.getOrDefault(arr[i], 0) + 1);
         }
 
-        // Step 2: For each number from 1 to n, check its frequency
-        for (int i = 1; i <= n; i++) {
-            if (!map.containsKey(i)) {
-                list.add(0); // if number i is not present → frequency = 0
-            } else {
-                list.add(map.get(i)); // otherwise add actual frequency
-            }
+        // Build result list for numbers from 1 to n
+        for (int i = 1; i <= arr.length; i++) {
+
+            // If number i is not present, frequency is 0
+            if (!map.containsKey(i))
+                res.add(0);
+            else
+                res.add(map.get(i)); // Add actual frequency
         }
 
-        // Step 3: Return the frequency list
-        return list;
+        return res; // Return frequency list
     }
 }
