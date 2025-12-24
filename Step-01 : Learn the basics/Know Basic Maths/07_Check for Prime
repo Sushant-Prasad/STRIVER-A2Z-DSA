@@ -1,20 +1,110 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Check Whether a Number Is Prime
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer `n`, determine whether it is a **prime number**.
+
+A prime number is a number that:
+• Is greater than 1
+• Has exactly two distinct divisors: 1 and itself
+
+Return:
+• true  → if `n` is prime
+• false → otherwise
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://practice.geeksforgeeks.org/problems/prime-number2314/1
+
+===========================================================
+INTUITION
+===========================================================
+A number is NOT prime if it has any divisor other than 1 and itself.
+
+Key observation:
+- If `n` has a divisor greater than √n, then it must also have
+  a corresponding divisor smaller than √n.
+- Therefore, checking divisibility only up to √n is sufficient.
+
+===========================================================
+APPROACH
+===========================================================
+1) If `n < 2`, return false (0 and 1 are not prime).
+2) Loop from `2` to `√n`:
+   - If any number divides `n`, it is not prime.
+3) If no divisor is found, return true.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:  n = 29
+Divisors checked: 2, 3, 4, 5
+No divisor found
+
+Output: true
+
+Input:  n = 12
+Divisible by 2
+
+Output: false
+
+===========================================================
+DRY RUN
+===========================================================
+n = 15
+
+i = 2 → 15 % 2 ≠ 0
+i = 3 → 15 % 3 == 0 → return false
+
+===========================================================
+KEY POINTS
+===========================================================
+• Numbers less than 2 are not prime
+• Loop runs only up to √n
+• Early exit improves performance
+• No extra space required
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(√n)
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1)
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• `i * i <= n` avoids using `Math.sqrt()`
+• Efficient and interview-preferred approach
+===========================================================
+*/
+
 class Solution {
 
-    // Function to check whether a number is prime
     static boolean isPrime(int n) {
-        
-        // Edge case: numbers less than or equal to 1 are not prime
-        if (n <= 1) return false;
 
-        // Loop from 2 to √n (i * i <= n)
-        // If any number divides n, it's not prime
+        // Numbers less than 2 are not prime
+        if (n < 2)
+            return false;
+
+        // Check divisibility from 2 to √n
         for (int i = 2; i * i <= n; i++) {
+
+            // If any divisor found, n is not prime
             if (n % i == 0)
-                return false;  // Found a divisor, so n is not prime
+                return false;
         }
 
-        // No divisors found, hence n is prime
+        // No divisors found → prime number
         return true;
     }
-
 }
