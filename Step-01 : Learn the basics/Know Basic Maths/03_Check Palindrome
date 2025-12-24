@@ -1,16 +1,138 @@
-//link:-https://leetcode.com/problems/palindrome-number/description/
+/*
+===========================================================
+TITLE
+===========================================================
+Check Whether an Integer Is a Palindrome
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer `x`, determine whether it is a palindrome.
+
+An integer is a palindrome when it reads the same backward
+as forward.
+
+Return:
+• true  → if `x` is a palindrome
+• false → otherwise
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/palindrome-number/
+
+===========================================================
+INTUITION
+===========================================================
+A palindrome number remains the same when reversed.
+
+So the idea is simple:
+- Reverse the given number
+- Compare the reversed number with the original number
+
+If both are equal → it is a palindrome.
+
+Negative numbers are NOT palindromes because of the minus sign.
+
+===========================================================
+APPROACH
+===========================================================
+1) If `x` is negative, immediately return false.
+2) Store the original number in a temporary variable.
+3) Reverse the number using:
+   - `% 10` to extract digits
+   - `* 10` and `+ digit` to build the reverse
+4) After reversing, compare the reversed number with the original.
+5) Return the comparison result.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:  x = 121
+Reverse: 121
+Output: true
+
+Input:  x = -121
+Output: false
+
+Input:  x = 123
+Reverse: 321
+Output: false
+
+===========================================================
+DRY RUN
+===========================================================
+x = 1221
+
+temp = 1221, rev = 0
+
+Iteration 1:
+digit = 1
+rev = 1
+temp = 122
+
+Iteration 2:
+digit = 2
+rev = 12
+temp = 12
+
+Iteration 3:
+digit = 2
+rev = 122
+temp = 1
+
+Iteration 4:
+digit = 1
+rev = 1221
+temp = 0
+
+rev == x → true
+
+===========================================================
+KEY POINTS
+===========================================================
+• Negative numbers are never palindromes
+• `% 10` extracts the last digit
+• `/ 10` removes the last digit
+• Full reversal is compared with original number
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(d), where d is the number of digits in `x`
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• No string conversion is used (pure math-based solution)
+• Works correctly for all non-negative integers
+• Safe for typical input constraints
+===========================================================
+*/
 
 class Solution {
+
     public boolean isPalindrome(int x) {
-        int temp=x;
-        int rev=0;
-        if(x<0)return false;//for negative number
-        while(x != 0){
-           int digit = x%10;
-           rev=rev*10 + digit;
-           x=x/10; 
+
+        int temp = x;  // Temporary variable to reverse the number
+        int rev = 0;   // Stores the reversed number
+
+        // Negative numbers cannot be palindrome
+        if (x < 0) return false;
+
+        while (temp != 0) {
+
+            int digit = temp % 10; // Extract last digit
+            rev = rev * 10 + digit; // Build reversed number
+            temp = temp / 10;       // Remove last digit
         }
-        return (temp==rev);
-        
+
+        // Check if reversed number equals original number
+        return rev == x;
     }
 }
