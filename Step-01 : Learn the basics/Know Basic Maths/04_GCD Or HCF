@@ -1,24 +1,260 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Find Greatest Common Divisor (GCD) of Array Elements
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer array `nums`, find the Greatest Common Divisor (GCD)
+of the **smallest** and **largest** numbers in the array.
+
+The GCD of two numbers is the largest positive integer that
+divides both numbers without leaving a remainder.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/find-greatest-common-divisor-of-array/
+
+===========================================================
+INTUITION
+===========================================================
+A key observation:
+- The GCD of the entire array (as per the problem) depends ONLY on:
+  • the minimum element
+  • the maximum element
+
+Instead of computing GCD for all elements:
+- Find the smallest and largest values
+- Compute GCD of those two values using Euclidean Algorithm
+
+===========================================================
+APPROACH
+===========================================================
+1) Extract the maximum value from the array using Java Streams.
+2) Extract the minimum value from the array using Java Streams.
+3) Use a recursive helper function to compute GCD:
+   - Base case: if second number is 0, return first
+   - Recursive case: gcd(b, a % b)
+4) Return the computed GCD.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:  nums = [2, 5, 6, 9, 10]
+Min = 2
+Max = 10
+GCD(10, 2) = 2
+
+Output: 2
+
+===========================================================
+DRY RUN
+===========================================================
+nums = [4, 8, 12, 16]
+
+min = 4
+max = 16
+
+gcd(16, 4):
+→ gcd(4, 16 % 4)
+→ gcd(4, 0)
+→ return 4
+
+===========================================================
+KEY POINTS
+===========================================================
+• Only minimum and maximum elements matter
+• Uses Euclidean Algorithm for efficiency
+• Recursive GCD ensures clarity and correctness
+• Java Streams simplify min/max extraction
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+Finding min & max: O(n)
+GCD computation:   O(log(min))
+
+Overall: O(n)
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(log(min)) due to recursion stack
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• `Arrays.stream(nums)` is efficient and readable
+• Recursive GCD avoids extra loops
+• Assumes array contains at least one element
+===========================================================
+*/
+
 class Solution {
-    public static int gcd(int a, int b) {
-        //base case
-        if(b==0)return a;
-        return gcd(,a%b);
+
+    // Helper method to compute GCD using Euclidean Algorithm
+    private int gcd(int max, int min) {
+
+        // Base case: if smaller number becomes 0
+        if (min == 0)
+            return max;
+
+        // Recursive call with remainder
+        return gcd(min, max % min);
+    }
+
+    public int findGCD(int[] nums) {
+
+        // Find maximum element in the array
+        int max = Arrays.stream(nums).max().getAsInt();
+
+        // Find minimum element in the array
+        int min = Arrays.stream(nums).min().getAsInt();
+
+        // Return GCD of min and max
+        return gcd(max, min);
     }
 }
-concept:- recursive approach
 
-1979. Find Greatest Common Divisor of Array(Leetcode)
-code:-
-import java.util.Arrays;
+# Method-2
+/*
+===========================================================
+TITLE
+===========================================================
+Find Greatest Common Divisor (GCD) of an Array
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer array `nums`, find the Greatest Common Divisor (GCD)
+of the **smallest** and **largest** numbers present in the array.
+
+The GCD of two integers is the largest positive integer
+that divides both numbers without leaving a remainder.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/find-greatest-common-divisor-of-array/
+
+===========================================================
+INTUITION
+===========================================================
+The problem does NOT require finding the GCD of all elements.
+Instead, it is based on an important observation:
+
+➡️ The required GCD is simply the GCD of:
+   • the minimum element in the array
+   • the maximum element in the array
+
+So the task reduces to:
+1) Finding min and max in the array
+2) Applying the Euclidean Algorithm to compute their GCD
+
+===========================================================
+APPROACH
+===========================================================
+1) Initialize `min` and `max` with the first array element.
+2) Traverse the array once to update min and max.
+3) Use a recursive helper function to compute GCD:
+   - Base case: if `min == 0`, return `max`
+   - Recursive step: gcd(min, max % min)
+4) Return the final GCD value.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:  nums = [2, 5, 6, 9, 10]
+
+Single pass:
+min = 2
+max = 10
+
+GCD(10, 2) = 2
+
+Output: 2
+
+===========================================================
+DRY RUN
+===========================================================
+nums = [4, 8, 12, 16]
+
+Initialization:
+min = 4, max = 4
+
+Iteration:
+8  → max = 8
+12 → max = 12
+16 → max = 16
+
+Final:
+min = 4, max = 16
+
+gcd(16, 4):
+→ gcd(4, 16 % 4)
+→ gcd(4, 0)
+→ return 4
+
+===========================================================
+KEY POINTS
+===========================================================
+• Only min and max elements matter
+• Single-pass array traversal is optimal
+• Uses Euclidean Algorithm for GCD
+• Recursive GCD logic is simple and efficient
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+Finding min & max: O(n)
+GCD calculation:   O(log(min))
+
+Overall Time Complexity: O(n)
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(log(min)) due to recursion stack
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• This approach is faster than stream-based solutions
+• Assumes the array has at least one element
+• Recursive GCD avoids extra loops
+===========================================================
+*/
+
 class Solution {
+
+    // Helper method to compute GCD using Euclidean Algorithm
+    private int gcd(int max, int min) {
+
+        // Base case: when remainder becomes zero
+        if (min == 0)
+            return max;
+
+        // Recursive call with reduced values
+        return gcd(min, max % min);
+    }
+
     public int findGCD(int[] nums) {
-       
-       int max =  Arrays.stream(nums).max().getAsInt();
-       int min = Arrays.stream(nums).min().getAsInt();
-       return gcd(max,min);
-}
- private int gcd(int max,int min){
-            if(min == 0)return max;
-            return gcd(min,max%min);
+
+        // Initialize min and max with first element
+        int max = nums[0], min = nums[0];
+
+        // Single traversal to find min and max
+        for (int i = 0; i < nums.length; i++) {
+
+            if (nums[i] > max) max = nums[i]; // Update maximum
+            if (nums[i] < min) min = nums[i]; // Update minimum
         }
+
+        // Return GCD of max and min
+        return gcd(max, min);
+    }
 }
+
