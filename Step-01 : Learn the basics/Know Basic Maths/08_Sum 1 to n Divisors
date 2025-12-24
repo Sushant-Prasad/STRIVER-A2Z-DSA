@@ -1,0 +1,126 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Sum of Divisors from 1 to N Using Mathematical Optimization
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given a positive integer `n`, calculate the sum of divisors
+for all numbers from `1` to `n`.
+
+In other words, compute:
+Σ (sum of all divisors of every number from 1 to n)
+
+Return the final sum as a long value.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://www.geeksforgeeks.org/problems/sum-of-all-divisors-from-1-to-n4738/1
+
+===========================================================
+INTUITION
+===========================================================
+A brute-force approach would be:
+- For every number from 1 to n, find all its divisors
+- This results in O(n²) time → causes TLE
+
+Key mathematical insight:
+- Instead of iterating over numbers and finding their divisors,
+  iterate over divisors and count how many times they appear.
+
+Observation:
+- A number `i` divides exactly ⌊n / i⌋ numbers between 1 and n.
+- So the contribution of divisor `i` to the total sum is:
+  i × ⌊n / i⌋
+
+===========================================================
+APPROACH
+===========================================================
+1) Initialize `sum = 0`.
+2) Loop `i` from 1 to `n`:
+   - Compute how many numbers between 1 and n are divisible by `i`
+     → `n / i`
+   - Add the contribution of `i`:
+     → `(n / i) * i`
+3) Accumulate all contributions into `sum`.
+4) Return the final sum.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input: n = 4
+
+Divisors:
+1 → divides {1,2,3,4} → contribution = 1×4 = 4
+2 → divides {2,4}     → contribution = 2×2 = 4
+3 → divides {3}       → contribution = 3×1 = 3
+4 → divides {4}       → contribution = 4×1 = 4
+
+Total sum = 4 + 4 + 3 + 4 = 15
+
+Output: 15
+
+===========================================================
+DRY RUN
+===========================================================
+n = 5
+
+i = 1 → (5/1)*1 = 5
+i = 2 → (5/2)*2 = 4
+i = 3 → (5/3)*3 = 3
+i = 4 → (5/4)*4 = 4
+i = 5 → (5/5)*5 = 5
+
+sum = 5 + 4 + 3 + 4 + 5 = 21
+
+===========================================================
+KEY POINTS
+===========================================================
+• Each divisor contributes multiple times
+• ⌊n / i⌋ tells how many numbers are divisible by `i`
+• Avoids nested loops completely
+• Pure math-based optimization
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n)
+
+(Optimized compared to O(n²) brute force)
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• `(n / i) * i` represents total contribution of divisor `i`
+• Integer division is intentional and correct
+• Using `long` avoids overflow for large `n`
+• This is a classic number-theory optimization frequently asked
+  in coding interviews and competitive programming
+===========================================================
+*/
+
+class Solution {
+
+    public static long sumOfDivisors(long n) {
+
+        long sum = 0; // Stores final sum of all divisors from 1 to n
+
+        // Loop over all possible divisors
+        for (int i = 1; i <= n; i++) {
+
+            // (n / i)  → count of numbers divisible by i
+            // (n / i) * i → total contribution of divisor i
+            sum += (n / i) * i;
+        }
+
+        return sum; // Return final computed sum
+    }
+}
