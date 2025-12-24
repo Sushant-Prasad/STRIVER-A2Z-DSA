@@ -1,14 +1,125 @@
-class Solution{
-    static long sumOfDivisors(int N){
-        
-        // code here
-        long sum = 0;
-        for(int i=1;i<=N;i++){
-            sum += (N/i)*i;
+/*
+===========================================================
+TITLE
+===========================================================
+Print All Divisors of a Number in Sorted Order
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer `n`, print all its divisors in **increasing (sorted) order**.
+
+A divisor of `n` is a number that divides `n` completely
+(i.e., `n % divisor == 0`).
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://www.geeksforgeeks.org/problems/all-divisors-of-a-number/1
+
+===========================================================
+INTUITION
+===========================================================
+Checking all numbers from 1 to `n` is inefficient and causes TLE
+for large values of `n`.
+
+Key observation:
+- Divisors always occur in **pairs**.
+- If `i` divides `n`, then `n / i` also divides `n`.
+- One divisor is ≤ √n and the other is ≥ √n.
+
+To print divisors in **sorted order**:
+- Print all smaller divisors first (1 → √n)
+- Then print the larger divisors in reverse order
+
+===========================================================
+APPROACH
+===========================================================
+1) First loop:
+   - Iterate from `1` to `√n`
+   - Print all divisors `i` where `n % i == 0`
+2) Second loop:
+   - Iterate from `√n` down to `1`
+   - Print the paired divisors `n / i`
+   - Avoid duplicates when `i == n / i` (perfect square case)
+3) This guarantees ascending order without extra space.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:  n = 20
+
+Divisors:
+1, 2, 4, 5, 10, 20
+
+Output:
+1 2 4 5 10 20
+
+===========================================================
+DRY RUN
+===========================================================
+n = 36
+
+First loop (small divisors):
+i = 1 → print 1
+i = 2 → print 2
+i = 3 → print 3
+i = 4 → print 4
+i = 6 → print 6
+
+Second loop (large divisors, reverse):
+i = 6 → skipped (duplicate)
+i = 4 → print 9
+i = 3 → print 12
+i = 2 → print 18
+i = 1 → print 36
+
+Final Output:
+1 2 3 4 6 9 12 18 36
+
+===========================================================
+KEY POINTS
+===========================================================
+• Iteration limited to √n → avoids TLE
+• Two-loop strategy ensures sorted output
+• Duplicate divisors avoided for perfect squares
+• No extra data structures used
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(√n)
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1)
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• `(int)Math.sqrt(n)` is safe because loop conditions handle precision
+• Condition `i != n / i` avoids printing same divisor twice
+• This approach is optimal and interview-preferred
+===========================================================
+*/
+
+class Solution {
+
+    public static void print_divisors(int n) {
+
+        // First loop: print all divisors smaller than or equal to √n
+        for (int i = 1; i * i <= n; i++) {
+            if (n % i == 0)
+                System.out.print(i + " "); // smaller divisor
         }
-        return sum;
+
+        // Second loop: print corresponding larger divisors in reverse order
+        for (int i = (int) Math.sqrt(n); i > 0; i--) {
+            if (n % i == 0 && i != n / i)
+                System.out.print((n / i) + " "); // larger divisor
+        }
+
+        return; // End of function
     }
 }
-Concept:- 
-1) main logic is sum += (N/i)*i;
-2) observe number pattern
