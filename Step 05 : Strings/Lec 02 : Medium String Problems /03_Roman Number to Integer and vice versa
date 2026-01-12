@@ -1,0 +1,140 @@
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Roman to Integer
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a Roman numeral string `s`, convert it into its corresponding
+    //  integer value.
+    //
+    //  Roman numerals are formed using the following symbols:
+    //      I = 1, V = 5, X = 10, L = 50
+    //      C = 100, D = 500, M = 1000
+    //
+    //  Special Rule:
+    //  • If a smaller value appears before a larger value,
+    //    it is subtracted (e.g., IV = 4, IX = 9).
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/roman-to-integer/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Normally, Roman numerals are added.
+    //  • If a smaller numeral comes before a larger one,
+    //    it must be subtracted.
+    //  • By comparing the current character with the next one,
+    //    we can decide whether to add or subtract.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Convert each Roman character into its integer value.
+    //  2. Traverse the string from left to right.
+    //  3. Compare current value with the next value:
+    //      • If current ≥ next → add current
+    //      • If current < next → subtract current
+    //  4. Add the last value separately (since it has no next).
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC ⭐:
+    //  --------------------------
+    //  • We loop only till (length - 1) to safely compare with next character.
+    //  • The last Roman numeral is always added.
+    //  • This avoids edge cases and keeps logic clean.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      s = "MCMXCIV"
+    //
+    //  Output:
+    //      1994
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  s = "MCMXCIV"
+    //
+    //  i | curr | next | action        | res
+    //  ---------------------------------------
+    //  0 | 1000 | 100  | add           | 1000
+    //  1 | 100  | 1000 | subtract      | 900
+    //  2 | 1000 | 10   | add           | 1900
+    //  3 | 10   | 100  | subtract      | 1890
+    //  4 | 100  | 1    | add           | 1990
+    //  5 | 1    | 5    | subtract      | 1989
+    //
+    //  Final step: add last value (5)
+    //  Result = 1994
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Handles subtraction cases cleanly
+    //  ✔ Single pass solution
+    //  ✔ No extra data structures required
+    //  ✔ Efficient and readable
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //      - One traversal of the string
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //      - Constant extra space
+    //
+    // =========================================================================
+
+    // Helper method to convert Roman character to integer value
+    private int getVal(char ch) {
+        switch (ch) {
+            case 'I': return 1;
+            case 'V': return 5;
+            case 'X': return 10;
+            case 'L': return 50;
+            case 'C': return 100;
+            case 'D': return 500;
+            case 'M': return 1000;
+        }
+        return -1; // safety fallback (not expected for valid input)
+    }
+
+    public int romanToInt(String s) {
+
+        // Edge case: single character Roman numeral
+        if (s.length() == 1) {
+            return getVal(s.charAt(0));
+        }
+
+        int res = 0;
+        int curr, next;
+
+        // Traverse till second-last character
+        for (int i = 0; i < s.length() - 1; i++) {
+
+            curr = getVal(s.charAt(i));
+            next = getVal(s.charAt(i + 1));
+
+            // Decide add or subtract based on Roman numeral rule
+            if (curr >= next) {
+                res += curr;
+            } else {
+                res -= curr;
+            }
+        }
+
+        // Add the last Roman numeral value
+        res += getVal(s.charAt(s.length() - 1));
+
+        return res;
+    }
+}
