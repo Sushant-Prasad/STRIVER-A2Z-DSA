@@ -1,0 +1,164 @@
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Count Substrings with Exactly K Distinct Characters
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a string `s` and an integer `k`,
+    //  count the number of substrings that contain exactly `k`
+    //  distinct characters.
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://www.geeksforgeeks.org/problems/count-number-of-substrings4528/1
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Directly counting substrings with exactly K distinct characters
+    //    is difficult.
+    //  • Instead, we use a well-known trick:
+    //
+    //        Exactly K = AtLeast(K) - AtLeast(K + 1)
+    //
+    //  • If we can count substrings having AT LEAST K distinct characters,
+    //    we can derive the answer easily.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Create a helper function `atLeast(s, k)` that returns
+    //     the number of substrings with at least `k` distinct characters.
+    //  2. Use sliding window + frequency array.
+    //  3. Final Answer:
+    //
+    //        countSubstr = atLeast(s, k) - atLeast(s, k + 1)
+    //
+    // =========================================================================
+    //  HELPER FUNCTION:
+    //  ----------------
+    //  atLeast(s, k)
+    //
+    //  Returns number of substrings having AT LEAST k distinct characters.
+    //
+    // =========================================================================
+    private int atLeast(String s, int k) {
+
+        int[] freq = new int[128]; // frequency of characters (ASCII)
+        int ans = 0;
+        int n = s.length();
+
+        int j = 0;   // left pointer of sliding window
+        int dc = 0;  // distinct character count
+
+        // Right pointer moves forward
+        for (int i = 0; i < n; i++) {
+
+            // Add current character to window
+            freq[s.charAt(i)]++;
+
+            // If character appears first time → increase distinct count
+            if (freq[s.charAt(i)] == 1) {
+                dc++;
+            }
+
+            // --------------------------------------------------------------
+            //  SPECIAL NOTE FOR THIS LOGIC ⭐⭐⭐
+            // --------------------------------------------------------------
+            //  while (dc == k)
+            //
+            //  • When window has EXACTLY k distinct characters,
+            //    then all substrings starting at index j and ending
+            //    anywhere from i to n-1 are VALID.
+            //
+            //  • Number of such substrings = (n - i)
+            //
+            //  WHY?
+            //  ----
+            //  Because extending the right boundary will not reduce
+            //  the distinct count below k.
+            //
+            // --------------------------------------------------------------
+            while (dc == k) {
+
+                // Count all substrings ending from i to n-1
+                ans += (n - i);
+
+                // Shrink window from left
+                freq[s.charAt(j)]--;
+
+                // If a character is completely removed
+                if (freq[s.charAt(j)] == 0) {
+                    dc--;
+                }
+
+                j++; // move left pointer
+            }
+        }
+
+        return ans;
+    }
+
+    // =========================================================================
+    //  MAIN FUNCTION:
+    // =========================================================================
+    //
+    //  LOGIC:
+    //  -------
+    //      substrings with exactly K distinct characters =
+    //
+    //          atLeast(s, K) - atLeast(s, K + 1)
+    //
+    //  WHY THIS WORKS:
+    //  ---------------
+    //  • atLeast(K) counts substrings with K, K+1, K+2, ...
+    //  • atLeast(K+1) counts substrings with K+1, K+2, ...
+    //  • Subtracting removes extra cases, leaving ONLY K.
+    //
+    // =========================================================================
+    public int countSubstr(String s, int k) {
+
+        return atLeast(s, k) - atLeast(s, k + 1);
+    }
+
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      s = "aba"
+    //      k = 2
+    //
+    //  Substrings with exactly 2 distinct characters:
+    //      "ab", "ba", "aba"
+    //
+    //  Output:
+    //      3
+    //
+    // =========================================================================
+    //  DRY RUN (SHORT):
+    //  ----------------
+    //  atLeast(s, 2)  = 3
+    //  atLeast(s, 3)  = 0
+    //
+    //  Answer = 3 - 0 = 3
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Uses sliding window efficiently
+    //  ✔ Avoids brute force O(n^2)
+    //  ✔ Smart mathematical subtraction trick
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)   (fixed-size frequency array)
+    //
+    // =========================================================================
+}
