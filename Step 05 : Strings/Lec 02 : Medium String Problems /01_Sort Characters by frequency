@@ -1,0 +1,170 @@
+import java.util.*;
+#  Method-1
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Sort Characters by Frequency (Bucket Sort Approach)
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a string `s`, rearrange the characters so that
+    //  characters appear in decreasing order of frequency.
+    //
+    //  Characters with higher frequency should appear before
+    //  characters with lower frequency.
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/sort-characters-by-frequency/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • We need to sort characters based on how often they appear.
+    //  • Direct sorting would be costly.
+    //  • Instead, we use **Bucket Sort**:
+    //      - Frequency becomes the index.
+    //      - Characters are grouped by frequency.
+    //
+    // =========================================================================
+    //  APPROACH (BUCKET SORT):
+    //  -----------------------
+    //  1. Count frequency of each character.
+    //  2. Create an array of lists (buckets) where:
+    //      • index = frequency
+    //      • value = list of characters with that frequency
+    //  3. Traverse buckets from highest frequency to lowest.
+    //  4. Append characters to result accordingly.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR IMPORTANT LOGIC ⭐⭐⭐:
+    //  ---------------------------------------
+    //
+    //  🔹 s.toCharArray():
+    //     ----------------
+    //     • Converts the string into a character array.
+    //     • Makes iteration cleaner and faster.
+    //
+    //  🔹 int[] freq = new int[128]:
+    //     ---------------------------
+    //     • Stores frequency of ASCII characters (0–127).
+    //     • Index represents character ASCII value.
+    //
+    //  🔹 List<Character>[] bucket = new ArrayList[s.length() + 1]:
+    //     ----------------------------------------------------------
+    //     • Maximum frequency of any character = length of string.
+    //     • bucket[i] stores characters appearing exactly `i` times.
+    //
+    //  🔹 Mapping characters into buckets:
+    //     ---------------------------------
+    //     for(int i=0;i<128;i++){
+    //         if(freq[i]>0){
+    //             int f = freq[i];
+    //             if(bucket[f]==null){
+    //                bucket[f] = new ArrayList<>();
+    //             }
+    //             bucket[f].add((char) i);
+    //         }
+    //     }
+    //
+    //     • For each character:
+    //         - Find its frequency f
+    //         - Place it into bucket[f]
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      s = "tree"
+    //
+    //  Frequency:
+    //      t → 1
+    //      r → 1
+    //      e → 2
+    //
+    //  Buckets:
+    //      bucket[2] = [e]
+    //      bucket[1] = [t, r]
+    //
+    //  Output:
+    //      "eetr" or "eert"
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  s = "cccaaa"
+    //
+    //  freq:
+    //      c → 3
+    //      a → 3
+    //
+    //  bucket[3] = [a, c]
+    //
+    //  Build result:
+    //      append 'a' 3 times
+    //      append 'c' 3 times
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Uses bucket sort
+    //  ✔ Avoids O(n log n) sorting
+    //  ✔ Efficient frequency grouping
+    //  ✔ Order among same-frequency chars doesn’t matter
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(n)
+    //
+    // =========================================================================
+    public String frequencySort(String s) {
+
+        // Result builder
+        StringBuilder res = new StringBuilder();
+
+        // Step 1: Count frequency of each ASCII character
+        int[] freq = new int[128];
+        for (char c : s.toCharArray()) {
+            freq[c]++;
+        }
+
+        // Step 2: Create buckets based on frequency
+        List<Character>[] bucket = new ArrayList[s.length() + 1];
+
+        // Place characters into their corresponding frequency bucket
+        for (int i = 0; i < 128; i++) {
+            if (freq[i] > 0) {
+
+                int f = freq[i]; // frequency of character
+
+                // Initialize bucket if null
+                if (bucket[f] == null) {
+                    bucket[f] = new ArrayList<>();
+                }
+
+                // Add character to its bucket
+                bucket[f].add((char) i);
+            }
+        }
+
+        // Step 3: Build result from highest frequency to lowest
+        for (int i = bucket.length - 1; i >= 0; i--) {
+            if (bucket[i] != null) {
+                for (char ch : bucket[i]) {
+                    // Append character `i` times
+                    for (int j = 0; j < i; j++) {
+                        res.append(ch);
+                    }
+                }
+            }
+        }
+
+        return res.toString();
+    }
+}
