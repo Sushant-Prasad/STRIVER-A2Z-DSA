@@ -1,0 +1,145 @@
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  String to Integer (atoi)
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Implement the `atoi` function which converts a string into a 32-bit
+    //  signed integer.
+    //
+    //  The function should:
+    //   • Ignore leading whitespace
+    //   • Handle optional '+' or '-' sign
+    //   • Read digits until a non-digit is encountered
+    //   • Clamp the result within 32-bit integer range
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/string-to-integer-atoi/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • We scan the string from left to right.
+    //  • A boolean flag tracks whether the number is negative.
+    //  • A `long` variable is used to safely detect overflow before casting.
+    //  • As soon as overflow is detected, return the boundary value.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Trim leading and trailing spaces.
+    //  2. Handle empty string after trimming.
+    //  3. Check optional '+' or '-' sign.
+    //  4. Convert digits into a number.
+    //  5. Stop when a non-digit is found.
+    //  6. Handle overflow for both positive and negative values.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR OVERFLOW LOGIC ⭐⭐⭐:
+    //  -------------------------------------
+    //  • `ans` is built as a POSITIVE number using `long`.
+    //  • For negative numbers:
+    //        actual value = -ans
+    //
+    //    So we check:
+    //        if (-ans <= Integer.MIN_VALUE)
+    //
+    //  • For positive numbers:
+    //        if (ans > Integer.MAX_VALUE)
+    //
+    //  • This ensures overflow is detected BEFORE casting to int.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:  "   -42"
+    //  Output: -42
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  s = "   -91283472332"
+    //
+    //  After trim → "-91283472332"
+    //
+    //  ans builds as:
+    //      9 → 91 → 912 → ...
+    //
+    //  When ans becomes 91283472332:
+    //      -ans < Integer.MIN_VALUE
+    //      ⇒ return Integer.MIN_VALUE
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Uses long to prevent overflow
+    //  ✔ Handles sign correctly
+    //  ✔ Stops parsing on first non-digit
+    //  ✔ Matches exact problem constraints
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+    public int myAtoi(String s) {
+
+        // Remove leading and trailing spaces
+        s = s.trim();
+        if (s.length() == 0) return 0;
+
+        long ans = 0;        // Use long to safely detect overflow
+        boolean neg = false; // Tracks if number is negative
+
+        for (int i = 0; i < s.length(); i++) {
+
+            char ch = s.charAt(i);
+
+            // Handle sign only at first character
+            if (i == 0) {
+                if (ch == '-') {
+                    neg = true;
+                    continue;
+                } else if (ch == '+') {
+                    continue;
+                }
+            }
+
+            // If digit, build the number
+            if (ch >= '0' && ch <= '9') {
+                int digit = ch - '0';
+                ans = ans * 10 + digit;
+
+                // ---------------- OVERFLOW CHECK (NEGATIVE) ----------------
+                // If negative, actual value = -ans
+                // If it goes below Integer.MIN_VALUE → clamp
+                if (neg) {
+                    long check = -ans;
+                    if (check <= Integer.MIN_VALUE)
+                        return Integer.MIN_VALUE;
+                }
+
+                // ---------------- OVERFLOW CHECK (POSITIVE) ----------------
+                if (ans > Integer.MAX_VALUE)
+                    return Integer.MAX_VALUE;
+            }
+            // Stop parsing if non-digit encountered
+            else {
+                break;
+            }
+        }
+
+        // Apply sign
+        if (neg) ans = -ans;
+
+        return (int) ans;
+    }
+}
