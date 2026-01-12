@@ -1,0 +1,110 @@
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Rotate String
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given two strings `s` and `goal`,
+    //  return true if and only if `s` can become `goal`
+    //  after some number of rotations.
+    //
+    //  A rotation means:
+    //      Take the leftmost character of `s` and move it to the end.
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/rotate-string/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Rotating a string does not change its length.
+    //  • All possible rotations of `s` will appear as substrings of `s + s`.
+    //  • If `goal` exists inside `s + s`, then `goal` is a rotation of `s`.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. If lengths of `s` and `goal` are different → return false.
+    //  2. Concatenate string `s` with itself → `s + s`.
+    //  3. Check if `goal` is a substring of `s + s`.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR CORE LOGIC ⭐:
+    //  --------------------------------
+    //  return (s + s).contains(goal);
+    //
+    //  WHY THIS WORKS:
+    //  ---------------
+    //  • Every rotation of `s` is present in `s + s`.
+    //
+    //  Example:
+    //      s = "abcde"
+    //      s + s = "abcdeabcde"
+    //
+    //  Rotations:
+    //      "abcde"
+    //      "bcdea"
+    //      "cdeab"
+    //      "deabc"
+    //      "eabcd"
+    //
+    //  All appear as substrings of "abcdeabcde".
+    //
+    //  So if `goal` exists inside `s + s`,
+    //  it must be a valid rotation.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      s = "abcde"
+    //      goal = "cdeab"
+    //
+    //  Output:
+    //      true
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  s = "abcde"
+    //  goal = "cdeab"
+    //
+    //  s + s = "abcdeabcde"
+    //
+    //  Check:
+    //      "abcdeabcde".contains("cdeab") → true
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ No manual rotation required
+    //  ✔ Very clean and concise logic
+    //  ✔ Covers all rotation cases
+    //  ✔ Uses built-in optimized string search
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //      - String concatenation + substring search
+    //
+    //  SPACE COMPLEXITY:
+    //      O(n)
+    //      - Due to creation of (s + s)
+    //
+    // =========================================================================
+    public boolean rotateString(String s, String goal) {
+
+        // If lengths differ, rotation is impossible
+        if (s.length() != goal.length()) {
+            return false;
+        }
+
+        // Check if goal is a substring of s+s
+        return (s + s).contains(goal);
+    }
+}
