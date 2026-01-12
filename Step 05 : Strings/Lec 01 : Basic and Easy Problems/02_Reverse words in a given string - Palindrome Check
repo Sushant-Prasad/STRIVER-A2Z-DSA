@@ -1,0 +1,297 @@
+//Method-1
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Reverse Words in a String
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given an input string `s`, reverse the order of the words.
+    //
+    //  A word is defined as a sequence of non-space characters.
+    //  The returned string should:
+    //   • Have words in reverse order
+    //   • Contain exactly one space between words
+    //   • Not contain leading or trailing spaces
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/reverse-words-in-a-string/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • We want words in reverse order, not characters.
+    //  • Java provides `split()` to break a string into words.
+    //  • However, multiple spaces create empty strings.
+    //  • We must carefully rebuild the result to avoid extra spaces.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES ON split() METHOD (VERY IMPORTANT ⭐):
+    //  ----------------------------------------------------
+    //  DEFINITION:
+    //  -----------
+    //  split(String regex) divides a string into parts based on a delimiter.
+    //
+    //  FUNCTIONALITY:
+    //  --------------
+    //  • s.split(" ") splits the string at EVERY single space.
+    //  • Multiple consecutive spaces produce EMPTY STRINGS.
+    //
+    //  Example:
+    //      "  hello   world  ".split(" ")
+    //
+    //  Result:
+    //      ["", "", "hello", "", "", "world", "", ""]
+    //
+    //  PROPERTIES:
+    //  -----------
+    //  ✔ Keeps empty strings for consecutive delimiters
+    //  ✔ Does NOT automatically trim spaces
+    //  ✔ Faster than manual parsing
+    //
+    //  WHY WE HANDLE EMPTY STRINGS:
+    //  ----------------------------
+    //  Because empty strings are NOT valid words,
+    //  we explicitly skip them using:
+    //
+    //      if (arr[i].length() == 0) continue;
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Split the string using space (" ").
+    //  2. Traverse the resulting array from right to left.
+    //  3. Skip empty strings caused by multiple spaces.
+    //  4. Append valid words using StringBuilder.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC:
+    //  ------------------------
+    //  • `arr[i].length() == 0` → ignores extra spaces.
+    //  • `res.length() == 0` → prevents leading space.
+    //  • `StringBuilder` avoids costly string concatenation.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      s = "  hello   world  "
+    //
+    //  Output:
+    //      "world hello"
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  s = "  hello   world  "
+    //
+    //  After split:
+    //      arr = ["", "", "hello", "", "", "world", "", ""]
+    //
+    //  Traverse from end:
+    //      "world" → added
+    //      "hello" → added
+    //
+    //  Final Result:
+    //      "world hello"
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Uses built-in split()
+    //  ✔ Handles multiple spaces safely
+    //  ✔ Avoids leading/trailing spaces
+    //  ✔ Clean and readable logic
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //      - split + traversal
+    //
+    //  SPACE COMPLEXITY:
+    //      O(n)
+    //      - array from split + result string
+    //
+    // =========================================================================
+    public String reverseWords(String s) {
+
+        // Split string by single space
+        // NOTE: This may create empty strings due to multiple spaces
+        String arr[] = s.split(" ");
+
+        // StringBuilder for efficient concatenation
+        StringBuilder res = new StringBuilder();
+
+        // Traverse from last word to first
+        for (int i = arr.length - 1; i >= 0; i--) {
+
+            // Skip empty strings (caused by extra spaces)
+            if (arr[i].length() == 0) continue;
+
+            // Add word directly if result is empty
+            if (res.length() == 0) {
+                res.append(arr[i]);
+            }
+            // Otherwise, add a space before appending
+            else {
+                res.append(" ");
+                res.append(arr[i]);
+            }
+        }
+
+        return res.toString();
+    }
+}
+
+//Method-2
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Reverse Words in a String (Without Using split())
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a string `s`, reverse the order of words.
+    //
+    //  A word is a sequence of non-space characters.
+    //  The output must:
+    //   • Have words in reverse order
+    //   • Contain exactly one space between words
+    //   • Have no leading or trailing spaces
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/reverse-words-in-a-string/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • We scan the string from RIGHT to LEFT.
+    //  • This naturally gives words in reverse order.
+    //  • We skip extra spaces manually.
+    //  • Each detected word is appended to the result.
+    //
+    // =========================================================================
+    //  APPROACH (TWO POINTER TECHNIQUE):
+    //  ---------------------------------
+    //  1. Start pointer `i` from the end of the string.
+    //  2. Skip trailing spaces.
+    //  3. Mark end of a word using pointer `j`.
+    //  4. Move `i` left until a space is found (word start).
+    //  5. Extract the word using substring.
+    //  6. Append it to the result with proper spacing.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR substring() METHOD ⭐:
+    //  ----------------------------------------
+    //  DEFINITION:
+    //  -----------
+    //  substring(start, end) returns a string from:
+    //      index = start (inclusive)
+    //      index = end   (exclusive)
+    //
+    //  Example:
+    //      s = "hello"
+    //      s.substring(1, 4) → "ell"
+    //
+    //  WHY WE USE:
+    //  -----------
+    //  • `i` stops at space or -1
+    //  • `j` marks last character of word
+    //  • Correct word range becomes:
+    //
+    //      s.substring(i + 1, j + 1)
+    //
+    //  This safely extracts the full word without spaces.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC:
+    //  ------------------------
+    //  • `while(i>=0 && s.charAt(i)==' ')` skips extra spaces
+    //  • `j` stores the end index of the word
+    //  • `res.isEmpty()` avoids leading space
+    //  • No extra memory used for split array
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      "  hello   world  "
+    //
+    //  Output:
+    //      "world hello"
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  s = "  hello   world  "
+    //
+    //  i → starts at last index
+    //  Skip spaces → i at 'd'
+    //  j = i
+    //  Move i left until space
+    //  Extract "world"
+    //
+    //  Repeat → extract "hello"
+    //
+    //  Final result → "world hello"
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ No split() used
+    //  ✔ Handles multiple spaces
+    //  ✔ Optimal time complexity
+    //  ✔ Memory efficient
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(n) (result string only)
+    //
+    // =========================================================================
+    public String reverseWords(String s) {
+
+        StringBuilder res = new StringBuilder(); // Result string
+        int i = s.length() - 1;                  // Pointer starting from end
+
+        while (i >= 0) {
+
+            // Step 1: Skip trailing or extra spaces
+            while (i >= 0 && s.charAt(i) == ' ') {
+                i--;
+            }
+
+            // If all characters processed
+            if (i < 0) break;
+
+            // Step 2: Mark end of current word
+            int j = i;
+
+            // Step 3: Move left until space or start
+            while (i >= 0 && s.charAt(i) != ' ') {
+                i--;
+            }
+
+            // Step 4: Extract word using substring
+            // substring(i+1, j+1) extracts exact word
+            if (res.isEmpty()) {
+                res.append(s.substring(i + 1, j + 1));
+            } else {
+                res.append(" ");
+                res.append(s.substring(i + 1, j + 1));
+            }
+        }
+
+        return res.toString();
+    }
+}
