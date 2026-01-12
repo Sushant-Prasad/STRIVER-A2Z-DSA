@@ -1,0 +1,95 @@
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Valid Anagram
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given two strings s and t, return true if t is an anagram of s,
+    //  otherwise return false.
+    //
+    //  An Anagram is a word formed by rearranging the letters of another word,
+    //  using all original letters exactly once.
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/valid-anagram/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Two strings are anagrams if:
+    //      - They have the same length
+    //      - Each character appears the same number of times in both strings
+    //
+    //  • Since only lowercase English letters are involved,
+    //    we can use a fixed-size frequency array of length 26.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. If lengths of s and t are different → return false.
+    //  2. Create a frequency array of size 26 (for 'a' to 'z').
+    //  3. Increment frequency based on characters in s.
+    //  4. Decrement frequency based on characters in t.
+    //  5. If any frequency is not zero → not an anagram.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC:
+    //  ------------------------
+    //  • Index calculation:
+    //        s.charAt(i) - 'a'
+    //    converts characters ('a' to 'z') into indices (0 to 25).
+    //
+    //  • After incrementing for s and decrementing for t:
+    //        - All frequencies must be 0 for valid anagram.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  s = "anagram"
+    //  t = "nagaram"
+    //
+    //  Frequency array after s:
+    //      a → 3, n → 1, g → 1, r → 1, m → 1
+    //
+    //  Frequency array after t:
+    //      all values become 0 → valid anagram
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)  (fixed array of size 26)
+    //
+    // =========================================================================
+    public boolean isAnagram(String s, String t) {
+
+        // If lengths differ, they cannot be anagrams
+        if (s.length() != t.length()) return false;
+
+        // Frequency array for characters 'a' to 'z'
+        int[] freq = new int[26];
+
+        // Count frequency of each character in s
+        for (int i = 0; i < s.length(); i++) {
+            freq[s.charAt(i) - 'a']++;
+        }
+
+        // Decrease frequency based on characters in t
+        for (int i = 0; i < t.length(); i++) {
+            freq[t.charAt(i) - 'a']--;
+        }
+
+        // If any frequency is non-zero, not an anagram
+        for (int i = 0; i < freq.length; i++) {
+            if (freq[i] != 0) return false;
+        }
+
+        return true;
+    }
+}
