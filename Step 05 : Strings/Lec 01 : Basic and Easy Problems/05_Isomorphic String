@@ -1,0 +1,266 @@
+import java.util.HashMap;
+
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Isomorphic Strings
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given two strings `s` and `t`, determine if they are isomorphic.
+    //
+    //  Two strings are isomorphic if:
+    //   • Each character in `s` can be replaced to get `t`
+    //   • The mapping must be one-to-one (bijective)
+    //   • Order of characters must be preserved
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/isomorphic-strings/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Each character in `s` must map to exactly one character in `t`.
+    //  • No two different characters in `s` can map to the same character in `t`.
+    //  • This requires checking mapping in BOTH directions.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Traverse both strings character by character.
+    //  2. Maintain:
+    //      • mapST → mapping from s → t
+    //      • mapTS → mapping from t → s (reverse mapping)
+    //  3. At each index:
+    //      • If a mapping exists, verify consistency.
+    //      • Otherwise, create a new mapping.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC ⭐:
+    //  --------------------------
+    //  • Why two HashMaps?
+    //    - One map ensures consistency from s → t
+    //    - The other prevents multiple characters in s
+    //      mapping to the same character in t
+    //
+    //  • Combined condition:
+    //    If either mapping violates consistency → return false immediately
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  s = "egg", t = "add" → true
+    //      e → a
+    //      g → d
+    //
+    //  s = "foo", t = "bar" → false
+    //      o cannot map to both a and r
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  s = "paper", t = "title"
+    //
+    //  i=0: p → t   (valid)
+    //  i=1: a → i   (valid)
+    //  i=2: p → t   (consistent)
+    //  i=3: e → l   (valid)
+    //  i=4: r → e   (valid)
+    //
+    //  Result → true
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ One-to-one character mapping
+    //  ✔ Early exit on mismatch
+    //  ✔ Order preserved
+    //  ✔ Clean and efficient
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(n)
+    //
+    // =========================================================================
+    public boolean isIsomorphic(String s, String t) {
+
+        int n = s.length();
+
+        // Map from characters in s to characters in t
+        HashMap<Character, Character> mapST = new HashMap<>();
+
+        // Reverse map from characters in t to characters in s
+        HashMap<Character, Character> mapTS = new HashMap<>();
+
+        // Traverse both strings together
+        for (int i = 0; i < n; i++) {
+
+            char ch1 = s.charAt(i);
+            char ch2 = t.charAt(i);
+
+            // Check for inconsistent mapping in either direction
+            if ((mapST.containsKey(ch1) && mapST.get(ch1) != ch2) ||
+                (mapTS.containsKey(ch2) && mapTS.get(ch2) != ch1)) {
+                return false;
+            }
+
+            // Store the mappings
+            mapST.put(ch1, ch2);
+            mapTS.put(ch2, ch1);
+        }
+
+        return true;
+    }
+}
+// Method-2
+import java.util.Arrays;
+
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Isomorphic Strings (Optimal Array-Based Approach)
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given two strings `s` and `t`, determine if they are isomorphic.
+    //
+    //  Two strings are isomorphic if:
+    //   • Characters in `s` can be replaced to get `t`
+    //   • Each character maps to exactly one character (one-to-one mapping)
+    //   • Order of characters is preserved
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/isomorphic-strings/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Each character in `s` must consistently map to the same character in `t`.
+    //  • No two different characters in `s` can map to the same character in `t`.
+    //  • This requires **bidirectional (bijective) mapping**.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Use two fixed-size arrays:
+    //      • map1 → maps characters from s → t
+    //      • map2 → maps characters from t → s
+    //  2. Initialize arrays with -1 (meaning "not mapped yet").
+    //  3. Traverse both strings together.
+    //  4. At each index:
+    //      • If both characters are unmapped → create mapping.
+    //      • Else → verify mapping consistency.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC ⭐⭐⭐:
+    //  ------------------------------
+    //  1️⃣ Why array size = 256?
+    //     • Supports full ASCII character set.
+    //     • Faster and more memory-efficient than HashMap.
+    //
+    //  2️⃣ Why initialize arrays with -1?
+    //     • -1 indicates "no mapping exists yet".
+    //     • Helps distinguish between mapped and unmapped characters.
+    //
+    //     Arrays.fill(map1, -1);
+    //     Arrays.fill(map2, -1);
+    //
+    //  3️⃣ Why two arrays?
+    //     • map1 ensures s → t mapping consistency.
+    //     • map2 prevents multiple characters in s mapping to the same character in t.
+    //
+    // =========================================================================
+    //  CORE LOGIC EXPLANATION ⭐:
+    //  -------------------------
+    //  if(map1[c1] == -1 && map2[c2] == -1)
+    //      → Neither character has been mapped → safe to create mapping.
+    //
+    //  else if(map1[c1] != c2 || map2[c2] != c1)
+    //      → Conflict detected → mapping is inconsistent → return false.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      s = "egg"
+    //      t = "add"
+    //
+    //  Mapping:
+    //      e → a
+    //      g → d
+    //
+    //  Output:
+    //      true
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  s = "paper", t = "title"
+    //
+    //  i=0: p → t (map both)
+    //  i=1: a → i (map both)
+    //  i=2: p → t (consistent)
+    //  i=3: e → l (map both)
+    //  i=4: r → e (map both)
+    //
+    //  All checks passed → return true
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ One-to-one character mapping
+    //  ✔ O(1) space using fixed-size arrays
+    //  ✔ Faster than HashMap-based solution
+    //  ✔ Early exit on mismatch
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)   (constant size arrays)
+    //
+    // =========================================================================
+    public boolean isIsomorphic(String s, String t) {
+
+        // Mapping arrays for ASCII characters
+        int[] map1 = new int[256]; // s → t
+        int[] map2 = new int[256]; // t → s
+
+        // Initialize all entries to -1 (unmapped)
+        Arrays.fill(map1, -1);
+        Arrays.fill(map2, -1);
+
+        int n = s.length();
+
+        // Traverse both strings together
+        for (int i = 0; i < n; i++) {
+
+            int c1 = s.charAt(i); // ASCII value of character in s
+            int c2 = t.charAt(i); // ASCII value of character in t
+
+            // If both characters are unmapped, create new mapping
+            if (map1[c1] == -1 && map2[c2] == -1) {
+                map1[c1] = c2;
+                map2[c2] = c1;
+            }
+            // If mapping exists but is inconsistent → not isomorphic
+            else if (map1[c1] != c2 || map2[c2] != c1) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
