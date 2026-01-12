@@ -1,0 +1,118 @@
+import java.util.Arrays;
+
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Longest Common Prefix (Sorting Based Approach)
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given an array of strings `strs`, find the longest common prefix
+    //  shared by all strings.
+    //
+    //  If there is no common prefix, return an empty string "".
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/longest-common-prefix/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • If all strings share a common prefix, then:
+    //      → The first and last strings (after sorting) must also share it.
+    //  • Sorting places lexicographically similar strings close together.
+    //  • Comparing only the first and last strings is sufficient.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Sort the array of strings lexicographically.
+    //  2. Take the first and last strings.
+    //  3. Compare characters one by one.
+    //  4. Stop at the first mismatch.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC ⭐:
+    //  --------------------------
+    //  • Why sorting works:
+    //    Lexicographical order groups similar prefixes together.
+    //
+    //  • Why only compare first and last:
+    //    They have the maximum possible difference.
+    //    If these two match, all middle strings must match.
+    //
+    //  • `Math.min(first.length(), last.length())`:
+    //    Prevents index out-of-bounds when one string is shorter.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      ["flower", "flow", "flight"]
+    //
+    //  After sorting:
+    //      ["flight", "flow", "flower"]
+    //
+    //  first = "flight"
+    //  last  = "flower"
+    //
+    //  Output:
+    //      "fl"
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  i = 0 → 'f' == 'f' → add
+    //  i = 1 → 'l' == 'l' → add
+    //  i = 2 → 'i' != 'o' → stop
+    //
+    //  Result → "fl"
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Simple and elegant logic
+    //  ✔ Only two strings compared
+    //  ✔ Early termination on mismatch
+    //  ✔ Easy to explain in interviews
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n log n)  → due to sorting
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)        → ignoring sort internal space
+    //
+    // =========================================================================
+    public String longestCommonPrefix(String[] strs) {
+
+        // Sort strings lexicographically
+        Arrays.sort(strs);
+
+        // First and last strings after sorting
+        String first = strs[0];
+        String last = strs[strs.length - 1];
+
+        StringBuilder res = new StringBuilder();
+
+        // Compare up to the shortest string length
+        int n = Math.min(first.length(), last.length());
+
+        for (int i = 0; i < n; i++) {
+
+            // Stop if characters mismatch
+            if (first.charAt(i) != last.charAt(i)) {
+                return res.toString();
+            }
+
+            // Append matching character
+            res.append(first.charAt(i));
+        }
+
+        return res.toString();
+    }
+}
