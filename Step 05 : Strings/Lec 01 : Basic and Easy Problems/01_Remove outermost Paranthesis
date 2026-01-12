@@ -1,0 +1,69 @@
+// =========================================================================
+    //  TITLE:
+    //  Remove Outermost Parentheses
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a valid parentheses string `s`,
+    //  remove the outermost parentheses of every primitive substring.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Use a counter to track current nesting depth.
+    //  • Outermost parentheses occur at:
+    //      - '(' when depth == 0
+    //      - ')' when depth == 1
+    //  • These outermost brackets must be skipped.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Initialize counter = 0.
+    //  2. Traverse the string character by character.
+    //  3. For each character:
+    //      • Decrement counter first if ')'.
+    //      • Add character only if counter != 0.
+    //      • Increment counter if '('.
+    //
+    // =========================================================================
+    //  ⭐ SPECIAL NOTE FOR ORDER SEQUENCE (VERY IMPORTANT ⭐):
+    //  -----------------------------------------------------
+    //  The following order of operations is CRUCIAL:
+    //
+    //      1) if (ch == ')') counter--;
+    //      2) if (counter != 0) add ch;
+    //      3) if (ch == '(') counter++;
+    //
+    //  WHY THIS ORDER WORKS:
+    //
+    //  • For ')' :
+    //      - It reduces nesting depth.
+    //      - The outermost ')' changes depth from 1 → 0.
+    //      - Decrementing FIRST ensures counter becomes 0
+    //        and the outermost ')' is NOT added.
+    //
+    //  • For '(' :
+    //      - It increases nesting depth.
+    //      - The outermost '(' changes depth from 0 → 1.
+    //      - Incrementing AFTER ensures counter is still 0
+    //        during the check, so the outermost '(' is skipped.
+    //
+    //  ❌ Changing this order will incorrectly include
+    //     outermost parentheses in the result.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:  "(()())"
+    //  Output: "()()"
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(n)   (output string)
+    //
+    // =========================================================================
