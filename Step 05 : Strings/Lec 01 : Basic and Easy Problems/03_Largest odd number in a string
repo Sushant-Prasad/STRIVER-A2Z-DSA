@@ -1,0 +1,121 @@
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Largest Odd Number in a String
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a string `num` representing a large non-negative integer,
+    //  return the largest-valued odd integer (as a string) that is a
+    //  non-empty substring of `num`.
+    //
+    //  If no odd number exists, return an empty string "".
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/largest-odd-number-in-string/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • An integer is odd if its LAST digit is odd.
+    //  • To get the largest odd number, we should keep the prefix as long
+    //    as possible.
+    //  • So we scan the string from RIGHT to LEFT.
+    //  • The first odd digit we find marks the end of the answer.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Start from the last character of the string.
+    //  2. Check if the digit is odd.
+    //  3. If yes, return substring from index 0 to that position.
+    //  4. If no odd digit is found, return empty string.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC (VERY IMPORTANT ⭐):
+    //  ------------------------------------------
+    //  1️⃣ Why check from right to left?
+    //     • We want the LONGEST prefix that ends with an odd digit.
+    //     • First odd digit from the right gives the largest value.
+    //
+    //  2️⃣ Why does (num.charAt(i) % 2 == 1) work?
+    //     • Characters store ASCII values.
+    //     • ASCII values of odd digits ('1','3','5','7','9') are odd.
+    //     • Example:
+    //         '5' → ASCII 53 → 53 % 2 = 1
+    //
+    //  3️⃣ substring(0, i+1):
+    //     • start index = 0 (inclusive)
+    //     • end index   = i+1 (exclusive)
+    //     • Extracts prefix ending at index i
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      num = "35427"
+    //
+    //  Output:
+    //      "35427"
+    //
+    //  Input:
+    //      num = "4206"
+    //
+    //  Output:
+    //      ""
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  num = "35427"
+    //
+    //  i = 4 → '7' → odd → return "35427"
+    //
+    //  num = "4206"
+    //
+    //  i = 3 → '6' → even
+    //  i = 2 → '0' → even
+    //  i = 1 → '2' → even
+    //  i = 0 → '4' → even
+    //
+    //  No odd digit → return ""
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ No integer conversion (handles very large numbers)
+    //  ✔ Single pass solution
+    //  ✔ Efficient substring usage
+    //  ✔ Clean and optimal logic
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)   (excluding output string)
+    //
+    // =========================================================================
+    public String largestOddNumber(String num) {
+
+        int n = num.length();
+
+        // Traverse from right to left
+        for (int i = n - 1; i >= 0; i--) {
+
+            // Check if digit is odd
+            if (num.charAt(i) % 2 == 1) {
+
+                // Return prefix ending at index i
+                return num.substring(0, i + 1);
+            }
+        }
+
+        // No odd digit found
+        return "";
+    }
+}
