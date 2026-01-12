@@ -1,0 +1,120 @@
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Maximum Nesting Depth of Parentheses
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a valid parentheses string `s`, return the maximum nesting depth
+    //  of parentheses.
+    //
+    //  The nesting depth is defined as the maximum number of parentheses
+    //  that are open at the same time.
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/maximum-nesting-depth-of-the-parentheses/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Each '(' increases the current depth.
+    //  • Each ')' decreases the current depth.
+    //  • The maximum depth reached at any point is the answer.
+    //
+    //  This works because the string is guaranteed to be a **valid**
+    //  parentheses string.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Initialize two variables:
+    //      • depth     → current nesting level
+    //      • maxDepth  → maximum nesting level seen so far
+    //  2. Traverse the string character by character.
+    //  3. If '(' is encountered:
+    //      • Increment depth
+    //      • Update maxDepth
+    //  4. If ')' is encountered:
+    //      • Decrement depth
+    //  5. Return maxDepth.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC ⭐:
+    //  --------------------------
+    //  • We update maxDepth **immediately after encountering '('**
+    //    because nesting increases at that point.
+    //  • We do NOT update maxDepth on ')'
+    //    because depth is decreasing.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      s = "(1+(2*3)+((8)/4))+1"
+    //
+    //  Output:
+    //      3
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  s = "((()))"
+    //
+    //  char | depth | maxDepth
+    //  ------------------------
+    //   (   |   1   |    1
+    //   (   |   2   |    2
+    //   (   |   3   |    3
+    //   )   |   2   |    3
+    //   )   |   1   |    3
+    //   )   |   0   |    3
+    //
+    //  Final Answer = 3
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Uses a simple counter
+    //  ✔ No stack required
+    //  ✔ Works in one pass
+    //  ✔ Valid parentheses guarantee correctness
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n)
+    //      - Single traversal of the string
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //      - Only two integer variables used
+    //
+    // =========================================================================
+    public int maxDepth(String s) {
+
+        int depth = 0;      // Current nesting depth
+        int maxDepth = 0;   // Maximum nesting depth seen so far
+
+        // Traverse the string
+        for (int i = 0; i < s.length(); i++) {
+
+            // Opening parenthesis increases depth
+            if (s.charAt(i) == '(') {
+                depth++;
+
+                // Update maximum depth if needed
+                maxDepth = Math.max(maxDepth, depth);
+            }
+
+            // Closing parenthesis decreases depth
+            if (s.charAt(i) == ')') {
+                depth--;
+            }
+        }
+
+        return maxDepth;
+    }
+}
