@@ -1,4 +1,6 @@
-// =========================================================================
+class Solution {
+
+   // =========================================================================
     //  TITLE:
     //  Remove Outermost Parentheses
     // =========================================================================
@@ -67,3 +69,48 @@
     //      O(n)   (output string)
     //
     // =========================================================================
+    public String removeOuterParentheses(String s) {
+
+        int counter = 0;                   // Tracks current nesting depth
+        StringBuilder ans = new StringBuilder(); // Efficient mutable result
+
+        // Traverse each character of the string
+        for (int i = 0; i < s.length(); i++) {
+
+            char ch = s.charAt(i);
+
+            // -------------------------------------------------------------
+            // Step 1: If current character is a closing bracket ')'
+            // -------------------------------------------------------------
+            // Decrease depth first.
+            // This ensures the outermost closing bracket (depth 1 → 0)
+            // is skipped and NOT added to the result.
+            if (ch == ')') {
+                counter--;
+            }
+
+            // -------------------------------------------------------------
+            // Step 2: Add character only if it is NOT outermost
+            // -------------------------------------------------------------
+            // counter != 0 means:
+            // • We are inside a primitive parentheses string
+            // • This character should be included in the result
+            if (counter != 0) {
+                ans.append(ch);
+            }
+
+            // -------------------------------------------------------------
+            // Step 3: If current character is an opening bracket '('
+            // -------------------------------------------------------------
+            // Increase depth after checking.
+            // This ensures the outermost opening bracket (depth 0 → 1)
+            // is skipped and NOT added to the result.
+            if (ch == '(') {
+                counter++;
+            }
+        }
+
+        // Convert StringBuilder to String and return
+        return ans.toString();
+    }
+}
