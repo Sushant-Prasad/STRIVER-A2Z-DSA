@@ -1,0 +1,63 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: Binary Search – Upper Bound
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      Given a sorted array 'arr' and a value 'target',
+     *      return the index of the **first element that is > target**.
+     *
+     *      If no such element exists, return arr.length.
+     *
+     *      This replicates the behavior of:
+     *          C++: upper_bound(arr, arr+n, target)
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *      We use binary search to find the earliest index where:
+     *
+     *              arr[mid] > target
+     *
+     *      If arr[mid] > target:
+     *            → mid is a valid answer
+     *            → but we still search the LEFT half
+     *
+     *      If arr[mid] <= target:
+     *            → the answer must be in the RIGHT half
+     *
+     *      'ans' is initialized to arr.length,
+     *      meaning "upper bound does not exist yet".
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:  O(log n)
+     *  SPACE COMPLEXITY: O(1)
+     * =========================================================================
+     */
+
+    int upperBound(int[] arr, int target) {
+
+        int s = 0;
+        int e = arr.length - 1;
+
+        int ans = arr.length;   // Default: upper bound is beyond the array
+
+        while (s <= e) {
+
+            int mid = s + (e - s) / 2;
+
+            // If arr[mid] is strictly greater than target, mid is a candidate
+            if (arr[mid] > target) {
+                ans = mid;     // store potential upper bound
+                e = mid - 1;   // search earlier positions
+            }
+            else {
+                s = mid + 1;   // search right half
+            }
+        }
+
+        return ans;
+    }
+}
