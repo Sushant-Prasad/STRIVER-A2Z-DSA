@@ -1,55 +1,131 @@
-//link:-https://leetcode.com/problems/move-zeroes/
+// Link: https://leetcode.com/problems/move-zeroes/
+
+/*
+===========================================================
+TITLE
+===========================================================
+Move Zeroes to End of Array (In-Place)
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+You are given an integer array `nums`.
+
+Your task is to move all `0`s to the **end of the array** while
+maintaining the **relative order of the non-zero elements**.
+
+The operation must be performed **in-place** without making a copy
+of the array.
+
+Input:
+• int[] nums → input array
+
+Output:
+• Modified array with all zeroes moved to the end
+
+Constraints:
+• 1 ≤ nums.length ≤ 10⁵
+• -2³¹ ≤ nums[i] ≤ 2³¹ - 1
+
+Edge Cases:
+• Array contains no zeroes
+• Array contains all zeroes
+• Single element array
+• Zeroes already at the end
+
+===========================================================
+INTUITION
+===========================================================
+• We want to keep the order of non-zero elements intact
+• Shifting elements one by one is inefficient
+• Using two pointers allows us to:
+  - Track where the next non-zero should go
+  - Perform swaps only when required
+• This results in an optimal O(n) solution
+
+===========================================================
+APPROACH (TWO-POINTER TECHNIQUE)
+===========================================================
+1) Use two pointers:
+   - `i` → scans each element
+   - `j` → position for next non-zero element
+
+2) Traverse the array:
+   - If nums[i] ≠ 0:
+       • Swap nums[i] and nums[j] (only if i ≠ j)
+       • Increment j
+
+3) After traversal:
+   - All non-zero elements are at the front in original order
+   - All zeroes are pushed to the end
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+nums = [0,1,0,3,12]
+
+Steps:
+i=1 → swap 1 with 0 → [1,0,0,3,12]
+i=3 → swap 3 with 0 → [1,3,0,0,12]
+i=4 → swap 12 with 0 → [1,3,12,0,0]
+
+Output:
+[1,3,12,0,0]
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n)
+• Single traversal of the array
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1)
+• In-place algorithm
+• No extra data structures used
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• Relative order of non-zero elements is preserved
+• Swap only when i ≠ j to avoid unnecessary operations
+• This approach is optimal and interview-preferred
+===========================================================
+*/
 
 class Solution {
-    /**
-     * Moves all zeroes in the array to the end while maintaining
-     * the relative order of non-zero elements.
-     *
-     * @param nums Input array of integers
-     *
-     * Approach:
-     * ---------
-     * 1. Use two pointers:
-     *    - `i` → scans every element of the array
-     *    - `j` → position where the next non-zero should be placed
-     *
-     * 2. Traverse the array:
-     *    - If nums[i] != 0:
-     *        → Swap nums[i] with nums[j] (if i != j)
-     *        → Increment j
-     *
-     * 3. By the end:
-     *    - All non-zero elements are shifted to the front in their
-     *      original order.
-     *    - All zeroes are pushed to the end.
-     *
-     * Example:
-     * --------
-     * nums = [0,1,0,3,12]
-     * Step 1: Swap 1 with 0 → [1,0,0,3,12]
-     * Step 2: Swap 3 with 0 → [1,3,0,0,12]
-     * Step 3: Swap 12 with 0 → [1,3,12,0,0]
-     *
-     * Final Output: [1,3,12,0,0]
-     *
-     * Time Complexity: O(n) → single traversal
-     * Space Complexity: O(1) → in-place
+
+    /*
+     * Moves all zeroes to the end of the array
+     * while maintaining order of non-zero elements
      */
     public void moveZeroes(int[] nums) {
+
         int n = nums.length;
-        if (n <= 1) return; // no operation needed
 
-        int j = 0; // index where next non-zero should be placed
+        // No operation needed for arrays of size 0 or 1
+        if (n <= 1) return;
 
+        // Pointer indicating position for next non-zero element
+        int j = 0;
+
+        // Traverse the array
         for (int i = 0; i < n; i++) {
+
+            // If current element is non-zero
             if (nums[i] != 0) {
-                // Swap nums[i] with nums[j] only if they are different positions
+
+                // Swap only if positions are different
                 if (i != j) {
                     int temp = nums[i];
                     nums[i] = nums[j];
                     nums[j] = temp;
                 }
-                j++; // move j forward for next non-zero
+
+                // Move j to next position
+                j++;
             }
         }
     }
