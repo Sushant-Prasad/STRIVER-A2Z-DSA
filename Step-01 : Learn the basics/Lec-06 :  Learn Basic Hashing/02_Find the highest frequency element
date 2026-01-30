@@ -1,7 +1,105 @@
 import java.util.*;
 
+/*
+===========================================================
+TITLE
+===========================================================
+Find the Most Frequent Element in an Array
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+You are given an integer array `arr`.
+
+Your task is to find the element that appears **maximum number of times** in the array.
+
+Rules:
+• If multiple elements have the same maximum frequency,
+  return the **largest element among them**.
+
+Input:
+• int[] arr → array of integers
+
+Output:
+• int → element with highest frequency
+  (largest value in case of tie)
+
+Constraints:
+• 1 ≤ arr.length ≤ 10⁵
+• -10⁹ ≤ arr[i] ≤ 10⁹
+
+Edge Cases:
+• Array with only one element
+• All elements unique
+• Multiple elements with same frequency
+• Negative values in array
+
+===========================================================
+INTUITION
+===========================================================
+• We need to count how many times each element appears
+• A HashMap efficiently stores frequency of elements
+• Once frequencies are known:
+  - First find the maximum frequency
+  - Then choose the largest element having that frequency
+
+===========================================================
+APPROACH
+===========================================================
+1) Use a HashMap to store frequency of each element
+2) Traverse the map to find the maximum frequency
+3) Traverse again to find the largest element
+   whose frequency equals the maximum frequency
+4) Return the selected element
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+arr = {1, 3, 2, 3, 4, 1, 3, 2}
+
+Frequencies:
+1 → 2
+2 → 2
+3 → 3
+4 → 1
+
+Maximum frequency = 3
+
+Output:
+3
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+• Counting frequency → O(n)
+• Traversing map     → O(n)
+• Overall            → O(n)
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(n)
+• HashMap stores frequency of elements
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• HashMap provides O(1) average lookup
+• Two-pass approach improves readability
+• Integer.MIN_VALUE used to handle negative values safely
+===========================================================
+*/
+
 class Solution {
+
+    /*
+     * Returns the element with highest frequency
+     * If multiple elements have same frequency,
+     * returns the largest element among them
+     */
     public int mostFreqEle(int[] arr) {
+
         // HashMap to store frequency of each element
         HashMap<Integer, Integer> map = new HashMap<>();
 
@@ -16,7 +114,8 @@ class Solution {
             maxFreq = Math.max(maxFreq, map.get(key));
         }
 
-        // Step 3: Among elements with max frequency, choose the largest element
+        // Step 3: Among elements with max frequency,
+        // choose the largest element
         int maxVal = Integer.MIN_VALUE;
         for (int key : map.keySet()) {
             if (map.get(key) == maxFreq) {
@@ -24,7 +123,7 @@ class Solution {
             }
         }
 
-        // Return the element with maximum frequency (and largest value in case of tie)
+        // Return the required element
         return maxVal;
     }
 }
