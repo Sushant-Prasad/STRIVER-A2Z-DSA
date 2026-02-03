@@ -1,0 +1,66 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: Search Insert Position   (LeetCode 35)
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      Given a sorted array 'nums' and a value 'target', return:
+     *         - the index of target if it exists in nums
+     *         - otherwise, the index where it should be inserted to
+     *           maintain sorted order
+     *
+     *      Example:
+     *          nums = [1,3,5,6], target = 5 → return 2
+     *          nums = [1,3,5,6], target = 2 → return 1
+     *
+     * =========================================================================
+     *  INTUITION (Lower Bound Concept):
+     *
+     *      This problem is exactly the same as finding the **lower bound**:
+     *      → first index where nums[index] >= target.
+     *
+     *      If such index exists → return it.
+     *      If not → target should be inserted at the end.
+     *
+     *      Binary search ensures O(log n) time.
+     *
+     * -------------------------------------------------------------------------
+     *  SPECIAL NOTE:
+     *
+     *      ans = nums.length
+     *
+     *      Why?
+     *        - If no element >= target is found in the array,
+     *          the correct insert position is at the end.
+     *        - So we initialize ans to the default "insert at the end".
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:  O(log n)
+     *  SPACE COMPLEXITY: O(1)
+     * =========================================================================
+     */
+
+    public int searchInsert(int[] nums, int target) {
+
+        int s = 0, e = nums.length - 1;
+        int ans = nums.length;   // default → insert at the end
+
+        while (s <= e) {
+
+            int mid = s + (e - s) / 2;
+
+            // nums[mid] is a candidate for lower bound (>= target)
+            if (nums[mid] >= target) {
+                ans = mid;     // potential insert position
+                e = mid - 1;   // try to find earlier valid index
+            }
+            else {
+                s = mid + 1;   // search right half
+            }
+        }
+
+        return ans;
+    }
+}
