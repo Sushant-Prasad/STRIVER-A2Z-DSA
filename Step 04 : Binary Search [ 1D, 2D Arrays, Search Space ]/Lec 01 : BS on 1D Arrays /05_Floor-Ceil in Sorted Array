@@ -1,0 +1,69 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: Find Floor of x in a Sorted Array
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      Given a sorted array 'arr' and a value 'x',
+     *      return the index of the **floor of x**.
+     *
+     *  FLOOR(x):
+     *      The largest element in the array that is <= x.
+     *
+     *  NOTE:
+     *      If there are multiple occurrences of the floor value,
+     *      return the **last (rightmost) occurrence**.
+     *
+     *      If no such value exists → return -1.
+     *
+     * =========================================================================
+     *  APPROACH (Binary Search – Find Last Occurrence of <= x)
+     * =========================================================================
+     *
+     *  We perform binary search and use the following logic:
+     *
+     *      1. If arr[mid] <= x:
+     *             arr[mid] is a valid floor candidate.
+     *             But maybe a larger floor exists to its RIGHT.
+     *             → store mid in ans
+     *             → move right:  s = mid + 1
+     *
+     *      2. If arr[mid] > x:
+     *             This value is too large.
+     *             → move left: e = mid - 1
+     *
+     *  When the loop ends, 'ans' contains:
+     *      - the index of the last occurrence of the floor
+     *      - or -1 if no element <= x exists.
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:  O(log n)
+     *  SPACE COMPLEXITY: O(1)
+     * =========================================================================
+     */
+
+    public int findFloor(int[] arr, int x) {
+
+        int s = 0;
+        int e = arr.length - 1;
+        int ans = -1;  // default if no floor exists
+
+        while (s <= e) {
+
+            int mid = s + (e - s) / 2;
+
+            // arr[mid] <= x → a valid floor candidate
+            if (arr[mid] <= x) {
+                ans = mid;     // store candidate
+                s = mid + 1;   // search for a larger floor to the right
+            }
+            else {
+                e = mid - 1;   // arr[mid] too large → search left
+            }
+        }
+
+        return ans;
+    }
+}
