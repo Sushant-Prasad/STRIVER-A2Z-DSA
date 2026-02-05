@@ -30,11 +30,11 @@ class Solution {
      *  SPECIAL NOTE:
      *
      *      ans = nums.length
-     *
-     *      Why?
+     *         Why?
      *        - If no element >= target is found in the array,
      *          the correct insert position is at the end.
      *        - So we initialize ans to the default "insert at the end".
+     *    
      *
      * =========================================================================
      *  TIME COMPLEXITY:  O(log n)
