@@ -1,0 +1,148 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: 34. Find First and Last Position of Element in Sorted Array
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      Given a sorted array 'nums' and an integer 'target',
+     *      return an array:
+     *
+     *          [first_position_of_target, last_position_of_target]
+     *
+     *      If target is not found, return [-1, -1].
+     *
+     * =========================================================================
+     *  INTUITION:
+     *      We perform two modified binary searches:
+     *
+     *          ✔ One to find the FIRST occurrence of target
+     *          ✔ One to find the LAST  occurrence of target
+     *
+     *      In normal binary search we stop when nums[mid] == target.
+     *      Here we keep searching to find both boundaries.
+     *
+     *      HOW?
+     *      -----
+     *      ➤ FIRST occurrence: 
+     *              move LEFT after finding target  → e = mid - 1
+     *
+     *      ➤ LAST occurrence:
+     *              move RIGHT after finding target → s = mid + 1
+     *
+     *      This guarantees correct handling of duplicates.
+     *
+     * =========================================================================
+     *  APPROACH EXPLANATION:
+     *
+     *      Step 1 → findFirstPos():
+     *          - Classic binary search
+     *          - When nums[mid] == target:
+     *                store mid
+     *                move left to check earlier positions
+     *
+     *      Step 2 → findLastPos():
+     *          - Same idea
+     *          - When nums[mid] == target:
+     *                store mid
+     *                move right to check later positions
+     *
+     *      Step 3 → return both results
+     *
+     * =========================================================================
+     *  EXAMPLE:
+     *      nums   = [5, 7, 7, 8, 8, 10]
+     *      target = 8
+     *
+     *      FIRST occurrence = index 3
+     *      LAST  occurrence = index 4
+     *
+     *      Output → [3, 4]
+     *
+     * =========================================================================
+     *  DRY RUN (for FIRST occurrence of 8):
+     *
+     *      nums = [5, 7, 7, 8, 8, 10], target = 8
+     *
+     *      s=0 e=5 → mid=2 → nums[2]=7  <8 → s=3
+     *      s=3 e=5 → mid=4 → nums[4]=8 ==8 → ans=4, e=3
+     *      s=3 e=3 → mid=3 → nums[3]=8 ==8 → ans=3, e=2
+     *
+     *      FIRST = 3
+     *
+     *  DRY RUN (for LAST occurrence of 8):
+     *
+     *      s=0 e=5 → mid=2 → nums[2]=7 <8 → s=3
+     *      s=3 e=5 → mid=4 → nums[4]=8 ==8 → ans=4, s=5
+     *      s=5 e=5 → mid=5 → nums[5]=10 >8 → e=4
+     *
+     *      LAST = 4
+     *
+     * =========================================================================
+     *  KEY POINTS:
+     *      ✔ Binary search must be modified, not stopped early
+     *      ✔ Searching LEFT gets FIRST occurrence
+     *      ✔ Searching RIGHT gets LAST occurrence
+     *      ✔ Works even with duplicates
+     *      ✔ Time complexity remains O(log n)
+     *      ✔ Space complexity is O(1)
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:  O(log n)
+     *  SPACE COMPLEXITY: O(1)
+     * =========================================================================
+     */
+
+    private static int findFirstPos(int[] nums, int target) {
+        int s = 0, e = nums.length - 1;
+        int ans = -1;
+
+        while (s <= e) {
+            int mid = s + (e - s) / 2;
+
+            if (nums[mid] == target) {
+                ans = mid;      // store candidate
+                e = mid - 1;    // continue searching LEFT
+            }
+            else if (target > nums[mid]) {
+                s = mid + 1;    // target is on the RIGHT
+            }
+            else {
+                e = mid - 1;    // target is on the LEFT
+            }
+        }
+
+        return ans;
+    }
+
+    private static int findLastPos(int[] nums, int target) {
+        int s = 0, e = nums.length - 1;
+        int ans = -1;
+
+        while (s <= e) {
+            int mid = s + (e - s) / 2;
+
+            if (nums[mid] == target) {
+                ans = mid;      // store candidate
+                s = mid + 1;    // continue searching RIGHT
+            }
+            else if (target > nums[mid]) {
+                s = mid + 1;    // target is on the RIGHT
+            }
+            else {
+                e = mid - 1;    // target is on the LEFT
+            }
+        }
+
+        return ans;
+    }
+
+    public int[] searchRange(int[] nums, int target) {
+
+        int leftMost  = findFirstPos(nums, target);
+        int rightMost = findLastPos(nums, target);
+
+        return new int[]{ leftMost, rightMost };
+    }
+}
