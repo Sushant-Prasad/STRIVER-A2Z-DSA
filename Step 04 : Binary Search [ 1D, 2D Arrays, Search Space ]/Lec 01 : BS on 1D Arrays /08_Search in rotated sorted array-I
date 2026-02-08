@@ -1,0 +1,174 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: Search in Rotated Sorted Array (LeetCode 33)
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      You are given an array 'nums' that is sorted ascending,
+     *      but rotated at an unknown pivot.
+     *
+     *      Example:
+     *        Original sorted array: [0,1,2,4,5,6,7]
+     *        Rotated:              [4,5,6,7,0,1,2]
+     *
+     *      You must return the index of 'target'.
+     *      If target is not found → return -1.
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *      A rotated sorted array looks like two sorted subarrays:
+     *
+     *          left  sorted part → nums[0 ... pivot-1]
+     *          right sorted part → nums[pivot ... n-1]
+     *
+     *      The pivot is the index of the **minimum element**.
+     *      Once we find the pivot, the array becomes two individually
+     *      sorted segments — so we can apply binary search on both.
+     *
+     * =========================================================================
+     *  APPROACH:
+     *
+     *      Step 1 → Find Pivot (minimum element index)
+     *          Use modified binary search:
+     *
+     *          while (l < r):
+     *              mid = (l + r) / 2
+     *
+     *              if nums[mid] > nums[r]:
+     *                    pivot is on RIGHT → l = mid + 1
+     *              else:
+     *                    pivot is on LEFT → r = mid
+     *
+     *          After loop, l == r → pivot index found.
+     *
+     *
+     *      Step 2 → Binary Search in two sorted halves:
+     *          1) Search [0 ... pivot-1]
+     *          2) Search [pivot ... n-1]
+     *
+     *      Step 3 → Return the index where target is found.
+     *
+     * =========================================================================
+     *  SPECIAL NOTES ABOUT PIVOT LOGIC:
+     *
+     *      WHY while(l < r)?
+     *          - We stop only when l == r, which points to minimum element.
+     *          - Using <= would break the logic.
+     *
+     *      WHY compare nums[mid] > nums[r]?
+     *
+     *          Case A: nums[mid] > nums[r]
+     *                Example: [4,5,6,7,0,1,2]
+     *                         mid= index of 6
+     *                         right end = 2
+     *                Since mid value is bigger than right value,
+     *                rotation happened to the RIGHT side.
+     *                → Minimum must be in right half.
+     *                → l = mid + 1
+     *
+     *          Case B: nums[mid] <= nums[r]
+     *                Minimum is on the LEFT side (could be mid itself).
+     *                → r = mid
+     *
+     * =========================================================================
+     *  EXAMPLE:
+     *
+     *      nums   = [4,5,6,7,0,1,2]
+     *      target = 0
+     *
+     *      Pivot = index 4 (value = 0)
+     *
+     *      Search left half [4,5,6,7] → not found
+     *      Search right half [0,1,2] → found at index 4
+     *
+     * =========================================================================
+     *  DRY RUN (pivot finding):
+     *
+     *      nums = [4,5,6,7,0,1,2]
+     *      l=0, r=6
+     *
+     *      mid=3 → nums[3]=7 > nums[6]=2 → l = 4
+     *      l=4, r=6
+     *
+     *      mid=5 → nums[5]=1 <= nums[6]=2 → r = 5
+     *      l=4, r=5
+     *
+     *      mid=4 → nums[4]=0 <= nums[5]=1 → r = 4
+     *
+     *      Now l == r == 4 → pivot found.
+     *
+     * =========================================================================
+     *  KEY POINTS:
+     *
+     *      ✔ Pivot = index of smallest element.
+     *      ✔ Array splits into two sorted halves.
+     *      ✔ Two binary searches guarantee O(log n) time.
+     *      ✔ Pivot-search loop uses l < r (not <=).
+     *      ✔ nums[mid] > nums[r] means pivot lies to the right.
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:
+     *      Pivot search  → O(log n)
+     *      Two binary searches → O(log n)
+     *      Total → O(log n)
+     *
+     *  SPACE COMPLEXITY:
+     *      O(1) — constant extra space
+     * =========================================================================
+     */
+
+
+    // -----------------------------------------------------------
+    // Step 1: Find pivot (minimum element index in rotated array)
+    // -----------------------------------------------------------
+    private static int findPivot(int[] nums) {
+        int n = nums.length;
+        int l = 0, r = n - 1;
+
+        while (l < r) { // stop when l == r
+            int mid = l + (r - l) / 2;
+
+            if (nums[mid] > nums[r]) {
+                l = mid + 1;      // minimum element is on RIGHT side
+            } else {
+                r = mid;          // minimum element is on LEFT side (may include mid)
+            }
+        }
+
+        return r; // or return l; both same here
+    }
+
+
+    // -----------------------------------------------------------
+    // Step 2: Standard binary search in sorted interval [s ... e]
+    // -----------------------------------------------------------
+    private static int binarySearch(int s, int e, int[] nums, int target) {
+        while (s <= e) {
+            int mid = s + (e - s) / 2;
+
+            if (nums[mid] == target) return mid;
+            else if (nums[mid] > target) e = mid - 1;
+            else s = mid + 1;
+        }
+        return -1;
+    }
+
+
+    // -----------------------------------------------------------
+    // Step 3: Search in rotated sorted array using pivot
+    // -----------------------------------------------------------
+    public int search(int[] nums, int target) {
+
+        int pivot = findPivot(nums);
+
+        // Try searching in left half [0 ... pivot-1]
+        int idx = binarySearch(0, pivot - 1, nums, target);
+        if (idx != -1) return idx;
+
+        // Try searching in right half [pivot ... end]
+        return binarySearch(pivot, nums.length - 1, nums, target);
+    }
+}
