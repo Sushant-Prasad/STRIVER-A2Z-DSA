@@ -1,0 +1,131 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: Search in Rotated Sorted Array II (with duplicates)
+     *         LeetCode 81
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      Given a rotated sorted array 'nums' (which MAY contain duplicates),
+     *      determine whether the target exists in the array.
+     *
+     *      Return:
+     *          true  → if target is found
+     *          false → otherwise
+     *
+     * =========================================================================
+     *  CHALLENGE:
+     *
+     *      Duplicates break the standard binary search pattern.
+     *      Example:
+     *          nums = [2,5,6,0,0,1,2]
+     *
+     *      Standard pivot logic fails when:
+     *          nums[mid] == nums[r]
+     *
+     *      Because we cannot determine which side is sorted.
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *      Step 1 → Find pivot (index of smallest element) using modified logic.
+     *      Step 2 → Apply binary search in one of the two sorted halves:
+     *                     [0 ... pivot-1]
+     *                     [pivot ... n-1]
+     *
+     * =========================================================================
+     *  SPECIAL NOTE FOR FINDING PIVOT:
+     *
+     *      We use:
+     *
+     *          if (nums[mid] > nums[r]) → minimum is on the RIGHT side
+     *          else → minimum is on LEFT side or is mid
+     *
+     *      But duplicates cause issues:
+     *
+     *          nums[mid] == nums[r]
+     *
+     *      The correct fix:
+     *
+     *          r--
+     *
+     *      But here we remove duplicates at boundaries using:
+     *
+     *          while(l < r && nums[l] == nums[l+1]) l++;
+     *          while(l < r && nums[r] == nums[r-1]) r--;
+     *
+     *      This safely shrinks duplicate boundaries so pivot search works.
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:
+     *      Worst Case: O(n)  
+     *          (when many duplicates cause linear scanning)
+     *
+     *      Average Case: O(log n)
+     *
+     *  SPACE COMPLEXITY: O(1)
+     *
+     * =========================================================================
+     */
+
+
+    /* ---------------------------------------------------------------
+     *  STEP 1: FIND PIVOT (minimum element index)
+     * --------------------------------------------------------------- */
+    private int findPivot(int[] nums) {
+        int l = 0, r = nums.length - 1;
+
+        while (l < r) {
+
+            // Skip duplicates from left boundary
+            while (l < r && nums[l] == nums[l + 1]) l++;
+
+            // Skip duplicates from right boundary
+            while (l < r && nums[r] == nums[r - 1]) r--;
+
+            int mid = l + (r - l) / 2;
+
+            if (nums[mid] > nums[r]) {
+                // Pivot must be in right sorted portion
+                l = mid + 1;
+            } else {
+                // Pivot is in left sorted portion (maybe mid)
+                r = mid;
+            }
+        }
+        return r; // l == r
+    }
+
+
+    /* ---------------------------------------------------------------
+     *  STEP 2: Standard Binary Search
+     * --------------------------------------------------------------- */
+    private boolean binarySearch(int s, int e, int[] nums, int target) {
+
+        while (s <= e) {
+            int mid = s + (e - s) / 2;
+
+            if (nums[mid] == target) return true;
+            else if (nums[mid] > target) e = mid - 1;
+            else s = mid + 1;
+        }
+
+        return false;
+    }
+
+
+    /* ---------------------------------------------------------------
+     *  STEP 3: Overall search logic
+     * --------------------------------------------------------------- */
+    public boolean search(int[] nums, int target) {
+
+        int pivot = findPivot(nums);
+
+        // Search left segment [0 ... pivot-1]
+        if (binarySearch(0, pivot - 1, nums, target)) return true;
+
+        // Search right segment [pivot ... n-1]
+        return binarySearch(pivot, nums.length - 1, nums, target);
+    }
+}
