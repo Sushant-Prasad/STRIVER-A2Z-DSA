@@ -1,0 +1,93 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: Find Minimum in Rotated Sorted Array (LeetCode 153)
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      You are given a rotated sorted array 'nums' (no duplicates).
+     *      The array was originally sorted in ascending order,
+     *      but rotated at some unknown pivot.
+     *
+     *      Example:
+     *          Original: [1,2,3,4,5]
+     *          Rotated:  [4,5,1,2,3]
+     *
+     *      Return the **minimum element** in the array.
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *      A rotated sorted array has a special property:
+     *
+     *          The minimum element is the pivot.
+     *
+     *      The array is made of two sorted parts:
+     *
+     *          [left sorted part] + [right sorted part starting at pivot]
+     *
+     *      We can find this pivot using binary search.
+     *
+     * =========================================================================
+     *  APPROACH:
+     *
+     *      Initialize:
+     *          l = 0, r = n - 1
+     *
+     *      While l < r:
+     *          mid = (l + r) / 2
+     *
+     *          Case 1: nums[mid] > nums[r]
+     *              → This means mid is in the LEFT sorted portion.
+     *              → Therefore, the pivot (minimum) is to the RIGHT.
+     *              → Move l = mid + 1
+     *
+     *          Case 2: nums[mid] <= nums[r]
+     *              → This means mid is in the RIGHT sorted portion,
+     *                OR it is the pivot itself.
+     *              → Move r = mid
+     *
+     *      When loop ends → l == r → index of minimum element.
+     *
+     *      Return nums[r].
+     *
+     * =========================================================================
+     *  SPECIAL NOTES:
+     *
+     *      ✔ The condition nums[mid] > nums[r] is crucial.
+     *        It helps determine which sorted section the mid belongs to.
+     *
+     *      ✔ We use while (l < r), not <=:
+     *        Because when l == r, we found the pivot.
+     *
+     *      ✔ nums[l] and nums[r] are equal at the end.
+     *
+     *      ✔ No duplicates → eliminates tricky cases.
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:   O(log n)
+     *  SPACE COMPLEXITY:  O(1)
+     * =========================================================================
+     */
+
+    public int findMin(int[] nums) {
+
+        int l = 0, r = nums.length - 1;
+
+        while (l < r) { // stop when l == r (pivot index)
+            int mid = l + (r - l) / 2;
+
+            if (nums[mid] > nums[r]) {
+                // Minimum is on the RIGHT side
+                l = mid + 1;
+            } else {
+                // Minimum is on the LEFT side (including mid)
+                r = mid;
+            }
+        }
+
+        // l == r == pivot index → return minimum value
+        return nums[r];
+    }
+}
