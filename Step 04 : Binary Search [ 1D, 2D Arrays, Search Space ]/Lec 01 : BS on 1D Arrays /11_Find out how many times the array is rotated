@@ -1,0 +1,77 @@
+class Solution {
+//link:-https://www.geeksforgeeks.org/problems/rotation4723/1
+    /*
+     * =========================================================================
+     *   TITLE: Find K Rotations (Index of Minimum Element)
+     *          GFG Problem: "Number of Rotations"
+     * =========================================================================
+     *
+     *   PROBLEM STATEMENT:
+     *       You are given a sorted array that has been rotated 'K' times.
+     *       Example:
+     *           Original: [1,2,3,4,5]
+     *           Rotated:  [4,5,1,2,3]
+     *
+     *       The number of rotations K is the index of the smallest element.
+     *       i.e., return index of minimum value in the array.
+     *
+     *       Example:
+     *           arr = [4,5,1,2,3]
+     *           Minimum = 1 at index 2 → so K = 2
+     *
+     * =========================================================================
+     *   INTUITION:
+     *
+     *       A rotated sorted array always consists of two sorted halves.
+     *       The smallest element is the pivot — the point where rotation occurs.
+     *
+     *       Use binary search to find the pivot:
+     *
+     *           Case 1: arr[mid] > arr[r]
+     *               → Pivot lies in the RIGHT half
+     *               → move left pointer to mid + 1
+     *
+     *           Case 2: arr[mid] <= arr[r]
+     *               → Pivot lies in LEFT half (possibly mid)
+     *               → move right pointer to mid
+     *
+     *       Continue until l == r → pivot index
+     *
+     * =========================================================================
+     *   SPECIAL NOTE:
+     *
+     *       - The condition (arr[mid] > arr[r]) is key.
+     *       - We use while(l < r) because once l == r,
+     *         both point to the minimum value.
+     *       - No duplicates are assumed in this problem.
+     *
+     * =========================================================================
+     *   TIME COMPLEXITY:  O(log n)
+     *   SPACE COMPLEXITY: O(1)
+     * =========================================================================
+     */
+
+    public int findKRotation(int arr[]) {
+
+        int l = 0, r = arr.length - 1;
+
+        // Binary search to find index of minimum element
+        while (l < r) {
+
+            int mid = l + (r - l) / 2;
+
+            // If middle element is greater than last element,
+            // then pivot lies in the right half.
+            if (arr[mid] > arr[r]) {
+                l = mid + 1;
+            }
+            // Otherwise, pivot lies in the left half (including mid)
+            else {
+                r = mid;
+            }
+        }
+
+        // l == r -> index of minimum element → number of rotations
+        return r;
+    }
+}
