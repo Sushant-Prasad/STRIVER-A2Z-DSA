@@ -1,0 +1,109 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: 540. Single Element in a Sorted Array
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      In a sorted array, every element appears exactly twice
+     *      except one element which appears only once.
+     *
+     *      Find and return that single element in O(log n) time
+     *      and O(1) space.
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *      Since the array is sorted and all elements (except one)
+     *      appear in pairs, the pattern is:
+     *
+     *         BEFORE single element: pairs start at even index
+     *         AFTER  single element: pairs start at odd index
+     *
+     *      Example:
+     *         nums = [1,1,2,3,3,4,4]
+     *                       ^
+     *                       single element
+     *
+     *      Use binary search to detect where this pattern breaks.
+     *
+     * =========================================================================
+     *  KEY LOGIC:
+     *
+     *      Let mid be the middle index.
+     *
+     *      Determine if the segment (mid → r) has even length:
+     *
+     *          boolean isEven = (r - mid) % 2 == 0;
+     *
+     *      Case 1: nums[mid] == nums[mid + 1]
+     *          → Pair starts at mid
+     *
+     *          If the right segment has EVEN length:
+     *              single element is on the RIGHT side → l = mid + 2
+     *
+     *          Else:
+     *              single element is on the LEFT side → r = mid - 1
+     *
+     *      Case 2: nums[mid] != nums[mid + 1]
+     *          → Pair does NOT start at mid → break happens here or earlier
+     *
+     *          If right segment has EVEN length:
+     *              single is on LEFT side → r = mid
+     *
+     *          Else:
+     *              single is on RIGHT side → l = mid + 1
+     *
+     * =========================================================================
+     *  SPECIAL NOTES:
+     *
+     *      ✔ Always compare mid with mid+1 (safe because loop ensures mid < r)
+     *      ✔ We shrink the search space until l == r
+     *      ✔ The remaining index l (or r) is the unique element
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:   O(log n)
+     *  SPACE COMPLEXITY:  O(1)
+     * =========================================================================
+     */
+
+    public int singleNonDuplicate(int[] nums) {
+
+        int l = 0, r = nums.length - 1;
+
+        while (l < r) {
+
+            int mid = l + (r - l) / 2;
+
+            // Check if (mid → r) segment length is even
+            boolean isEven = ((r - mid) % 2 == 0);
+
+            if (nums[mid] == nums[mid + 1]) {
+
+                // Pair starts at mid
+                if (isEven) {
+                    // Unique is in the RIGHT half
+                    l = mid + 2;
+                } else {
+                    // Unique is in the LEFT half
+                    r = mid - 1;
+                }
+
+            } else {
+
+                // Pair does NOT start at mid → the break is here or left
+                if (isEven) {
+                    // Unique lies on the LEFT side
+                    r = mid;
+                } else {
+                    // Unique lies on the RIGHT side
+                    l = mid + 1;
+                }
+            }
+        }
+
+        // l == r → unique element index
+        return nums[r];
+    }
+}
