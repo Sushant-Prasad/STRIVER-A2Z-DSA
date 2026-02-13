@@ -1,0 +1,82 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: 162. Find Peak Element
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      A peak element is an element that is strictly greater than its
+     *      neighbors. Given an array `nums`, return the index of any peak element.
+     *
+     *      Properties:
+     *          nums[i] ≠ nums[i+1]
+     *          Edges behave like:
+     *              nums[-1] = -∞
+     *              nums[n]  = -∞
+     *
+     *      Goal: Find ANY peak in O(log n) time.
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *      This problem can be solved using a binary search trick:
+     *
+     *      Compare nums[mid] and nums[mid + 1]
+     *
+     *          Case 1: nums[mid] < nums[mid + 1]
+     *              → We are on an ASCENDING slope
+     *              → A peak MUST exist on the RIGHT side
+     *              → Move l = mid + 1
+     *
+     *          Case 2: nums[mid] > nums[mid + 1]
+     *              → We are on a DESCENDING slope or peak itself
+     *              → A peak MUST exist on the LEFT side (including mid)
+     *              → Move r = mid
+     *
+     *      Why does this work?
+     *      -------------------------------------------
+     *      If the slope goes up (mid < mid+1), the array must peak later.
+     *      If the slope goes down (mid > mid+1), we already passed a peak or we are at one.
+     *
+     *      We shrink the search space until l == r, which is the index of a peak.
+     *
+     * =========================================================================
+     *  KEY OBSERVATION / TRICK:
+     *
+     *      You never need to check nums[mid - 1].
+     *      Just comparing mid and mid+1 is enough:
+     *
+     *          - If mid < mid+1 → go RIGHT
+     *          - If mid > mid+1 → go LEFT
+     *
+     *      Because any slope direction guarantees existence of a peak.
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:  O(log n)
+     *  SPACE COMPLEXITY: O(1)
+     * =========================================================================
+     */
+
+    public int findPeakElement(int[] nums) {
+
+        int l = 0, r = nums.length - 1;
+
+        while (l < r) {
+
+            int mid = l + (r - l) / 2;
+
+            // Ascending slope → peak is to the RIGHT
+            if (nums[mid] < nums[mid + 1]) {
+                l = mid + 1;
+            }
+            // Descending slope → peak is on LEFT (maybe mid)
+            else {
+                r = mid;
+            }
+        }
+
+        // Final position where l == r is a peak
+        return r;
+    }
+}
