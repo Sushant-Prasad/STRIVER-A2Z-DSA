@@ -1,0 +1,85 @@
+class Solution {
+//link:-https://leetcode.com/problems/sqrtx/submissions/1855157470/
+    /*
+     * =========================================================================
+     *  TITLE: 69. Sqrt(x) — Compute Integer Square Root Using Binary Search
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      Given a non-negative integer x, compute and return:
+     *
+     *          floor( sqrt(x) )
+     *
+     *      Requirements:
+     *          ✔ Must run in O(log x) time.
+     *          ✔ Cannot use built-in square root functions.
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *      We want the largest integer `k` such that:
+     *
+     *          k*k <= x
+     *
+     *      The answer is monotonic:
+     *
+     *          As k increases, k*k increases.
+     *
+     *      → This makes binary search the perfect solution.
+     *
+     * =========================================================================
+     *  KEY OBSERVATIONS:
+     *
+     *      ✔ If mid*mid == x → mid is the exact sqrt.
+     *      ✔ If mid*mid < x  → answer may be mid or on the RIGHT.
+     *      ✔ If mid*mid > x  → answer must be on the LEFT.
+     *
+     *      ⚠️ Important:
+     *      mid * mid may overflow 32-bit int when x is large (≈2e9)
+     *      Therefore:
+     *
+     *          long sqrt = (long) mid * mid;
+     *
+     *      must be used.
+     *
+     * =========================================================================
+     *  APPROACH (Binary Search):
+     *
+     *      Search space: [0 ... x]
+     *
+     *      When loop finishes:
+     *          l = first number whose square > x
+     *          r = last number whose square <= x → floor(sqrt(x))
+     *
+     *      So return r.
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:  O(log x)
+     *  SPACE COMPLEXITY: O(1)
+     * =========================================================================
+     */
+
+    public int mySqrt(int x) {
+
+        int l = 0, r = x;
+
+        while (l <= r) {
+
+            int mid = l + (r - l) / 2;
+
+            long sqrt = (long) mid * mid; // prevent overflow
+
+            if (sqrt == x)
+                return mid;
+
+            else if (sqrt > x)
+                r = mid - 1;   // mid is too large
+
+            else
+                l = mid + 1;   // mid is too small
+        }
+
+        // r is the largest mid where mid*mid <= x
+        return r;
+    }
+}
