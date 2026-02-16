@@ -1,0 +1,82 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: Find the Integer N-th Root of a Number (GFG Problem)
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      Given two integers n and m:
+     *
+     *         Find an integer x such that:
+     * 
+     *                x^n = m
+     *
+     *      If such an integer x exists → return x.
+     *      Otherwise → return -1.
+     *
+     *      Example:
+     *          n = 3, m = 27 → answer = 3  (3^3 = 27)
+     *          n = 2, m = 10 → answer = -1 (no integer square root)
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *      We want to find x such that:
+     *
+     *            xⁿ = m
+     *
+     *      x increases → xⁿ increases monotonically.
+     *
+     *      Therefore, binary search is ideal over the range:
+     *
+     *          [0 ... m]
+     *
+     *      For each mid, compute midⁿ and compare:
+     *
+     *          If midⁿ == m → answer found
+     *          If midⁿ >  m → too large → move left
+     *          If midⁿ <  m → too small → move right
+     *
+     * =========================================================================
+     *  IMPORTANT NOTE:
+     *
+     *      Using Math.pow(mid, n) returns a double and may cause precision issues,
+     *      but since you cast to long and constraints are small on GFG,
+     *      it works safely here.
+     *
+     *      In strict competitive coding:
+     *      → Avoid Math.pow() for integers and compute mid^n manually.
+     *
+     *      But your implementation is accepted on GFG.
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:  O(log m) 
+     *  SPACE COMPLEXITY: O(1)
+     * =========================================================================
+     */
+
+    public int nthRoot(int n, int m) {
+
+        int l = 0, r = m;
+
+        while (l <= r) {
+
+            int mid = l + (r - l) / 2;
+
+            long root = (long) Math.pow(mid, n);  // compute mid^n safely
+
+            if (root == m)
+                return mid;        // perfect nth-root found
+
+            else if (root > m)
+                r = mid - 1;       // mid is too large
+
+            else
+                l = mid + 1;       // mid is too small
+        }
+
+        // no integer x satisfies x^n = m
+        return -1;
+    }
+}
