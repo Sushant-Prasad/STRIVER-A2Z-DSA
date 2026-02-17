@@ -1,0 +1,113 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: 875. Koko Eating Bananas
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      Koko loves bananas. There are piles[] of bananas, and Koko eats
+     *      at a speed K bananas per hour.
+     *
+     *      In each hour, she chooses ONE pile and eats min(K, pileSize).
+     *      If a pile finishes, she moves to the next.
+     *
+     *      Given an integer h (total hours), return the MINIMUM integer K
+     *      such that she can eat all bananas within h hours.
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *      The more speed K increases → the fewer hours required.
+     *      This forms a monotonic function:
+     *
+     *             speed ↑ → hours needed ↓
+     *
+     *      Since this is monotonic, binary search fits perfectly.
+     *
+     * =========================================================================
+     *  SEARCH SPACE:
+     *
+     *      Minimum possible speed: 1 banana/hour
+     *
+     *      Maximum possible speed:
+     *          = max element in piles
+     *
+     *      Why?
+     *          Because eating faster than the biggest pile is never needed.
+     *
+     *      Hence:
+     *          int r = Arrays.stream(piles).max().getAsInt();
+     *
+     * =========================================================================
+     *  HELPER FUNCTION: canEatAll()
+     *
+     *      For each pile of size x:
+     *
+     *          hours needed = ceil(x / K)
+     *
+     *      Instead of using floating point ceil(),
+     *      we compute:
+     *
+     *          time += x / mid;
+     *          if (x % mid != 0) time++;   // add extra hour for leftover
+     *
+     * =========================================================================
+     *  WHY `if (x % mid != 0) time++;`
+     *
+     *      Example:
+     *          pile = 10, speed = 3
+     *
+     *          x / mid = 10 / 3 = 3 hours
+     *          leftover = 10 % 3 = 1
+     *
+     *          Since leftover > 0 → 1 more hour needed
+     *
+     *      This avoids using floating-point math.
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:
+     *      O(n · log(maxPile))
+     *
+     *  SPACE COMPLEXITY:
+     *      O(1)
+     * =========================================================================
+     */
+
+    private boolean canEatAll(int[] piles, int mid, int h) {
+        int time = 0;
+
+        for (int x : piles) {
+
+            // Hours needed = x / mid, plus one more if leftover exists
+            time += x / mid;
+            if (x % mid != 0) time++;   // leftover bananas need one more hour
+        }
+
+        return time <= h;
+    }
+
+
+    public int minEatingSpeed(int[] piles, int h) {
+
+        int l = 1;
+
+        // Max pile determines maximum needed speed
+        int r = Arrays.stream(piles).max().getAsInt();
+
+        while (l < r) {
+
+            int mid = l + (r - l) / 2;
+
+            // If speed 'mid' works, try smaller speeds
+            if (canEatAll(piles, mid, h))
+                r = mid;
+
+            // Otherwise increase speed
+            else
+                l = mid + 1;
+        }
+
+        return l; // minimum valid speed
+    }
+}
