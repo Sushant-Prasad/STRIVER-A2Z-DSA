@@ -1,0 +1,163 @@
+class Solution {
+
+    /*
+     * =========================================================================
+     *  TITLE: 1482 — Minimum Number of Days to Make m Bouquets
+     * =========================================================================
+     *
+     *  PROBLEM STATEMENT:
+     *      You are given:
+     *          bloomDay[] : array where bloomDay[i] = day the i-th flower blooms
+     *          m : number of bouquets needed
+     *          k : flowers required per bouquet (must be *consecutive*)
+     *
+     *      A bouquet can be made only when k adjacent flowers have bloomed.
+     *      Return the MINIMUM number of days required to make m bouquets.
+     *      If impossible → return -1.
+     *
+     * =========================================================================
+     *  INTUITION:
+     *
+     *      The number of bouquets we can make **increases** as the number of days increases:
+     *
+     *            more days → more flowers bloom → easier to form bouquets
+     *
+     *      This monotonic behavior allows **Binary Search on Days**.
+     *
+     * =========================================================================
+     *  APPROACH:
+     *
+     *      1️⃣ Step 1: Check basic feasibility  
+     *          - If total flowers required m*k > n, immediately return -1.
+     *
+     *      2️⃣ Step 2: Binary search on the answer  
+     *          - left  = 1  
+     *          - right = max(bloomDay)
+     *
+     *      3️⃣ Step 3: For each mid = (l+r)/2  
+     *          - Check if we can make at least m bouquets by day = mid.
+     *
+     *      4️⃣ Step 4: Feasibility check  
+     *          - Scan bloomDay[]  
+     *          - Count consecutive flowers with bloomDay[i] ≤ mid  
+     *          - When consecutiveCount == k → one bouquet formed
+     *
+     *      5️⃣ Step 5: Decide search direction  
+     *          - If we CAN make m bouquets → try fewer days (r = mid - 1)  
+     *          - If we CANNOT             → need more days (l = mid + 1)
+     *
+     *      6️⃣ Step 6: Return the minimum day found.
+     *
+     * =========================================================================
+     *  SPECIAL NOTE 1:  
+     *      Total flowers must be ≥ m*k, otherwise impossible.
+     *
+     * =========================================================================
+     *  SPECIAL NOTE 2 (Core Logic Explanation):
+     *
+     *      consecutiveCount++    if bloomDay[i] <= mid  
+     *      consecutiveCount = 0  if bloomDay[i] > mid   (sequence breaks)
+     *
+     *      If consecutiveCount == k → bouquet formed → reset count
+     *
+     * =========================================================================
+     *  EXAMPLE:
+     *
+     *      bloomDay = [1,10,3,10,2], m=3, k=1
+     *
+     *      Day 1 → 1 bouquet (fail)
+     *      Day 2 → 2 bouquets (fail)
+     *      Day 3 → 3 bouquets (success ✔)
+     *
+     *      Answer = 3
+     *
+     * =========================================================================
+     *  DRY RUN (for clarity):
+     *
+     *      bloomDay = [7,7,7,7,12,7,7], m=2, k=3
+     *
+     *      mid = 6  → 0 bouquets → fail  
+     *      mid = 9  → 1 bouquet  → fail  
+     *      mid = 12 → 2 bouquets → success ✔  
+     *
+     *      Answer = 12
+     *
+     * =========================================================================
+     *  KEY POINTS:
+     *
+     *      ✔ Binary search works because feasibility is monotonic  
+     *      ✔ Count consecutive bloomed flowers only  
+     *      ✔ Reset after each bouquet  
+     *      ✔ Upper bound = max(bloomDay)
+     *
+     * =========================================================================
+     *  TIME COMPLEXITY:
+     *      O(n * log(maxBloomDay))
+     *
+     *  SPACE COMPLEXITY:
+     *      O(1)
+     * =========================================================================
+     */
+
+
+    /* -------------------------------------------------------------------------
+     * Helper Function: Check if we can make 'm' bouquets by day = mid
+     * -------------------------------------------------------------------------
+     */
+    private boolean canMakeMBouquet(int[] bloomDay, int mid, int m, int k) {
+
+        int bouquetCount = 0;
+        int consecutiveCount = 0;
+
+        for (int day : bloomDay) {
+
+            // Flower has bloomed by 'mid' day
+            if (day <= mid) {
+                consecutiveCount++;
+            } else {
+                consecutiveCount = 0;  // break streak
+            }
+
+            // If we got k consecutive flowers → one bouquet formed
+            if (consecutiveCount == k) {
+                bouquetCount++;
+                consecutiveCount = 0; // reset to search for next bouquet
+            }
+        }
+
+        return bouquetCount >= m;
+    }
+
+
+    /* -------------------------------------------------------------------------
+     * MAIN FUNCTION: Binary search to find minimum number of days
+     * -------------------------------------------------------------------------
+     */
+    public int minDays(int[] bloomDay, int m, int k) {
+
+        // Impossible case: not enough total flowers
+        if ((long) m * k > bloomDay.length)
+            return -1;
+
+        int l = 1;
+        int r = Arrays.stream(bloomDay).max().getAsInt();  // latest possible bloom day
+        int minDays = -1;
+
+        while (l <= r) {
+
+            int mid = l + (r - l) / 2;
+
+            // If mid days are enough → try to minimize further
+            if (canMakeMBouquet(bloomDay, mid, m, k)) {
+                minDays = mid;
+                r = mid - 1;
+            }
+            // Otherwise try larger days
+            else {
+                l = mid + 1;
+            }
+        }
+
+        return minDays;
+    }
+}
