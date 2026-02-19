@@ -1,0 +1,144 @@
+import java.util.Arrays;
+
+// ============================================================================
+//  TITLE:
+//  Smallest Divisor Given a Threshold
+// ============================================================================
+//
+//  PROBLEM STATEMENT:
+//  ------------------
+//  You are given an array of positive integers `nums` and an integer `threshold`.
+//  Choose a positive integer divisor such that the sum of
+//      ceil(nums[i] / divisor)
+//  for all elements is less than or equal to `threshold`.
+//  Return the smallest such divisor.
+//
+// ============================================================================
+//  INTUITION:
+//  ----------
+//  • If we choose a very small divisor, each division result becomes large,
+//    causing the sum to exceed the threshold.
+//  • If we increase the divisor, the division results decrease.
+//  • This creates a monotonic relationship:
+//        divisor ↑  ⇒  sum ↓
+//
+//  Hence, we can efficiently search for the answer using Binary Search.
+//
+// ============================================================================
+//  APPROACH (BINARY SEARCH ON ANSWER):
+//  ----------------------------------
+//  1. Define the search space for divisor:
+//        • Minimum = 1
+//        • Maximum = max element in nums
+//  2. For a given divisor `mid`, check whether it is valid by:
+//        • Computing sum of ceil(nums[i] / mid)
+//  3. If sum ≤ threshold → try smaller divisor
+//     Else               → increase divisor
+//  4. Continue until the smallest valid divisor is found.
+//
+// ============================================================================
+//  EXAMPLE:
+//  --------
+//      nums = [1, 2, 5, 9]
+//      threshold = 6
+//
+//      Possible divisors:
+//      divisor = 5 → ceil(1/5)+ceil(2/5)+ceil(5/5)+ceil(9/5)
+//                  = 1 + 1 + 1 + 2 = 5  (valid)
+//      divisor = 4 → 1 + 1 + 2 + 3 = 7  (invalid)
+//
+//      Answer = 5
+//
+// ============================================================================
+//  DRY RUN:
+//  --------
+//      nums = [1, 2, 5, 9], threshold = 6
+//
+//      l = 1, r = 9
+//      mid = 5 → sum = 5  → valid → r = 5
+//
+//      l = 1, r = 5
+//      mid = 3 → sum = 8  → invalid → l = 4
+//
+//      l = 4, r = 5
+//      mid = 4 → sum = 7  → invalid → l = 5
+//
+//      l == r → answer = 5
+//
+// ============================================================================
+//  KEY POINTS:
+//  ------------
+//  ✔ Uses Binary Search on the answer space
+//  ✔ Validation function uses ceiling division
+//  ✔ Efficient even for large inputs
+//  ✔ Classic LeetCode + interview problem
+//
+// ============================================================================
+//  SPECIAL NOTES FOR LOGIC:
+//  ------------------------
+//  • Ceiling division is implemented using:
+//        x / mid + (x % mid != 0 ? 1 : 0)
+//  • If nums.length == threshold, each element must contribute exactly 1,
+//    so divisor must be max(nums)
+//  • Monotonic nature of sum allows binary search
+//
+// ============================================================================
+//  TIME COMPLEXITY:
+//      O(n log max(nums))
+//
+//  SPACE COMPLEXITY:
+//      O(1)
+//
+// ============================================================================
+//
+
+class Solution {
+
+    // ------------------------------------------------------------------------
+    // METHOD NAME: findSumByD
+    // PURPOSE    : Checks if a given divisor satisfies the threshold condition
+    // ------------------------------------------------------------------------
+    private boolean findSumByD(int[] nums, int mid, int threshold) {
+
+        int sum = 0;
+
+        // Calculate sum of ceil(nums[i] / mid)
+        for (int x : nums) {
+            sum += x / mid;
+            if (x % mid != 0) {
+                sum++;  // ceiling effect
+            }
+        }
+
+        return sum <= threshold;
+    }
+
+    // ------------------------------------------------------------------------
+    // METHOD NAME: smallestDivisor
+    // PURPOSE    : Returns the smallest valid divisor
+    // ------------------------------------------------------------------------
+    public int smallestDivisor(int[] nums, int threshold) {
+
+        int l = 1;                                     // minimum divisor
+        int r = Arrays.stream(nums).max().getAsInt(); // maximum divisor
+
+        // Edge case optimization
+        if (nums.length == threshold) {
+            return r;
+        }
+
+        // Binary Search
+        while (l < r) {
+
+            int mid = l + (r - l) / 2;
+
+            if (findSumByD(nums, mid, threshold)) {
+                r = mid;        // try smaller divisor
+            } else {
+                l = mid + 1;    // increase divisor
+            }
+        }
+
+        return r;
+    }
+}
