@@ -1,0 +1,128 @@
+import java.util.Arrays;
+
+// ============================================================================
+//  TITLE:
+//  Capacity To Ship Packages Within D Days
+// ============================================================================
+//
+//  PROBLEM STATEMENT:
+//  ------------------
+//  You are given an array `weights` where weights[i] is the weight of the i-th
+//  package. Packages must be shipped in order within `days` days.
+//  Each day, the ship has a fixed capacity.
+//
+//  Find the minimum ship capacity required so that all packages can be shipped
+//  within the given number of days.
+//
+// ============================================================================
+//  INTUITION:
+//  ----------
+//  • If ship capacity is too small → packages take more days.
+//  • If ship capacity is large → packages can be shipped faster.
+//  • Capacity vs days forms a MONOTONIC relationship.
+//
+//  Hence, we apply **Binary Search on the answer (capacity)**.
+//
+// ============================================================================
+//  APPROACH (BINARY SEARCH ON ANSWER):
+//  ----------------------------------
+//  1. Define search space for ship capacity.
+//  2. For a given capacity, check if shipping is possible in ≤ days.
+//  3. Use binary search to minimize capacity.
+//
+// ============================================================================
+//  SEARCH SPACE EXPLANATION:
+//  ------------------------
+//  int l = max(weights)  → minimum possible capacity
+//      • A ship must at least carry the heaviest package.
+//
+//  int r = sum(weights) → maximum possible capacity
+//      • Ship everything in one day.
+//
+// ============================================================================
+//  TIME COMPLEXITY:
+//      O(n log(sum(weights)))
+//
+//  SPACE COMPLEXITY:
+//      O(1)
+//
+// ============================================================================
+//
+
+class Solution {
+
+    // ------------------------------------------------------------------------
+    // METHOD NAME: canShip
+    // PURPOSE    : Checks if packages can be shipped within `days`
+    //              using ship capacity = mid
+    // ------------------------------------------------------------------------
+    private boolean canShip(int[] nums, int mid, int days) {
+
+        int dayToShip = 1;   // Start shipping from day 1
+        int sum = 0;         // Current day's total weight
+
+        // --------------------------------------------------------------------
+        // LOGIC EXPLANATION (IMPORTANT):
+        // --------------------------------------------------------------------
+        // For each package:
+        //
+        // 1. If adding the current package exceeds the ship's capacity:
+        //      → We must ship this package on the NEXT DAY
+        //      → Increase day count
+        //      → Reset daily sum to current package weight
+        //
+        // 2. Else:
+        //      → Load package on the same day
+        //      → Add its weight to current day's sum
+        //
+        // This ensures:
+        //  • Packages remain in order
+        //  • Each day’s load never exceeds capacity
+        // --------------------------------------------------------------------
+        for (int x : nums) {
+            if (sum + x > mid) {
+                dayToShip++;   // Need one more day
+                sum = x;       // Start new day with current package
+            } else {
+                sum += x;      // Add package to current day
+            }
+        }
+
+        // Return true if shipping completed within allowed days
+        return dayToShip <= days;
+    }
+
+    // ------------------------------------------------------------------------
+    // METHOD NAME: shipWithinDays
+    // PURPOSE    : Finds minimum ship capacity
+    // ------------------------------------------------------------------------
+    public int shipWithinDays(int[] weights, int days) {
+
+        // --------------------------------------------------------------------
+        // SEARCH SPACE INITIALIZATION (IMPORTANT):
+        // --------------------------------------------------------------------
+        // Minimum capacity = heaviest package (must carry at least this much)
+        // Maximum capacity = sum of all packages (ship everything in one day)
+        // --------------------------------------------------------------------
+        int l = Arrays.stream(weights).max().getAsInt();
+        int r = Arrays.stream(weights).sum();
+
+        // Binary Search
+        while (l < r) {
+
+            int mid = l + (r - l) / 2;
+
+            // If capacity works, try smaller one
+            if (canShip(weights, mid, days)) {
+                r = mid;
+            }
+            // Otherwise, increase capacity
+            else {
+                l = mid + 1;
+            }
+        }
+
+        // l (or r) is the minimum valid ship capacity
+        return r;
+    }
+}
