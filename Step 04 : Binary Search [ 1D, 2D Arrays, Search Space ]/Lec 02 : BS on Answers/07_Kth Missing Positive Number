@@ -1,0 +1,214 @@
+method-1
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Find Kth Missing Positive Number
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  You are given a strictly increasing array `arr` of positive integers.
+    //  Find the k-th positive integer that is missing from this array.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  We simulate counting positive numbers starting from 1.
+    //  • If the number exists in the array → move forward in array
+    //  • If the number is missing → decrement k
+    //  When k becomes 0, the current number is the answer.
+    //
+    // =========================================================================
+    //  APPROACH (LINEAR SCAN):
+    //  ----------------------
+    //  1. Use a pointer `i` to traverse the array.
+    //  2. Use a variable `num` to represent current positive number.
+    //  3. Compare `num` with arr[i]:
+    //        • If equal → number exists, move i forward
+    //        • Else     → number is missing, decrement k
+    //  4. Continue until either array ends or k becomes 0.
+    //  5. If array ends and k > 0, keep counting missing numbers.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //      arr = [2, 3, 4, 7, 11], k = 5
+    //
+    //      Missing numbers: 1, 5, 6, 8, 9
+    //      Answer = 9
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //      arr = [2,3,4], k = 2
+    //
+    //      num=1 → missing → k=1
+    //      num=2 → present → i++
+    //      num=3 → present → i++
+    //      num=4 → present → i++
+    //      num=5 → missing → k=0 → answer = 5
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Works without extra space
+    //  ✔ Simple simulation logic
+    //  ✔ Handles missing numbers beyond array range
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC:
+    //  ------------------------
+    //  • `num` always represents the current positive number being checked
+    //  • `i` moves only when the number exists in the array
+    //  • Final answer is (num - 1) because `num` is incremented after last check
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n + k)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+    public int findKthPositive(int[] arr, int k) {
+
+        int i = 0;                 // pointer for array
+        int n = arr.length;        // size of array
+        int num = 1;               // current positive number
+
+        // Traverse array while counting missing numbers
+        while (i < n && k > 0) {
+
+            // If current number exists in array
+            if (arr[i] == num) {
+                i++;               // move to next array element
+            }
+            // If current number is missing
+            else {
+                k--;               // one missing number found
+            }
+
+            num++;                 // move to next positive number
+        }
+
+        // If k is still not zero, missing numbers are beyond array range
+        while (k != 0) {
+            k--;
+            num++;
+        }
+
+        // num is incremented once extra, so return num - 1
+        return num - 1;
+    }
+}
+method-2
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Find Kth Missing Positive Number (Binary Search)
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  You are given a strictly increasing array `arr` of positive integers.
+    //  Find the k-th positive integer that is missing from this array.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  In a perfect array without missing numbers:
+    //      value at index i should be (i + 1)
+    //
+    //  If arr[i] > (i + 1), then some numbers are missing before index i.
+    //  Number of missing positives before arr[i] is:
+    //      missing = arr[i] - (i + 1)
+    //
+    //  As index increases, missing count only increases → monotonic property.
+    //  Hence, binary search can be applied.
+    //
+    // =========================================================================
+    //  APPROACH (BINARY SEARCH ON INDEX):
+    //  ----------------------------------
+    //  1. Perform binary search on array indices.
+    //  2. At each mid index, compute:
+    //        missing = arr[mid] - (mid + 1)
+    //  3. If missing < k:
+    //        → k-th missing number is on the right side.
+    //        → move left boundary to mid + 1.
+    //     Else:
+    //        → k-th missing number is on the left side.
+    //        → move right boundary to mid - 1.
+    //  4. After binary search ends, the answer is:
+    //        l + k
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //      arr = [2, 3, 4, 7, 11]
+    //      k = 5
+    //
+    //      Missing numbers = [1, 5, 6, 8, 9]
+    //      Answer = 9
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //      arr = [2, 3, 4, 7, 11], k = 5
+    //
+    //      l = 0, r = 4
+    //      mid = 2 → arr[2]=4 → missing = 4 - 3 = 1 < 5 → l = 3
+    //
+    //      mid = 3 → arr[3]=7 → missing = 7 - 4 = 3 < 5 → l = 4
+    //
+    //      mid = 4 → arr[4]=11 → missing = 11 - 5 = 6 ≥ 5 → r = 3
+    //
+    //      Loop ends → l = 4
+    //
+    //      Answer = l + k = 4 + 5 = 9
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Uses binary search for optimal performance
+    //  ✔ Missing count formula is crucial
+    //  ✔ Works even when k-th missing number is beyond array range
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC:
+    //  ------------------------
+    //  • arr[mid] - (mid + 1) gives number of missing positives before mid
+    //  • `l` ends at the index where k-th missing number should be placed
+    //  • Final answer is calculated using index + k
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(log n)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+    public int findKthPositive(int[] arr, int k) {
+
+        int l = 0;                  // left boundary (index)
+        int r = arr.length - 1;     // right boundary (index)
+
+        // Binary search on indices
+        while (l <= r) {
+
+            int mid = l + (r - l) / 2;
+
+            // Number of missing positive integers before arr[mid]
+            if (arr[mid] - (mid + 1) < k) {
+                l = mid + 1;        // move right
+            } else {
+                r = mid - 1;        // move left
+            }
+        }
+
+        // l is the position where the k-th missing number lies
+        return l + k;
+    }
+}
