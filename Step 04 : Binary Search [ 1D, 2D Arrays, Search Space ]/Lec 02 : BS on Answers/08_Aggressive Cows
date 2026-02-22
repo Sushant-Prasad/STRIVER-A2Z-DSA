@@ -1,0 +1,145 @@
+import java.util.Arrays;
+
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Aggressive Cows Problem
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  You are given positions of stalls along a line and an integer `k`
+    //  representing the number of cows.
+    //
+    //  Place `k` cows in the stalls such that the minimum distance between
+    //  any two cows is maximized.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • If we try a very small distance between cows, placement is easy.
+    //  • If we try a very large distance, placement may become impossible.
+    //  • Feasibility of placing cows is MONOTONIC with respect to distance.
+    //
+    //  Therefore, we apply **Binary Search on the answer (distance)**.
+    //
+    // =========================================================================
+    //  APPROACH (BINARY SEARCH + GREEDY):
+    //  ---------------------------------
+    //  Step 1: Sort the stall positions.
+    //
+    //  Step 2: Define the search space for minimum distance:
+    //      • Minimum distance (l) = 1
+    //      • Maximum distance (r) = last stall - first stall
+    //
+    //  Step 3: For a guessed distance `mid`:
+    //      • Check if we can place all `k` cows such that
+    //        the distance between any two cows is at least `mid`.
+    //
+    //  Step 4:
+    //      • If placement is possible → try to maximize distance (move right).
+    //      • If not possible          → reduce distance (move left).
+    //
+    // =========================================================================
+    //  GREEDY PLACEMENT LOGIC:
+    //  -----------------------
+    //  • Always place the first cow at the first stall.
+    //  • For each next stall:
+    //        - Place a cow only if the distance from last placed cow ≥ mid.
+    //  • Count how many cows can be placed.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //      stalls = [1, 2, 4, 8, 9], k = 3
+    //
+    //      Possible placements:
+    //      Distance = 3 → YES (1, 4, 8)
+    //      Distance = 4 → NO
+    //
+    //      Answer = 3
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //      stalls = [1, 2, 4, 8, 9], k = 3
+    //
+    //      l = 1, r = 8
+    //      mid = 4 → not possible → r = 3
+    //      mid = 2 → possible     → ans = 2, l = 3
+    //      mid = 3 → possible     → ans = 3, l = 4
+    //
+    //      l > r → stop → answer = 3
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Binary Search on answer
+    //  ✔ Greedy feasibility check
+    //  ✔ Sorting is mandatory
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n log(maxDistance))
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+
+    // -------------------------------------------------------------------------
+    // METHOD NAME: isPossible
+    // PURPOSE    : Checks if k cows can be placed with at least `mid` distance
+    // -------------------------------------------------------------------------
+    private boolean isPossible(int[] stalls, int k, int mid) {
+
+        int c = 1;                 // First cow placed at first stall
+        int prevCow = stalls[0];   // Position of last placed cow
+
+        for (int i = 1; i < stalls.length; i++) {
+
+            int dist = stalls[i] - prevCow;
+
+            // Place cow if distance condition is satisfied
+            if (dist >= mid) {
+                prevCow = stalls[i];
+                c++;
+            }
+        }
+
+        // Check if we placed all k cows
+        return c >= k;
+    }
+
+    // -------------------------------------------------------------------------
+    // METHOD NAME: aggressiveCows
+    // PURPOSE    : Returns the maximum minimum distance possible
+    // -------------------------------------------------------------------------
+    public int aggressiveCows(int[] stalls, int k) {
+
+        // Step 1: Sort stall positions
+        Arrays.sort(stalls);
+
+        // Step 2: Define binary search boundaries
+        int l = 1;
+        int r = stalls[stalls.length - 1] - stalls[0];
+        int ans = 0;
+
+        // Step 3: Binary search on distance
+        while (l <= r) {
+
+            int mid = l + (r - l) / 2;
+
+            // Step 4: Check feasibility
+            if (isPossible(stalls, k, mid)) {
+                ans = mid;        // store current valid distance
+                l = mid + 1;      // try for larger distance
+            } else {
+                r = mid - 1;      // reduce distance
+            }
+        }
+
+        return ans;
+    }
+}
