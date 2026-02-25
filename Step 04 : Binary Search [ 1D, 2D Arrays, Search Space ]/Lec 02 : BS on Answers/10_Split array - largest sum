@@ -1,0 +1,124 @@
+import java.util.Arrays;
+
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Split Array Largest Sum
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  You are given an integer array `nums` and an integer `k`.
+    //  Split the array into `k` or fewer non-empty contiguous subarrays.
+    //
+    //  The goal is to minimize the largest sum among these subarrays.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • If we allow a very small maximum subarray sum, splitting may not be possible.
+    //  • If we allow a larger maximum sum, splitting becomes easier.
+    //  • Feasibility of splitting is monotonic with respect to the allowed sum.
+    //
+    //  Hence, we apply **Binary Search on the answer (maximum subarray sum)**.
+    //
+    // =========================================================================
+    //  APPROACH (BINARY SEARCH + GREEDY):
+    //  ---------------------------------
+    //  1. Define search space:
+    //        • Minimum = maximum element in the array
+    //        • Maximum = sum of all elements
+    //
+    //  2. For a given value `mid`, check:
+    //        • Can we split the array into ≤ k subarrays
+    //          such that each subarray sum ≤ mid?
+    //
+    //  3. If possible:
+    //        • Store mid as a candidate answer
+    //        • Try to minimize further (search left)
+    //     Else:
+    //        • Increase allowed sum (search right)
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //      nums = [7, 2, 5, 10, 8], k = 2
+    //
+    //      Possible split:
+    //      [7, 2, 5] | [10, 8]
+    //
+    //      Largest sum = 18 (minimum possible)
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Subarrays must be contiguous
+    //  ✔ Greedy splitting ensures feasibility check
+    //  ✔ Binary search guarantees optimal minimum result
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n log(sum(nums)))
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+
+
+    // -------------------------------------------------------------------------
+    // METHOD NAME: canSplit
+    // PURPOSE    : Checks whether array can be split into ≤ k subarrays
+    //              such that each subarray sum is at most `mid`
+    // -------------------------------------------------------------------------
+    private boolean canSplit(int[] nums, int mid, int k) {
+
+        int sum = 0;        // sum of current subarray
+        int subArray = 1;   // number of subarrays formed
+
+        // Traverse through the array
+        for (int i = 0; i < nums.length; i++) {
+
+            sum += nums[i];
+
+            // If current subarray sum exceeds mid,
+            // start a new subarray
+            if (sum > mid) {
+                subArray++;
+                sum = nums[i];
+            }
+        }
+
+        // Valid if we used k or fewer subarrays
+        return subArray <= k;
+    }
+
+    // -------------------------------------------------------------------------
+    // METHOD NAME: splitArray
+    // PURPOSE    : Finds the minimum possible largest subarray sum
+    // -------------------------------------------------------------------------
+    public int splitArray(int[] nums, int k) {
+
+        // Binary search boundaries
+        int l = Arrays.stream(nums).max().getAsInt(); // minimum possible sum
+        int r = Arrays.stream(nums).sum();            // maximum possible sum
+        int ans = r;
+
+        // Binary Search on maximum subarray sum
+        while (l <= r) {
+
+            int mid = l + (r - l) / 2;
+
+            // Check feasibility
+            if (canSplit(nums, mid, k)) {
+                ans = mid;      // store valid answer
+                r = mid - 1;    // try smaller maximum sum
+            } else {
+                l = mid + 1;    // increase allowed sum
+            }
+        }
+
+        return ans;
+    }
+}
