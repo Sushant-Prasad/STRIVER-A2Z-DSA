@@ -1,0 +1,141 @@
+import java.util.Arrays;
+//link:-https://www.geeksforgeeks.org/problems/the-painters-partition-problem1535/1
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Painter's Partition Problem – Minimum Time to Paint Boards
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  You are given an array `arr[]` where each element represents the length
+    //  of a board. There are `k` painters available.
+    //
+    //  Rules:
+    //  • Each painter paints contiguous boards only.
+    //  • Each painter paints at the same rate.
+    //  • A board cannot be split between painters.
+    //
+    //  Task:
+    //  Find the minimum time required to paint all boards such that the
+    //  maximum time taken by any painter is minimized.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • If we allow very little time per painter, painting may not be possible.
+    //  • If we allow more time, painting becomes easier.
+    //  • Feasibility of painting is monotonic with respect to allowed time.
+    //
+    //  Hence, we use **Binary Search on the Answer**.
+    //
+    // =========================================================================
+    //  APPROACH (BINARY SEARCH + GREEDY):
+    //  ---------------------------------
+    //  1. Define search space for time:
+    //        • Minimum time = maximum board length
+    //        • Maximum time = sum of all board lengths
+    //
+    //  2. For a given time `mid`:
+    //        • Check if all boards can be painted using ≤ k painters
+    //          such that no painter paints more than `mid` units.
+    //
+    //  3. If possible:
+    //        • Store `mid` as a candidate answer
+    //        • Try to reduce time (search left)
+    //     Else:
+    //        • Increase time (search right)
+    //
+    // =========================================================================
+    //  GREEDY LOGIC EXPLANATION:
+    //  ------------------------
+    //  • Assign boards sequentially to the current painter.
+    //  • If adding a board exceeds allowed time `mid`:
+    //        → Assign the board to a new painter
+    //        → Reset current sum
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //      arr = [10, 20, 30, 40], k = 2
+    //
+    //      Allocation:
+    //      Painter 1 → [10, 20, 30] (60)
+    //      Painter 2 → [40]
+    //
+    //      Minimum time = 60
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Boards must be painted contiguously
+    //  ✔ Greedy feasibility check
+    //  ✔ Binary search ensures optimal minimum time
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n log(sum(arr)))
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+
+
+    // -------------------------------------------------------------------------
+    // METHOD NAME: canPaint
+    // PURPOSE    : Checks if boards can be painted by at most `k` painters
+    //              such that maximum time per painter does not exceed `mid`
+    // -------------------------------------------------------------------------
+    private boolean canPaint(int[] arr, int mid, int k) {
+
+        int sum = 0;        // time accumulated by current painter
+        int painter = 1;    // number of painters used
+
+        for (int i = 0; i < arr.length; i++) {
+
+            sum += arr[i];
+
+            // If current painter exceeds allowed time,
+            // assign board to a new painter
+            if (sum > mid) {
+                painter++;
+                sum = arr[i];
+            }
+        }
+
+        // Painting is possible if painters used ≤ k
+        return painter <= k;
+    }
+
+    // -------------------------------------------------------------------------
+    // METHOD NAME: minTime
+    // PURPOSE    : Returns the minimum time required to paint all boards
+    // -------------------------------------------------------------------------
+    public int minTime(int[] arr, int k) {
+
+        // Edge case: more painters than boards
+        if (arr.length < k) return -1;
+
+        // Binary search boundaries
+        int l = Arrays.stream(arr).max().getAsInt(); // minimum possible time
+        int r = Arrays.stream(arr).sum();            // maximum possible time
+        int ans = r;
+
+        // Binary Search on time
+        while (l <= r) {
+
+            int mid = l + (r - l) / 2;
+
+            if (canPaint(arr, mid, k)) {
+                ans = mid;      // valid solution found
+                r = mid - 1;    // try smaller time
+            } else {
+                l = mid + 1;    // increase time
+            }
+        }
+
+        return ans;
+    }
+}
