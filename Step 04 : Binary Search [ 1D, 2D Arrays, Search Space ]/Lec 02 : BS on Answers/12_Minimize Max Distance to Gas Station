@@ -1,0 +1,141 @@
+class Solution {
+//link:-https://www.geeksforgeeks.org/problems/minimize-max-distance-to-gas-station/1
+    // =========================================================================
+    //  TITLE:
+    //  Minimize Maximum Distance to Gas Station
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  You are given positions of existing gas stations on a number line
+    //  (sorted in increasing order) and an integer K representing the number
+    //  of additional gas stations you can add.
+    //
+    //  You must add at most K stations such that the maximum distance between
+    //  any two adjacent gas stations is minimized.
+    //
+    //  Return this minimum possible maximum distance.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • If we allow a very large maximum distance, it is easy to satisfy.
+    //  • If we try to reduce the maximum distance, we need to add more stations.
+    //  • As maximum allowed distance decreases, required stations increase.
+    //
+    //  This gives a MONOTONIC relationship:
+    //      distance ↓  ⇒  required stations ↑
+    //
+    //  Hence, we use **Binary Search on the Answer (double value)**.
+    //
+    // =========================================================================
+    //  APPROACH (BINARY SEARCH + GREEDY COUNT):
+    //  ---------------------------------------
+    //  1. Binary search on the possible maximum distance.
+    //  2. For a guessed distance `mid`, check:
+    //        → How many additional gas stations are needed so that
+    //          every gap between adjacent stations is ≤ mid.
+    //  3. If required stations ≤ K:
+    //        → mid is feasible, try smaller distance.
+    //     Else:
+    //        → mid is not feasible, increase distance.
+    //
+    // =========================================================================
+    //  GREEDY LOGIC (VERY IMPORTANT):
+    //  ------------------------------
+    //  For each gap `dist` between two stations:
+    //
+    //      Number of stations needed =
+    //          ceil(dist / mid) - 1
+    //
+    //  Explanation:
+    //  • If dist = mid → no new station needed
+    //  • If dist = 2*mid → 1 station needed
+    //  • If dist = 3*mid → 2 stations needed
+    //
+    // =========================================================================
+    //  SPECIAL NOTE FOR THIS LINE:
+    //  ---------------------------
+    //      gas += Math.ceil(dist / mid) - 1;
+    //
+    //  • Math.ceil(dist / mid) gives number of segments needed
+    //  • Subtract 1 because existing endpoints already form one segment
+    //
+    // =========================================================================
+    //  PRECISION NOTE (VERY IMPORTANT):
+    //  --------------------------------
+    //      while (r - l >= 1e-6)
+    //
+    //  • The answer is a floating-point number
+    //  • Binary search stops when the interval becomes very small
+    //  • 1e-6 ensures accuracy up to 6 decimal places
+    //  • This is standard for floating-point binary search
+    //
+    // =========================================================================
+    //  BINARY SEARCH DIRECTION (CRITICAL):
+    //  ----------------------------------
+    //  if (isPossible(mid)) {
+    //      r = mid;   // try to minimize maximum distance
+    //  } else {
+    //      l = mid;   // distance too small, increase it
+    //  }
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n log(1 / ε))
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+
+
+    // -------------------------------------------------------------------------
+    // METHOD NAME: isPossible
+    // PURPOSE    : Checks if we can make the maximum distance <= mid
+    //              using at most k additional gas stations
+    // -------------------------------------------------------------------------
+    private boolean isPossible(int[] stations, double mid, int k) {
+
+        int gas = 0;  // total additional gas stations required
+
+        for (int i = 1; i < stations.length; i++) {
+
+            double dist = stations[i] - stations[i - 1];
+
+            // Count how many stations are needed in this gap
+            gas += Math.ceil(dist / mid) - 1;
+        }
+
+        // Feasible if we need at most k stations
+        return gas <= k;
+    }
+
+    // -------------------------------------------------------------------------
+    // METHOD NAME: minMaxDist
+    // PURPOSE    : Returns the minimum possible maximum distance
+    // -------------------------------------------------------------------------
+    public double minMaxDist(int[] stations, int K) {
+
+        double l = 0; 
+        double r = stations[stations.length - 1] - stations[0];
+        double ans = r;
+
+        // Precision-based binary search
+        while (r - l >= 1e-6) {
+
+            double mid = l + (r - l) / 2.0;
+
+            if (isPossible(stations, mid, K)) {
+                // mid is feasible → try smaller distance
+                ans = mid;
+                r = mid;
+            } else {
+                // mid too small → increase distance
+                l = mid;
+            }
+        }
+
+        return ans;
+    }
+}
