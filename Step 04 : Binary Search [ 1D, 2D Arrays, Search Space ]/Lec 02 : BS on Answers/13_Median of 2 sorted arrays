@@ -1,0 +1,397 @@
+//method-1
+import java.util.ArrayList;
+
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Median of Two Sorted Arrays (Brute Force Approach)
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given two sorted arrays nums1 and nums2 of sizes n and m respectively,
+    //  return the median of the two sorted arrays.
+    //
+    // =========================================================================
+    //  APPROACH 1: BRUTE FORCE USING MERGE
+    //  ----------------------------------
+    //  • Merge both sorted arrays into a single sorted list.
+    //  • Find the median from the merged list.
+    //
+    //  This approach is similar to the merge step of Merge Sort.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  Since both arrays are already sorted, we can efficiently merge them
+    //  in sorted order using two pointers.
+    //
+    //  Once merged, the median can be found directly based on the total size.
+    //
+    // =========================================================================
+    //  STEP-BY-STEP LOGIC:
+    //  -------------------
+    //  1. Use two pointers i and j for nums1 and nums2.
+    //  2. Compare elements and add the smaller one to a temporary list.
+    //  3. Add remaining elements from either array.
+    //  4. Calculate median:
+    //        • If size is odd → middle element
+    //        • If size is even → average of two middle elements
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //      nums1 = [1, 3]
+    //      nums2 = [2]
+    //
+    //      Merged = [1, 2, 3]
+    //      Median = 2
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Easy to understand
+    //  ✔ Uses extra space
+    //  ✔ Not optimal for large inputs
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n + m)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(n + m)
+    //
+    // =========================================================================
+
+
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+
+        int n = nums1.length;
+        int m = nums2.length;
+
+        // Temporary list to store merged sorted elements
+        ArrayList<Integer> temp = new ArrayList<>();
+
+        int i = 0, j = 0;
+
+        // Merge both arrays while both have elements
+        while (i < n && j < m) {
+            if (nums1[i] < nums2[j]) {
+                temp.add(nums1[i]);
+                i++;
+            } else {
+                temp.add(nums2[j]);
+                j++;
+            }
+        }
+
+        // Add remaining elements from nums1
+        while (i < n) {
+            temp.add(nums1[i]);
+            i++;
+        }
+
+        // Add remaining elements from nums2
+        while (j < m) {
+            temp.add(nums2[j]);
+            j++;
+        }
+
+        int size = temp.size();
+        int mid = size / 2;
+
+        // If total length is odd, return middle element
+        if (size % 2 != 0) {
+            return (double) temp.get(mid);
+        }
+
+        // If total length is even, return average of two middle elements
+        return (temp.get(mid) + temp.get(mid - 1)) / 2.0;
+    }
+}
+// method-2
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Median of Two Sorted Arrays
+    // =========================================================================
+    //
+    //  APPROACH 2:
+    //  Optimized Merge Without Extra Space
+    //
+    // =========================================================================
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given two sorted arrays nums1 and nums2 of sizes n and m respectively,
+    //  return the median of the two sorted arrays.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Both arrays are already sorted.
+    //  • Instead of merging them fully (extra space),
+    //    we simulate the merge process using two pointers.
+    //  • We only track the elements required to compute the median.
+    //
+    // =========================================================================
+    //  KEY IDEA:
+    //  ---------
+    //  Let total = n + m
+    //
+    //  If total is odd:
+    //      Median = element at index total / 2
+    //
+    //  If total is even:
+    //      Median = average of elements at indices
+    //               (total / 2) and (total / 2 - 1)
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Use two pointers i and j to traverse nums1 and nums2.
+    //  2. Use a counter k to track the index in the merged array.
+    //  3. Whenever k reaches median indices (x1 or x2),
+    //     store the value.
+    //  4. No additional array is used.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //      nums1 = [1, 3]
+    //      nums2 = [2, 4]
+    //
+    //      Merged order: [1, 2, 3, 4]
+    //      Median = (2 + 3) / 2 = 2.5
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n + m)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+
+
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+
+        int n = nums1.length;
+        int m = nums2.length;
+
+        // Indices of median elements in the merged array
+        int x1 = (m + n) / 2;
+        int x2 = x1 - 1;
+
+        int i = 0, j = 0, k = 0;
+        int e1 = -1, e2 = -1;
+
+        // Merge both arrays while tracking merged index
+        while (i < n && j < m) {
+
+            if (nums1[i] < nums2[j]) {
+
+                if (k == x1) e1 = nums1[i];
+                if (k == x2) e2 = nums1[i];
+
+                i++;
+
+            } else {
+
+                if (k == x1) e1 = nums2[j];
+                if (k == x2) e2 = nums2[j];
+
+                j++;
+            }
+            k++;
+        }
+
+        // Process remaining elements in nums1
+        while (i < n) {
+
+            if (k == x1) e1 = nums1[i];
+            if (k == x2) e2 = nums1[i];
+
+            i++;
+            k++;
+        }
+
+        // Process remaining elements in nums2
+        while (j < m) {
+
+            if (k == x1) e1 = nums2[j];
+            if (k == x2) e2 = nums2[j];
+
+            j++;
+            k++;
+        }
+
+        // If total length is odd, return the middle element
+        if ((m + n) % 2 != 0) {
+            return e1;
+        }
+
+        // If total length is even, return average of two middle elements
+        return (e1 + e2) / 2.0;
+    }
+}
+//method-3
+
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Median of Two Sorted Arrays (Optimal Binary Search Approach)
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given two sorted arrays nums1 and nums2 of sizes m and n respectively,
+    //  return the median of the two sorted arrays.
+    //
+    //  The required time complexity is O(log(min(m, n))).
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • The median splits the combined sorted array into two equal halves.
+    //  • Instead of merging the arrays, we find a correct partition.
+    //  • A valid partition satisfies:
+    //
+    //        All elements on the left side ≤ all elements on the right side
+    //
+    //  • Binary search is applied on the smaller array for efficiency.
+    //
+    // =========================================================================
+    //  APPROACH (BINARY SEARCH ON PARTITION):
+    //  -------------------------------------
+    //  1. Always apply binary search on the smaller array.
+    //  2. Choose a partition Px in nums1.
+    //  3. Calculate Py in nums2 such that:
+    //
+    //        Px + Py = (m + n + 1) / 2
+    //
+    //  4. Compare boundary elements around partitions.
+    //  5. If partition is valid → compute median.
+    //     Else → adjust binary search.
+    //
+    // =========================================================================
+    //  SPECIAL NOTE:
+    //  -------------
+    //  (m + n + 1) / 2 ensures correct handling of both EVEN and ODD lengths.
+    //
+    // =========================================================================
+
+
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+
+        // Ensure nums1 is the smaller array to reduce search space
+        if (nums1.length > nums2.length)
+            return findMedianSortedArrays(nums2, nums1);
+
+        int m = nums1.length;
+        int n = nums2.length;
+
+        int l = 0, r = m;
+
+        // Binary search on nums1
+        while (l <= r) {
+
+            // Partition index in nums1
+            int Px = l + (r - l) / 2;
+
+            // Corresponding partition index in nums2
+            int Py = (m + n + 1) / 2 - Px;
+
+            // -----------------------------------------------------------------
+            //  LOGIC FOR x1, x2, x3, x4
+            // -----------------------------------------------------------------
+            //  x1 → Max element on LEFT of nums1 partition
+            //  x2 → Max element on LEFT of nums2 partition
+            //  x3 → Min element on RIGHT of nums1 partition
+            //  x4 → Min element on RIGHT of nums2 partition
+            //
+            //  MIN_VALUE and MAX_VALUE handle edge partitions safely.
+            // -----------------------------------------------------------------
+
+            int x1 = (Px == 0) ? Integer.MIN_VALUE : nums1[Px - 1];
+            int x2 = (Py == 0) ? Integer.MIN_VALUE : nums2[Py - 1];
+            int x3 = (Px == m) ? Integer.MAX_VALUE : nums1[Px];
+            int x4 = (Py == n) ? Integer.MAX_VALUE : nums2[Py];
+
+            // -----------------------------------------------------------------
+            //  VALID PARTITION CHECK
+            // -----------------------------------------------------------------
+            //  Condition:
+            //      x1 <= x4 AND x2 <= x3
+            //
+            //  Meaning:
+            //      All left elements ≤ all right elements
+            // -----------------------------------------------------------------
+
+            if (x1 <= x4 && x2 <= x3) {
+
+                // If total length is odd → median is max of left side
+                if ((m + n) % 2 == 1) {
+                    return Math.max(x1, x2);
+                }
+
+                // If total length is even → average of two middle elements
+                return (Math.max(x1, x2) + Math.min(x3, x4)) / 2.0;
+            }
+
+            // -----------------------------------------------------------------
+            //  BINARY SEARCH ADJUSTMENT
+            // -----------------------------------------------------------------
+
+            // Too many elements taken from nums1 → move left
+            if (x1 > x4) {
+                r = Px - 1;
+            }
+            // Too few elements taken from nums1 → move right
+            else {
+                l = Px + 1;
+            }
+        }
+
+        // This line is never reached for valid inputs
+        return -1;
+    }
+
+    // =========================================================================
+    //  DRY RUN:
+    // =========================================================================
+    //
+    //  nums1 = [1, 3]
+    //  nums2 = [2]
+    //
+    //  After swap:
+    //      nums1 = [2], nums2 = [1, 3]
+    //
+    //  Px = 1, Py = 1
+    //
+    //  x1 = 2, x2 = 1
+    //  x3 = +∞, x4 = 3
+    //
+    //  Valid partition found
+    //  Median = max(2, 1) = 2
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    // =========================================================================
+    //  ✔ Binary search on smaller array
+    //  ✔ No merging required
+    //  ✔ Handles even & odd lengths
+    //  ✔ Uses sentinel values for boundaries
+    //  ✔ Optimal and interview-preferred solution
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(log(min(m, n)))
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+}
