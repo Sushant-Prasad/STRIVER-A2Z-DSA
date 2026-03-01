@@ -1,0 +1,140 @@
+class Solution {
+//link:-https://www.geeksforgeeks.org/problems/k-th-element-of-two-sorted-array1317/1
+    // =========================================================================
+    //  TITLE:
+    //  K-th Element of Two Sorted Arrays (Binary Search on Partition)
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given two sorted arrays a[] and b[] and an integer k,
+    //  find the k-th smallest element in the combined sorted array
+    //  without actually merging the arrays.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • The k-th element is the largest element on the left side
+    //    when the combined arrays are partitioned such that:
+    //
+    //        Total elements on left side = k
+    //
+    //  • Similar to the "Median of Two Sorted Arrays" problem.
+    //  • Binary search is applied on the smaller array.
+    //
+    // =========================================================================
+    //  APPROACH (BINARY SEARCH ON PARTITION):
+    //  -------------------------------------
+    //  1. Always perform binary search on the smaller array.
+    //  2. Choose Pa elements from array a[].
+    //  3. Choose Pb = k − Pa elements from array b[].
+    //  4. Validate partition:
+    //
+    //        max(leftA, leftB) ≤ min(rightA, rightB)
+    //
+    //  5. If valid → k-th element = max(leftA, leftB).
+    //     Else → adjust binary search.
+    //
+    // =========================================================================
+
+
+    public int kthElement(int a[], int b[], int k) {
+
+        // Ensure binary search on smaller array
+        if (a.length > b.length)
+            return kthElement(b, a, k);
+
+        int m = a.length;
+        int n = b.length;
+
+        // ---------------------------------------------------------------------
+        //  IMPORTANT: VALID SEARCH SPACE FOR Pa
+        // ---------------------------------------------------------------------
+        //
+        //  Pa = number of elements taken from array a
+        //  Pb = k - Pa = number of elements taken from array b
+        //
+        //  Constraints:
+        //      0 ≤ Pa ≤ m
+        //      0 ≤ Pb ≤ n
+        //
+        //  From Pb = k - Pa:
+        //
+        //      k - Pa ≥ 0  →  Pa ≤ k
+        //      k - Pa ≤ n  →  Pa ≥ k - n
+        //
+        //  Hence:
+        //      max(0, k - n) ≤ Pa ≤ min(k, m)
+        //
+        // ---------------------------------------------------------------------
+
+        int l = Math.max(0, k - n);   // minimum possible Pa
+        int r = Math.min(k, m);       // maximum possible Pa
+
+        // Binary search
+        while (l <= r) {
+
+            int Pa = l + (r - l) / 2;
+            int Pb = k - Pa;
+
+            // -----------------------------------------------------------------
+            //  Partition boundary values
+            // -----------------------------------------------------------------
+            //
+            //  x1 → max element on left side of array a
+            //  x2 → max element on left side of array b
+            //  x3 → min element on right side of array a
+            //  x4 → min element on right side of array b
+            //
+            //  MIN_VALUE and MAX_VALUE handle edge cases safely.
+            //
+            // -----------------------------------------------------------------
+
+            int x1 = (Pa == 0) ? Integer.MIN_VALUE : a[Pa - 1];
+            int x2 = (Pb == 0) ? Integer.MIN_VALUE : b[Pb - 1];
+            int x3 = (Pa == m) ? Integer.MAX_VALUE : a[Pa];
+            int x4 = (Pb == n) ? Integer.MAX_VALUE : b[Pb];
+
+            // -----------------------------------------------------------------
+            //  VALID PARTITION CHECK
+            // -----------------------------------------------------------------
+            //
+            //  If true, we have exactly k elements on the left side,
+            //  and all left elements ≤ right elements.
+            //
+            // -----------------------------------------------------------------
+
+            if (x1 <= x4 && x2 <= x3) {
+                return Math.max(x1, x2);  // k-th element
+            }
+
+            // Too many elements taken from a → move left
+            if (x1 > x4) {
+                r = Pa - 1;
+            }
+            // Too few elements taken from a → move right
+            else {
+                l = Pa + 1;
+            }
+        }
+
+        return -1;
+    }
+
+    // =========================================================================
+    //  KEY POINTS:
+    // =========================================================================
+    //  ✔ Binary search on smaller array
+    //  ✔ No merging of arrays
+    //  ✔ Same partition logic as median problem
+    //  ✔ k-th element = max(left partition)
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(log(min(m, n)))
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+}
