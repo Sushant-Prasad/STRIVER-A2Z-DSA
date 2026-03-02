@@ -1,0 +1,150 @@
+// User function Template for Java
+//link:-https://www.geeksforgeeks.org/problems/row-with-max-1s0023/1
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Row with Maximum Number of 1s in a Binary Matrix
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a binary matrix where each row is sorted (0s followed by 1s),
+    //  find the index of the row with the maximum number of 1s.
+    //
+    //  If no 1s are present in any row, return -1.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Since each row is sorted, all 0s appear before 1s.
+    //  • The number of 1s in a row depends on the position of the
+    //    first occurrence of 1.
+    //  • Binary search can efficiently find this position.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. For each row:
+    //     • Use binary search to find the index of the first 1.
+    //     • Number of 1s = total columns − index of first 1.
+    //  2. Track the row with the maximum number of 1s.
+    //
+    // =========================================================================
+    //  HELPER METHOD: lowerBound
+    // =========================================================================
+    //
+    //  PURPOSE:
+    //  --------
+    //  Finds the index of the first occurrence of 1 in a sorted binary row.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR lowerBound LOGIC:
+    //  -----------------------------------
+    //  • This is a classic "lower bound" binary search.
+    //  • We search for the first index where value >= 1.
+    //  • Since the row is sorted (0s → 1s), this gives the first 1.
+    //
+    //  Example:
+    //      arr = [0, 0, 0, 1, 1]
+    //      lowerBound = 3
+    //
+    //  If no 1 is present:
+    //      arr = [0, 0, 0]
+    //      lowerBound = m (row length)
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY of lowerBound:
+    //      O(log m)
+    //
+    // =========================================================================
+    private int lowerBound(int arr[], int m) {
+
+        int l = 0, r = m - 1;
+        int ans = m;   // default value if 1 is not found
+
+        while (l <= r) {
+
+            int mid = l + (r - l) / 2;
+
+            // If we find a 1, move left to find its first occurrence
+            if (arr[mid] >= 1) {
+                ans = mid;
+                r = mid - 1;
+            }
+            // If value is 0, search in right half
+            else {
+                l = mid + 1;
+            }
+        }
+
+        return ans;
+    }
+
+    // =========================================================================
+    //  MAIN METHOD: rowWithMax1s
+    // =========================================================================
+    //
+    //  LOGIC:
+    //  ------
+    //  • For each row, calculate number of 1s using:
+    //
+    //        countOnes = m − lowerBound(row)
+    //
+    //  • Update answer if current row has more 1s than previous maximum.
+    //
+    // =========================================================================
+    public int rowWithMax1s(int arr[][]) {
+
+        int n = arr.length;        // number of rows
+        int m = arr[0].length;     // number of columns
+
+        int countMax = 0;          // maximum number of 1s found so far
+        int ans = -1;              // row index with maximum 1s
+
+        for (int i = 0; i < n; i++) {
+
+            // Count number of 1s in current row
+            int countOnes = m - lowerBound(arr[i], m);
+
+            // Update result if current row has more 1s
+            if (countOnes > countMax) {
+                countMax = countOnes;
+                ans = i;
+            }
+        }
+
+        return ans;
+    }
+
+    // =========================================================================
+    //  DRY RUN:
+    // =========================================================================
+    //
+    //  Matrix:
+    //      0 0 1 1
+    //      0 1 1 1
+    //      0 0 0 1
+    //
+    //  Row 0 → lowerBound = 2 → ones = 4 - 2 = 2
+    //  Row 1 → lowerBound = 1 → ones = 4 - 1 = 3  ← max
+    //  Row 2 → lowerBound = 3 → ones = 4 - 3 = 1
+    //
+    //  Answer = 1
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    // =========================================================================
+    //  ✔ Uses binary search on each row
+    //  ✔ Efficient for sorted binary rows
+    //  ✔ Avoids unnecessary scanning
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n log m)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+}
