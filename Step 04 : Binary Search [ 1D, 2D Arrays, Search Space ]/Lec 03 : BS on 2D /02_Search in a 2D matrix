@@ -1,0 +1,207 @@
+# Method-1
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Search a Target in a 2D Sorted Matrix
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a 2D matrix where:
+    //   • Each row is sorted in ascending order
+    //   • Each column is sorted in ascending order
+    //
+    //  Determine whether a given target value exists in the matrix.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • The top-right element of the matrix is a powerful starting point.
+    //  • From the top-right corner:
+    //      - Left side contains smaller elements
+    //      - Down side contains larger elements
+    //
+    //  • This allows us to eliminate one full row or column at each step.
+    //
+    // =========================================================================
+    //  APPROACH (STAIRCASE SEARCH):
+    //  ----------------------------
+    //  1. Start from the top-right corner of the matrix.
+    //  2. Compare the current element with the target.
+    //     • If equal → target found.
+    //     • If target is greater → move down.
+    //     • If target is smaller → move left.
+    //  3. Continue until indices go out of bounds.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC:
+    //  ------------------------
+    //  • Moving left removes the current column.
+    //  • Moving down removes the current row.
+    //  • No cell is visited more than once.
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n + m)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+    public boolean searchMatrix(int[][] matrix, int target) {
+
+        int n = matrix.length;        // number of rows
+        int m = matrix[0].length;     // number of columns
+
+        int row = 0;                  // start from first row
+        int col = m - 1;              // start from last column (top-right)
+
+        // Continue while indices are within matrix boundaries
+        while (row <= n - 1 && col >= 0) {
+
+            // If target is found
+            if (target == matrix[row][col]) {
+                return true;
+            }
+
+            // If target is larger, move down to next row
+            if (target > matrix[row][col]) {
+                row++;
+            }
+            // If target is smaller, move left to previous column
+            else {
+                col--;
+            }
+        }
+
+        // Target not found
+        return false;
+    }
+}
+# method-2
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Search a Target in a 2D Matrix using Binary Search
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a 2D matrix where:
+    //   • Each row is sorted in ascending order
+    //   • The first element of each row is greater than the last element
+    //     of the previous row
+    //
+    //  Determine whether a given target value exists in the matrix.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Because of the given properties, the entire matrix behaves like
+    //    a single sorted 1D array.
+    //  • Instead of searching row by row, we can apply binary search
+    //    directly on this virtual 1D array.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Treat the 2D matrix as a 1D sorted array of size (m × n).
+    //  2. Perform binary search on indices from 0 to (m*n - 1).
+    //  3. Convert the mid index of the 1D array into 2D coordinates.
+    //  4. Compare the target with the matrix element at that position.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC (VERY IMPORTANT):
+    //  -----------------------------------------
+    //  To convert a 1D index `mid` into 2D indices:
+    //
+    //      row = mid / n
+    //      col = mid % n
+    //
+    //  WHY THIS WORKS:
+    //  • Each row contains `n` elements.
+    //  • Division gives the row number.
+    //  • Modulo gives the column number.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Matrix:
+    //      1   3   5   7
+    //      10  11  16  20
+    //      23  30  34  60
+    //
+    //  Target = 16
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  m = 3, n = 4
+    //  l = 0, r = 11
+    //
+    //  mid = 5
+    //  row = 5 / 4 = 1
+    //  col = 5 % 4 = 1
+    //
+    //  matrix[1][1] = 11 < target → move right
+    //
+    //  mid = 6
+    //  row = 6 / 4 = 1
+    //  col = 6 % 4 = 2
+    //
+    //  matrix[1][2] = 16 → FOUND
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Matrix behaves like a sorted 1D array
+    //  ✔ Binary search reduces time complexity
+    //  ✔ No extra space required
+    //  ✔ Clean mapping from 1D to 2D indices
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(log(m × n))
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+    public boolean searchMatrix(int[][] matrix, int target) {
+
+        int m = matrix.length;        // total number of rows
+        int n = matrix[0].length;     // total number of columns
+
+        int l = 0;                    // left pointer for binary search
+        int r = m * n - 1;            // right pointer (last index of virtual 1D array)
+
+        // Perform binary search on the virtual 1D array
+        while (l <= r) {
+
+            // Calculate mid index safely to avoid overflow
+            int mid = l + (r - l) / 2;
+
+            // Convert 1D index to 2D matrix indices
+            int row = mid / n;        // determines which row the element lies in
+            int col = mid % n;        // determines column within that row
+
+            // If target matches the current element
+            if (target == matrix[row][col]) {
+                return true;
+            }
+            // If target is greater, discard left half
+            else if (target > matrix[row][col]) {
+                l = mid + 1;
+            }
+            // If target is smaller, discard right half
+            else {
+                r = mid - 1;
+            }
+        }
+
+        // Target not found in the matrix
+        return false;
+    }
+}
