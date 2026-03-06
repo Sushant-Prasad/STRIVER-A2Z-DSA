@@ -1,0 +1,129 @@
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Search a Target in a Row-wise and Column-wise Sorted 2D Matrix
+    //  (Staircase Search / Top-Right Corner Method)
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given an m × n integer matrix where:
+    //   • Each row is sorted in ascending order (left → right)
+    //   • Each column is sorted in ascending order (top → bottom)
+    //
+    //  Write an efficient algorithm to determine whether a given
+    //  target value exists in the matrix.
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • The top-right element of the matrix is a strategic starting point.
+    //  • From the top-right:
+    //      - All elements to the LEFT are smaller
+    //      - All elements BELOW are larger
+    //
+    //  • This allows us to decide direction at every step and eliminate
+    //    either a full row or a full column.
+    //
+    // =========================================================================
+    //  APPROACH (STAIRCASE SEARCH):
+    //  ----------------------------
+    //  1. Start from the top-right corner (row = 0, col = n - 1).
+    //  2. Compare the current element with the target:
+    //      • If equal → target found.
+    //      • If target is greater → move down.
+    //      • If target is smaller → move left.
+    //  3. Continue until indices go out of bounds.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC:
+    //  ------------------------
+    //  • Moving LEFT eliminates the current column.
+    //  • Moving DOWN eliminates the current row.
+    //  • No element is revisited.
+    //
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Matrix:
+    //      1   4   7   11
+    //      2   5   8   12
+    //      3   6   9   16
+    //      10  13  14  17
+    //
+    //  Target = 6
+    //
+    // =========================================================================
+    //  DRY RUN:
+    //  --------
+    //  Start at (0, 3) → 11
+    //      6 < 11 → move left
+    //
+    //  (0, 2) → 7
+    //      6 < 7 → move left
+    //
+    //  (0, 1) → 4
+    //      6 > 4 → move down
+    //
+    //  (1, 1) → 5
+    //      6 > 5 → move down
+    //
+    //  (2, 1) → 6 → FOUND
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Uses matrix ordering efficiently
+    //  ✔ Eliminates one row or column per step
+    //  ✔ No extra memory required
+    //  ✔ Very common interview problem
+    //
+    // =========================================================================
+    //  WHY THIS APPROACH IS OPTIMAL:
+    //  -----------------------------
+    //  • The matrix is NOT globally sorted, only row-wise and column-wise.
+    //  • Binary search on the whole matrix is NOT possible.
+    //  • In one comparison, we can eliminate only one row or one column.
+    //  • Therefore, any algorithm must take at least O(m + n) steps
+    //    in the worst case.
+    //
+    //  ➤ Hence, this approach is asymptotically optimal.
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(m + n)
+    //
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+    public boolean searchMatrix(int[][] matrix, int target) {
+
+        int m = matrix.length;        // number of rows
+        int n = matrix[0].length;     // number of columns
+
+        int row = 0;                  // start from first row
+        int col = n - 1;              // start from last column (top-right)
+
+        // Continue while indices are inside the matrix
+        while (row <= m - 1 && col >= 0) {
+
+            // If target is found
+            if (target == matrix[row][col]) {
+                return true;
+            }
+            // If target is larger, move down
+            else if (target > matrix[row][col]) {
+                row++;
+            }
+            // If target is smaller, move left
+            else {
+                col--;
+            }
+        }
+
+        // Target not present in matrix
+        return false;
+    }
+}
