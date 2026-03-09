@@ -1,0 +1,151 @@
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Longest Palindromic Substring (Expand Around Center)
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a string `s`, return the longest palindromic substring in `s`.
+    //
+    //  A palindrome is a string that reads the same forward and backward.
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/longest-palindromic-substring/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • Every palindrome has a "center".
+    //  • From the center, characters expand symmetrically to left and right.
+    //  • There are TWO possible types of centers:
+    //
+    //      1️⃣ Odd-length palindrome → single character center (e.g. "aba")
+    //      2️⃣ Even-length palindrome → between two characters (e.g. "abba")
+    //
+    //  • For each index, try expanding for BOTH cases and keep the longest.
+    //
+    // =========================================================================
+    //  APPROACH (EXPAND AROUND CENTER):
+    //  --------------------------------
+    //  1. Initialize the longest palindrome with first character.
+    //  2. For every index `i` in the string:
+    //      a) Treat `i` as the center of an odd-length palindrome.
+    //      b) Treat `(i, i+1)` as the center of an even-length palindrome.
+    //  3. Expand left and right while characters match.
+    //  4. Update the longest palindrome found so far.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC ⭐:
+    //  --------------------------
+    //  WHY WE CHECK BOTH ODD & EVEN:
+    //
+    //  • Odd-length example:
+    //      "racecar" → center at 'e'
+    //
+    //  • Even-length example:
+    //      "tattarrattat" → center between 't' and 't'
+    //
+    //  If we check only one case, we will MISS valid palindromes.
+    //
+    // =========================================================================
+    public String longestPalindrome(String s) {
+
+        int n = s.length();
+
+        // At least one character is always a palindrome
+        String lp = s.substring(0, 1);
+
+        // Traverse each character as a possible center
+        for (int i = 0; i < n; i++) {
+
+            // ---------------------------------------------------------------
+            //  CASE 1: ODD-LENGTH PALINDROME
+            //  Center is at index i
+            // ---------------------------------------------------------------
+            int l = i, r = i;
+
+            // Expand while within bounds and characters match
+            while (l >= 0 && r < n && s.charAt(l) == s.charAt(r)) {
+                l--;
+                r++;
+            }
+
+            // Extract palindrome (last valid range)
+            String sub = s.substring(l + 1, r);
+
+            // Update longest palindrome
+            if (lp.length() < sub.length()) {
+                lp = sub;
+            }
+
+            // ---------------------------------------------------------------
+            //  CASE 2: EVEN-LENGTH PALINDROME
+            //  Center is between i and i+1
+            // ---------------------------------------------------------------
+            l = i;
+            r = i + 1;
+
+            while (l >= 0 && r < n && s.charAt(l) == s.charAt(r)) {
+                l--;
+                r++;
+            }
+
+            sub = s.substring(l + 1, r);
+
+            if (lp.length() < sub.length()) {
+                lp = sub;
+            }
+        }
+
+        return lp;
+    }
+
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      s = "tattarrattat"
+    //
+    //  Output:
+    //      "tattarrattat"
+    //
+    // =========================================================================
+    //  DRY RUN (SHORT):
+    //  ----------------
+    //  Center between index 5 and 6:
+    //      t a t t a r r a t t a t
+    //            ↑   ↑
+    //
+    //  Expand:
+    //      t == t
+    //      a == a
+    //      r == r
+    //      r == r
+    //      a == a
+    //      t == t
+    //
+    //  Whole string is palindrome → answer updated
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Checks both odd and even palindromes
+    //  ✔ No extra memory used
+    //  ✔ Simple and intuitive logic
+    //  ✔ Handles edge cases safely
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n²)
+    //      (Each center expansion can take O(n))
+    //
+    // =========================================================================
+    //  SPACE COMPLEXITY:
+    //      O(1)
+    //
+    // =========================================================================
+}
