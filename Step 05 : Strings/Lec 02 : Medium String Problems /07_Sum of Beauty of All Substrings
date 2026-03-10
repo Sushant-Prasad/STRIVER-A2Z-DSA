@@ -1,0 +1,147 @@
+class Solution {
+
+    // =========================================================================
+    //  TITLE:
+    //  Sum of Beauty of All Substrings
+    // =========================================================================
+    //
+    //  PROBLEM STATEMENT:
+    //  ------------------
+    //  Given a string `s`, the **beauty** of a substring is defined as:
+    //
+    //      maxFrequency - minFrequency
+    //
+    //  where:
+    //  • maxFrequency = highest frequency of any character in the substring
+    //  • minFrequency = lowest frequency of any character in the substring
+    //    (consider ONLY characters that appear at least once)
+    //
+    //  Your task is to return the **sum of beauty values of all substrings** of `s`.
+    //
+    // =========================================================================
+    //  PROBLEM RESOURCE:
+    //  -----------------
+    //  https://leetcode.com/problems/sum-of-beauty-of-all-substrings/
+    //
+    // =========================================================================
+    //  INTUITION:
+    //  ----------
+    //  • We must consider ALL possible substrings.
+    //  • For each substring, we need character frequencies.
+    //  • Using a frequency array of size 26 (lowercase letters) is efficient.
+    //
+    //  Key idea:
+    //  ---------
+    //  Fix a starting index `i` and expand the substring to the right (`j`).
+    //  Update frequencies incrementally instead of recomputing from scratch.
+    //
+    // =========================================================================
+    //  APPROACH:
+    //  ----------
+    //  1. Fix the starting index `i` (0 to n-1).
+    //  2. Initialize a frequency array for characters.
+    //  3. Expand the substring from `i` to `j`.
+    //  4. After each expansion:
+    //      • Compute max frequency
+    //      • Compute min frequency (ignoring zero frequencies)
+    //      • Add (max - min) to total beauty.
+    //
+    // =========================================================================
+    //  SPECIAL NOTES FOR LOGIC ⭐:
+    //  --------------------------
+    //  WHY WE CHECK `if (freq[k] > 0)` ?
+    //
+    //  • Characters with frequency 0 do NOT exist in the substring.
+    //  • Including them would incorrectly make minFrequency = 0.
+    //  • Beauty definition considers ONLY characters present in substring.
+    //
+    //  Example:
+    //  --------
+    //  Substring = "aab"
+    //  Frequencies = [a=2, b=1, others=0]
+    //  max = 2
+    //  min = 1   ✅ (NOT 0)
+    //
+    // =========================================================================
+    public int beautySum(String s) {
+
+        int n = s.length();
+
+        // If string has only one character, beauty is always 0
+        if (n == 1) return 0;
+
+        int totalBeauty = 0;
+
+        // Fix starting index of substring
+        for (int i = 0; i < n; i++) {
+
+            int[] freq = new int[26]; // frequency of characters
+
+            // Expand substring from i to j
+            for (int j = i; j < n; j++) {
+
+                // Update frequency of current character
+                freq[s.charAt(j) - 'a']++;
+
+                int max = Integer.MIN_VALUE;
+                int min = Integer.MAX_VALUE;
+
+                // Compute max and min frequency
+                for (int k = 0; k < 26; k++) {
+
+                    // IMPORTANT: ignore characters not present
+                    if (freq[k] > 0) {
+                        max = Math.max(max, freq[k]);
+                        min = Math.min(min, freq[k]);
+                    }
+                }
+
+                // Add beauty of current substring
+                totalBeauty += (max - min);
+            }
+        }
+
+        return totalBeauty;
+    }
+
+    // =========================================================================
+    //  EXAMPLE:
+    //  --------
+    //  Input:
+    //      s = "aabcb"
+    //
+    //  Some substrings:
+    //      "aab"   → freq: a=2, b=1 → beauty = 2-1 = 1
+    //      "aabc"  → freq: a=2, b=1, c=1 → beauty = 2-1 = 1
+    //      "bcb"   → freq: b=2, c=1 → beauty = 2-1 = 1
+    //
+    //  Output:
+    //      5
+    //
+    // =========================================================================
+    //  DRY RUN (SHORT):
+    //  ----------------
+    //  i = 0
+    //    j = 0 → "a"      → max=1, min=1 → beauty=0
+    //    j = 1 → "aa"     → max=2, min=2 → beauty=0
+    //    j = 2 → "aab"    → max=2, min=1 → beauty=1
+    //
+    //  Continue similarly for all i...
+    //
+    // =========================================================================
+    //  KEY POINTS:
+    //  ------------
+    //  ✔ Incremental frequency update
+    //  ✔ Zero-frequency characters ignored
+    //  ✔ Simple brute-force optimized with frequency reuse
+    //
+    // =========================================================================
+    //  TIME COMPLEXITY:
+    //      O(n² × 26) ≈ O(n²)
+    //
+    // =========================================================================
+    //  SPACE COMPLEXITY:
+    //      O(26) ≈ O(1)
+    //
+    // =========================================================================
+}
