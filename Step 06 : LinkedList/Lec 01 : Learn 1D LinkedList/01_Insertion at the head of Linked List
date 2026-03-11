@@ -1,0 +1,368 @@
+/*
+ ============================================================================
+  TITLE:
+  Insert a Node at the Front of a Singly Linked List
+ ============================================================================
+ 
+  PROBLEM STATEMENT:
+  ------------------
+  Given the head of a singly linked list and an integer `x`,
+  insert a new node with value `x` at the **front (beginning)** of the linked list
+  and return the updated head of the list.
+ 
+ ============================================================================
+  PROBLEM RESOURCE:
+  -----------------
+  • GeeksforGeeks:
+    https://www.geeksforgeeks.org/problems/insert-at-the-front-of-linked-list/1
+ 
+ ============================================================================
+  INTUITION:
+  ----------
+  • Inserting at the front of a linked list is simple and efficient.
+  • We just need to:
+      - Create a new node
+      - Point it to the current head
+      - Update head to this new node
+  • No traversal is required.
+ 
+ ============================================================================
+  APPROACH:
+  ----------
+  1. Create a new node with data = x.
+  2. Make the new node point to the current head.
+  3. Update head to the new node.
+  4. Return the updated head.
+ 
+ ============================================================================
+  EXAMPLE:
+  --------
+  Input:
+      Linked List: 10 -> 20 -> 30 -> X
+      x = 5
+ 
+  Output:
+      5 -> 10 -> 20 -> 30 -> X
+ 
+ ============================================================================
+  DRY RUN:
+  --------
+  Initial:
+      head → 10 -> 20 -> 30 -> X
+ 
+  Step 1:
+      newNode = 5
+ 
+  Step 2:
+      newNode.next = head
+      5 -> 10 -> 20 -> 30 -> X
+ 
+  Step 3:
+      head = newNode
+ 
+  Final:
+      head → 5 -> 10 -> 20 -> 30 -> X
+ 
+ ============================================================================
+  KEY POINTS:
+  ------------
+  ✔ No traversal required
+  ✔ Constant time insertion
+  ✔ Works even if list is empty
+  ✔ Head pointer must be updated
+ 
+ ============================================================================
+  TIME COMPLEXITY:
+  ----------------
+  O(1)
+  (Insertion at the front is a constant-time operation)
+ 
+ ============================================================================
+  SPACE COMPLEXITY:
+  -----------------
+  O(1)
+  (Only one new node is created)
+ 
+ ============================================================================
+  SPECIAL NOTES FOR LOGIC:
+  ------------------------
+  • `newNode.next = head` is crucial:
+      - It links the new node to the existing list
+  • Updating `head = newNode` makes the new node the first node
+  • If the original list is empty (`head == null`),
+    this logic still works correctly
+ 
+ ============================================================================
+*/
+
+/*
+class Node {
+    int data;
+    Node next;
+
+    Node(int x) {
+        data = x;
+        next = null;
+    }
+}
+*/
+
+class Solution {
+
+    // Inserts a node at the front of the linked list
+    public Node insertAtFront(Node head, int x) {
+
+        // Step 1: Create a new node with given value
+        Node newNode = new Node(x);
+
+        // Step 2: Link new node to current head
+        newNode.next = head;
+
+        // Step 3: Update head to new node
+        head = newNode;
+
+        // Step 4: Return updated head
+        return head;
+    }
+}
+
+
+/*
+class Node{
+    int data;
+    Node next;
+
+    Node(int x){
+        data = x;
+        next = null;
+    }
+}
+*/
+
+class Solution {
+
+    /*
+     ============================================================================
+      TITLE:
+      Insert a Node at the End of a Singly Linked List
+     ============================================================================
+     
+      PROBLEM STATEMENT:
+      ------------------
+      Given the head of a singly linked list and an integer `x`,
+      insert a new node with value `x` at the **end** of the linked list
+      and return the updated head.
+
+     ============================================================================
+      PROBLEM RESOURCE:
+      -----------------
+      https://www.geeksforgeeks.org/problems/insert-a-node-in-linked-list-at-the-end/
+
+     ============================================================================
+      INTUITION:
+      ----------
+      • If the linked list is empty, the new node becomes the head.
+      • Otherwise, traverse the list until the last node.
+      • Attach the new node to the last node.
+
+     ============================================================================
+      APPROACH:
+      ----------
+      1. Create a new node with value `x`.
+      2. If `head == null`, return the new node as head.
+      3. Traverse the list until `temp.next == null`.
+      4. Link the last node to the new node.
+      5. Return the original head.
+
+     ============================================================================
+      EXAMPLE:
+      --------
+      Input:
+          List: 1 → 2 → 3 → X
+          x = 4
+
+      Output:
+          1 → 2 → 3 → 4 → X
+
+     ============================================================================
+      DRY RUN:
+      --------
+      head → 1 → 2 → 3 → X
+
+      temp traversal:
+      temp = 1 → 2 → 3
+
+      temp.next == null → attach newNode(4)
+
+      Result:
+      1 → 2 → 3 → 4 → X
+
+     ============================================================================
+      KEY POINTS:
+      ------------
+      ✔ Handles empty linked list
+      ✔ Traverses list only once
+      ✔ No extra data structures used
+      ✔ Clean and safe pointer manipulation
+
+     ============================================================================
+      TIME COMPLEXITY:
+      ----------------
+      O(n)  → traversal till last node
+
+      SPACE COMPLEXITY:
+      -----------------
+      O(1)  → constant extra space
+
+     ============================================================================
+      SPECIAL NOTES FOR LOGIC:
+      ------------------------
+      • When `head == null`, we directly return `newNode`
+        to avoid NullPointerException.
+      • `while(temp.next != null)` ensures we stop at the last node.
+      • Constructor already sets `next = null`, so no need to set it again.
+
+     ============================================================================
+    */
+
+    public Node insertAtEnd(Node head, int x) {
+
+        // Step 1: Create a new node with given value
+        Node newNode = new Node(x);
+
+        // Step 2: If list is empty, new node becomes head
+        if (head == null) {
+            return newNode;
+        }
+
+        // Step 3: Traverse to the last node
+        Node temp = head;
+        while (temp.next != null) {
+            temp = temp.next;
+        }
+
+        // Step 4: Attach new node at the end
+        temp.next = newNode;
+
+        // Step 5: Return original head
+        return head;
+    }
+}
+
+/*
+===============================================================================
+ TITLE:
+ Insert a Node at a Given Position in a Singly Linked List (1-Based Indexing)
+===============================================================================
+
+ PROBLEM STATEMENT:
+ ------------------
+ Given the head of a singly linked list, an integer `pos` (1-based index),
+ and a value `val`, insert a new node with value `val` at position `pos`
+ and return the updated head of the linked list.
+
+ PROBLEM RESOURCE:
+ -----------------
+ https://www.geeksforgeeks.org/problems/insert-a-node-in-linked-list-at-a-given-position/1
+
+===============================================================================
+ INTUITION:
+ ----------
+ • In a singly linked list, insertion requires pointer manipulation.
+ • For position = 1, the new node becomes the new head.
+ • For any other position, we must:
+     - Reach the (pos - 1)th node
+     - Adjust pointers to insert the new node in between
+
+===============================================================================
+ APPROACH:
+ ----------
+ 1. Create a new node with the given value.
+ 2. If position is 1:
+     • Point new node to current head
+     • Return new node as head
+ 3. Otherwise:
+     • Traverse the list till (pos - 1)th node
+     • Insert the new node by adjusting pointers
+
+===============================================================================
+ EXAMPLE:
+ --------
+ Input:
+   List = 10 → 20 → 30
+   pos = 2, val = 15
+
+ Output:
+   10 → 15 → 20 → 30
+
+===============================================================================
+ DRY RUN:
+ --------
+ Initial list: 10 → 20 → 30
+ pos = 2
+
+ Step 1: temp = head (10)
+ Step 2: stop at (pos - 1) = 1st node → temp = 10
+ Step 3:
+     newNode.next = temp.next (20)
+     temp.next = newNode (15)
+
+ Result:
+   10 → 15 → 20 → 30
+
+===============================================================================
+ KEY POINTS:
+ ------------
+ ✔ Uses 1-based indexing
+ ✔ Handles insertion at head separately
+ ✔ Pointer manipulation only (no extra space)
+ ✔ Maintains original list order
+
+===============================================================================
+ TIME COMPLEXITY:
+ ----------------
+ O(n) → traversal up to position
+
+ SPACE COMPLEXITY:
+ -----------------
+ O(1) → constant extra space
+
+===============================================================================
+ SPECIAL NOTES FOR LOGIC:
+ ------------------------
+ • Loop runs till (pos - 1) because insertion happens AFTER that node
+ • `temp != null` prevents NullPointerException
+ • Head insertion must return `newNode`, not `head`
+
+===============================================================================
+*/
+
+class Solution {
+
+    public Node insertPos(Node head, int pos, int val) {
+
+        // Create the new node with given value
+        Node newNode = new Node(val);
+
+        // Case 1: Insert at first position (new head)
+        if (pos == 1) {
+            newNode.next = head;   // link new node to old head
+            return newNode;        // return new head
+        }
+
+        // Temporary pointer to traverse the list
+        Node temp = head;
+
+        // Move temp to (pos - 1)th node
+        for (int i = 1; i < pos - 1 && temp != null; i++) {
+            temp = temp.next;
+        }
+
+        // Insert the new node in between
+        newNode.next = temp.next;
+        temp.next = newNode;
+
+        // Head remains unchanged
+        return head;
+    }
+}
