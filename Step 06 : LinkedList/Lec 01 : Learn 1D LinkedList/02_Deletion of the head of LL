@@ -1,0 +1,119 @@
+/*
+===============================================================================
+ TITLE:
+ Delete a Node at a Given Position in a Singly Linked List (1-Based Indexing)
+===============================================================================
+
+ PROBLEM STATEMENT:
+ ------------------
+ Given the head of a singly linked list and an integer `x` (1-based index),
+ delete the node at position `x` and return the updated head of the list.
+
+ PROBLEM RESOURCE:
+ -----------------
+ https://www.geeksforgeeks.org/problems/delete-a-node-in-single-linked-list/1
+
+===============================================================================
+ INTUITION:
+ ----------
+ • To delete a node, we need access to its previous node.
+ • Special handling is required when deleting the first node (head).
+ • For other positions, bypass the node by changing links.
+
+===============================================================================
+ APPROACH:
+ ----------
+ 1. If x == 1:
+    • Delete the head by moving head to head.next
+ 2. Otherwise:
+    • Traverse the list to reach the (x-1)th node
+    • Adjust pointers to skip the xth node
+ 3. Return the updated head
+
+===============================================================================
+ EXAMPLE:
+ --------
+ Input:
+   List = 10 → 20 → 30 → 40
+   x = 3
+
+ Output:
+   10 → 20 → 40
+
+===============================================================================
+ DRY RUN:
+ --------
+ head = 10 → 20 → 30 → 40
+ x = 3
+
+ Step 1:
+   temp = head (10)
+
+ Step 2:
+   Move temp to (x-1)th node → temp = 20
+
+ Step 3:
+   temp.next = temp.next.next
+   (20.next = 40)
+
+ Result:
+   10 → 20 → 40
+
+===============================================================================
+ KEY POINTS:
+ ------------
+ ✔ Uses 1-based indexing
+ ✔ Handles deletion of head separately
+ ✔ No extra memory used
+ ✔ Pointer reassignment removes the node
+
+===============================================================================
+ TIME COMPLEXITY:
+ ----------------
+ O(n) → traversal up to (x-1)th node
+
+ SPACE COMPLEXITY:
+ -----------------
+ O(1) → constant extra space
+
+===============================================================================
+ SPECIAL NOTES FOR LOGIC:
+ ------------------------
+ • Loop runs till (x-1) because we need the previous node
+ • `temp != null` prevents NullPointerException
+ • Last-node deletion handled explicitly
+ • Head must be updated when x == 1
+
+===============================================================================
+*/
+
+class Solution {
+
+    Node deleteNode(Node head, int x) {
+
+        // If deleting the first node (head)
+        if (x == 1) {
+            head = head.next;   // move head forward
+            return head;
+        }
+
+        // Temporary pointer to traverse list
+        Node temp = head;
+
+        // Traverse to (x-1)th node
+        for (int i = 1; i < x - 1 && temp != null; i++) {
+            temp = temp.next;
+        }
+
+        // If deleting last node
+        if (temp.next.next == null) {
+            temp.next = null;
+        }
+        // Deleting a middle node
+        else {
+            temp.next = temp.next.next;
+        }
+
+        return head;
+    }
+}
