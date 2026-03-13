@@ -1,0 +1,104 @@
+/*
+===============================================================================
+ TITLE:
+ Count Nodes in a Singly Linked List
+===============================================================================
+
+ PROBLEM STATEMENT:
+ ------------------
+ Given the head of a singly linked list, count the total number of nodes
+ present in the list and return the count.
+
+===============================================================================
+ PROBLEM RESOURCE:
+ -----------------
+ https://www.geeksforgeeks.org/problems/count-nodes-of-linked-list/1
+
+===============================================================================
+ INTUITION:
+ ----------
+ • A linked list consists of nodes connected via `next` pointers.
+ • To count nodes, we must traverse the list from head to the end.
+ • Each traversal step moves to the next node until `null` is reached.
+
+===============================================================================
+ APPROACH:
+ ----------
+ 1. Initialize a counter variable `count` to 0.
+ 2. Start traversal from the head node.
+ 3. For each node:
+    • Increment the counter
+    • Move to the next node
+ 4. Stop when head becomes null.
+ 5. Return the counter.
+
+===============================================================================
+ EXAMPLE:
+ --------
+ Input:
+   Linked List = 10 → 20 → 30 → 40 → X
+
+ Output:
+   4
+
+===============================================================================
+ DRY RUN:
+ --------
+ head → 10 → 20 → 30 → 40 → null
+
+ Iteration 1:
+   count = 1, head = 20
+ Iteration 2:
+   count = 2, head = 30
+ Iteration 3:
+   count = 3, head = 40
+ Iteration 4:
+   count = 4, head = null (stop)
+
+ Return count = 4
+
+===============================================================================
+ KEY POINTS:
+ ------------
+ ✔ Simple linear traversal
+ ✔ No modification of list structure
+ ✔ Works for empty list also
+ ✔ No extra data structures used
+
+===============================================================================
+ TIME COMPLEXITY:
+ ----------------
+ O(n)
+ (where n is the number of nodes in the linked list)
+
+===============================================================================
+ SPACE COMPLEXITY:
+ -----------------
+ O(1)
+ (only a counter variable is used)
+
+===============================================================================
+ SPECIAL NOTES FOR LOGIC:
+ ------------------------
+ • Loop condition `head != null` ensures traversal till last node
+ • Updating `head = head.next` moves pointer forward
+ • If list is empty (`head == null`), count remains 0
+
+===============================================================================
+*/
+
+class Solution {
+
+    public int getCount(Node head) {
+
+        int count = 0;   // stores number of nodes
+
+        // Traverse until end of list
+        while (head != null) {
+            count++;          // count current node
+            head = head.next; // move to next node
+        }
+
+        return count; // total nodes
+    }
+}
