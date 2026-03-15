@@ -1,0 +1,140 @@
+/**
+===============================================================================
+ TITLE:
+ Find the Middle of a Singly Linked List
+===============================================================================
+
+ PROBLEM STATEMENT:
+ ------------------
+ Given the head of a singly linked list, return the middle node of the list.
+
+ If there are two middle nodes (i.e., even number of nodes),
+ return the SECOND middle node.
+
+===============================================================================
+ PROBLEM RESOURCE:
+ -----------------
+ https://leetcode.com/problems/middle-of-the-linked-list/
+
+===============================================================================
+ INTUITION:
+ ----------
+ • A singly linked list cannot be indexed directly.
+ • Instead of counting nodes first, we can find the middle in ONE traversal.
+ • Use two pointers moving at different speeds:
+     - Slow pointer moves 1 step at a time
+     - Fast pointer moves 2 steps at a time
+ • When the fast pointer reaches the end, the slow pointer is at the middle.
+
+===============================================================================
+ APPROACH (SLOW–FAST POINTER TECHNIQUE):
+ --------------------------------------
+ 1. Initialize two pointers:
+      • first  → slow pointer
+      • second → fast pointer
+ 2. Move:
+      • slow pointer by 1 node
+      • fast pointer by 2 nodes
+ 3. Continue until:
+      • fast reaches the end OR
+      • fast.next becomes null
+ 4. At that moment, slow pointer will be at the middle node.
+
+===============================================================================
+ EXAMPLE:
+ --------
+ Input:
+   1 → 2 → 3 → 4 → 5 → X
+
+ Output:
+   3
+
+===============================================================================
+ DRY RUN:
+ --------
+ Linked List: 1 → 2 → 3 → 4 → 5
+
+ Initial:
+   first  = 1
+   second = 1
+
+ Iteration 1:
+   first  → 2
+   second → 3
+
+ Iteration 2:
+   first  → 3
+   second → 5
+
+ Loop ends (second.next == null)
+
+ Result:
+   first = 3 (middle node)
+
+===============================================================================
+ EVEN LENGTH CASE:
+ -----------------
+ Input:
+   1 → 2 → 3 → 4 → X
+
+ Dry Run:
+   first ends at node 3
+
+ ✔ Correctly returns SECOND middle node as required.
+
+===============================================================================
+ KEY POINTS:
+ ------------
+ ✔ Single pass solution
+ ✔ No extra memory used
+ ✔ Handles both odd and even length lists
+ ✔ Standard interview-preferred approach
+
+===============================================================================
+ TIME COMPLEXITY:
+ ----------------
+ O(n)
+ (Single traversal of the linked list)
+
+===============================================================================
+ SPACE COMPLEXITY:
+ -----------------
+ O(1)
+ (No extra data structures)
+
+===============================================================================
+ SPECIAL NOTES FOR LOGIC:
+ ------------------------
+ • Condition `second != null && second.next != null` ensures:
+     - No NullPointerException
+     - Proper termination
+ • Fast pointer moves twice as fast, creating a 2:1 ratio
+ • When fast reaches end, slow is exactly at middle
+
+===============================================================================
+*/
+
+public class Solution {
+
+    public ListNode middleNode(ListNode head) {
+
+        // Slow pointer (moves one step at a time)
+        ListNode first = head;
+
+        // Fast pointer (moves two steps at a time)
+        ListNode second = head;
+
+        // Traverse until fast pointer reaches the end
+        while (first != null && second != null && second.next != null) {
+
+            // Move slow pointer by one step
+            first = first.next;
+
+            // Move fast pointer by two steps
+            second = second.next.next;
+        }
+
+        // Slow pointer now points to the middle node
+        return first;
+    }
+}
