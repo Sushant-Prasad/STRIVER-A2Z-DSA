@@ -1,0 +1,108 @@
+/*
+===============================================================================
+ TITLE:
+ Search an Element in a Singly Linked List
+===============================================================================
+
+ PROBLEM STATEMENT:
+ ------------------
+ Given the head of a singly linked list and an integer `key`,
+ determine whether the key is present in the linked list.
+
+ Return:
+ • true  → if key exists
+ • false → if key does not exist
+
+===============================================================================
+ PROBLEM RESOURCE:
+ -----------------
+ https://www.geeksforgeeks.org/problems/search-in-linked-list/1
+
+===============================================================================
+ INTUITION:
+ ----------
+ • A singly linked list does not support direct indexing.
+ • To search an element, we must traverse the list node by node.
+ • At each node, compare the stored data with the given key.
+
+===============================================================================
+ APPROACH:
+ ----------
+ 1. Start traversal from the head node.
+ 2. While the current node is not null:
+    • If current node's data equals the key → return true.
+    • Otherwise, move to the next node.
+ 3. If traversal ends without finding the key → return false.
+
+===============================================================================
+ EXAMPLE:
+ --------
+ Linked List:
+   10 → 20 → 30 → 40 → X
+
+ Key = 30
+
+ Output:
+   true
+
+===============================================================================
+ DRY RUN:
+ --------
+ head → 10 → 20 → 30 → 40 → null
+
+ Iteration 1:
+   head.data = 10 ≠ 30 → move next
+ Iteration 2:
+   head.data = 20 ≠ 30 → move next
+ Iteration 3:
+   head.data = 30 == 30 → FOUND → return true
+
+===============================================================================
+ KEY POINTS:
+ ------------
+ ✔ Linear traversal required
+ ✔ No extra memory used
+ ✔ Stops early if key is found
+ ✔ Handles empty list safely
+
+===============================================================================
+ TIME COMPLEXITY:
+ ----------------
+ O(n)
+ (n = number of nodes in the linked list)
+
+===============================================================================
+ SPACE COMPLEXITY:
+ -----------------
+ O(1)
+ (no extra data structures used)
+
+===============================================================================
+ SPECIAL NOTES FOR LOGIC:
+ ------------------------
+ • Loop condition `head != null` ensures safe traversal
+ • `head = head.next` moves pointer forward
+ • Early return improves efficiency when key is found
+
+===============================================================================
+*/
+
+class Solution {
+
+    public boolean searchKey(Node head, int key) {
+
+        // Traverse the linked list
+        while (head != null) {
+
+            // If current node contains the key
+            if (head.data == key)
+                return true;
+
+            // Move to next node
+            head = head.next;
+        }
+
+        // Key not found in the list
+        return false;
+    }
+}
