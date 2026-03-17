@@ -1,0 +1,138 @@
+/**
+===============================================================================
+ TITLE:
+ Reverse a Singly Linked List (Iterative Approach)
+===============================================================================
+
+ PROBLEM STATEMENT:
+ ------------------
+ Given the head of a singly linked list, reverse the list and return the
+ new head of the reversed list.
+
+===============================================================================
+ PROBLEM RESOURCE:
+ -----------------
+ https://leetcode.com/problems/reverse-linked-list/
+
+===============================================================================
+ INTUITION:
+ ----------
+ • Each node points to the next node.
+ • To reverse the list, we need to reverse these pointers.
+ • While traversing the list, change:
+       current.next → previous node
+ • Keep track of:
+       - previous node
+       - current node
+       - next node (to avoid losing the list)
+
+===============================================================================
+ APPROACH (ITERATIVE POINTER REVERSAL):
+ -------------------------------------
+ 1. Initialize `prev` as null (new tail after reversal).
+ 2. Traverse the list using `head` as current pointer.
+ 3. For each node:
+      • Store next node.
+      • Reverse the current node’s pointer.
+      • Move pointers forward.
+ 4. When traversal ends, `prev` will point to the new head.
+
+===============================================================================
+ EXAMPLE:
+ --------
+ Input:
+   1 → 2 → 3 → 4 → X
+
+ Output:
+   4 → 3 → 2 → 1 → X
+
+===============================================================================
+ DRY RUN:
+ --------
+ Initial:
+   prev = null
+   head = 1
+
+ Iteration 1:
+   next = 2
+   1.next = null
+   prev = 1
+   head = 2
+
+ Iteration 2:
+   next = 3
+   2.next = 1
+   prev = 2
+   head = 3
+
+ Iteration 3:
+   next = 4
+   3.next = 2
+   prev = 3
+   head = 4
+
+ Iteration 4:
+   next = null
+   4.next = 3
+   prev = 4
+   head = null
+
+ Loop ends → return prev (new head)
+
+===============================================================================
+ KEY POINTS:
+ ------------
+ ✔ Single pass through the list
+ ✔ No extra data structures used
+ ✔ Efficient and clean pointer manipulation
+ ✔ Works for empty and single-node lists
+
+===============================================================================
+ TIME COMPLEXITY:
+ ----------------
+ O(n)
+ (Each node is visited once)
+
+===============================================================================
+ SPACE COMPLEXITY:
+ -----------------
+ O(1)
+ (Constant extra space)
+
+===============================================================================
+ SPECIAL NOTES FOR LOGIC:
+ ------------------------
+ • `next` is stored before reversing links to prevent losing the rest of the list
+ • `prev` always points to the reversed portion
+ • At the end, `prev` becomes the new head
+
+===============================================================================
+*/
+
+class Solution {
+
+    public ListNode reverseList(ListNode head) {
+
+        // `prev` will become the new head of the reversed list
+        ListNode prev = null;
+
+        // Traverse the list
+        while (head != null) {
+
+            // Store next node before breaking the link
+            ListNode next = head.next;
+
+            // Reverse the link
+            head.next = prev;
+
+            // Move `prev` one step forward
+            prev = head;
+
+            // Move `head` to the next node
+            head = next;
+        }
+
+        // `prev` is the new head after reversal
+        return prev;
+    }
+}
