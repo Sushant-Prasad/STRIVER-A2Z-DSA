@@ -1,0 +1,160 @@
+/**
+===============================================================================
+ TITLE:
+ Linked List Cycle Detection (Floyd’s Cycle Detection Algorithm)
+===============================================================================
+
+ PROBLEM STATEMENT:
+ ------------------
+ Given the head of a singly linked list, determine if the linked list
+ contains a cycle.
+
+ A cycle exists if a node can be reached again by continuously following
+ the `next` pointer.
+
+===============================================================================
+ PROBLEM RESOURCE:
+ -----------------
+ https://leetcode.com/problems/linked-list-cycle/
+
+===============================================================================
+ INTUITION:
+ ----------
+ • If a linked list has a cycle, some nodes will be visited repeatedly.
+ • Using two pointers moving at different speeds:
+     - Slow pointer moves one step at a time.
+     - Fast pointer moves two steps at a time.
+ • If a cycle exists, the fast pointer will eventually "lap" the slow
+   pointer and they will meet at the same node.
+
+===============================================================================
+ APPROACH (FLOYD’S CYCLE DETECTION):
+ ----------------------------------
+ 1. Initialize two pointers:
+      • slow → moves 1 step
+      • fast → moves 2 steps
+ 2. Traverse the list while fast and fast.next are not null.
+ 3. Move pointers:
+      • slow = slow.next
+      • fast = fast.next.next
+ 4. If at any point slow == fast → cycle detected.
+ 5. If fast reaches null → no cycle.
+
+===============================================================================
+ EXAMPLE:
+ --------
+ Linked List with Cycle:
+   1 → 2 → 3 → 4
+           ↑     ↓
+           ← ← ←
+
+ Output:
+   true
+
+===============================================================================
+ DRY RUN:
+ --------
+ Step 1:
+   slow = 1
+   fast = 1
+
+ Step 2:
+   slow = 2
+   fast = 3
+
+ Step 3:
+   slow = 3
+   fast = 2 (wraps due to cycle)
+
+ Step 4:
+   slow = 4
+   fast = 4  ← MEET (cycle found)
+
+===============================================================================
+ KEY POINTS:
+ ------------
+ ✔ Uses no extra memory
+ ✔ Guaranteed detection if cycle exists
+ ✔ Works for all list sizes
+ ✔ Industry-standard algorithm
+
+===============================================================================
+ TIME COMPLEXITY:
+ ----------------
+ O(n)
+ (Each pointer traverses the list at most once)
+
+===============================================================================
+ SPACE COMPLEXITY:
+ -----------------
+ O(1)
+ (No extra data structures used)
+
+===============================================================================
+ SPECIAL NOTES FOR LOGIC (VERY IMPORTANT ⭐):
+ ------------------------------------------
+
+ 🔹 Why this exact order is required:
+
+     slow = slow.next;
+     fast = fast.next.next;
+     if (slow == fast) return true;
+
+ 1️⃣ Movement BEFORE comparison is mandatory
+ -------------------------------------------
+ • Initially:
+       slow == fast == head
+ • If we check equality BEFORE moving:
+       We would falsely detect a cycle immediately.
+
+ ✔ Therefore, both pointers must move first.
+
+ 2️⃣ Why slow moves by 1 and fast by 2
+ ------------------------------------
+ • Slow pointer explores the list normally.
+ • Fast pointer moves faster and "laps" slow in a cycle.
+ • If no cycle exists:
+       fast will reach null.
+ • If cycle exists:
+       fast will eventually meet slow.
+
+ 3️⃣ Why comparison AFTER movement works
+ --------------------------------------
+ • After moving, if slow and fast point to the same node:
+       → They met inside a loop
+       → Cycle is guaranteed
+
+ ❌ Changing this order causes:
+ --------------------------------
+ • False positives (cycle detected when none exists)
+ • NullPointerException (if fast.next not checked)
+
+===============================================================================
+*/
+
+public class Solution {
+
+    public boolean hasCycle(ListNode head) {
+
+        // Two pointers starting from head
+        ListNode slow = head;
+        ListNode fast = head;
+
+        // Traverse while fast pointer can move safely
+        while (fast != null && fast.next != null) {
+
+            // Move slow pointer by 1 step
+            slow = slow.next;
+
+            // Move fast pointer by 2 steps
+            fast = fast.next.next;
+
+            // If both pointers meet, cycle exists
+            if (slow == fast)
+                return true;
+        }
+
+        // If fast reaches null, no cycle exists
+        return false;
+    }
+}
