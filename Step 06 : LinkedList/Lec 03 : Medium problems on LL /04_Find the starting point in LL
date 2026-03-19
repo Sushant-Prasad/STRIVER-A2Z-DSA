@@ -1,0 +1,285 @@
+/**
+===============================================================================
+ TITLE:
+ Detect Cycle in Linked List – Approach 1 (Using HashSet)
+===============================================================================
+
+ PROBLEM STATEMENT:
+ ------------------
+ Given the head of a singly linked list, return the node where the cycle begins.
+ If there is no cycle, return null.
+
+ A cycle exists if a node is visited more than once while traversing the list.
+
+===============================================================================
+ PROBLEM RESOURCE:
+ -----------------
+ https://leetcode.com/problems/linked-list-cycle-ii/
+
+===============================================================================
+ INTUITION:
+ ----------
+ • While traversing a linked list, each node should be visited only once.
+ • If we ever visit the same node again, it means:
+     → A cycle exists
+     → That node is the starting point of the cycle
+ • We can track visited nodes using a HashSet.
+
+===============================================================================
+ APPROACH-1 (USING HASHSET):
+ --------------------------
+ 1. Create a HashSet to store visited nodes.
+ 2. Traverse the linked list node by node.
+ 3. For each node:
+      • If the node already exists in the HashSet → cycle detected.
+      • Return the current node as the start of the cycle.
+ 4. If traversal reaches null → no cycle exists.
+
+===============================================================================
+ EXAMPLE:
+ --------
+ Linked List:
+   3 → 2 → 0 → -4
+        ↑         ↓
+        ← ← ← ← ←
+
+ Traversal:
+   Visit 3 → add to set
+   Visit 2 → add to set
+   Visit 0 → add to set
+   Visit -4 → add to set
+   Visit 2 → already in set → cycle start = 2
+
+===============================================================================
+ DRY RUN:
+ --------
+ head = 1
+ set = {}
+
+ Visit 1 → add → {1}
+ Visit 2 → add → {1,2}
+ Visit 3 → add → {1,2,3}
+ Visit 2 → already exists → return node 2
+
+===============================================================================
+ KEY POINTS:
+ ------------
+ ✔ Simple and easy to understand
+ ✔ Directly returns cycle start node
+ ✔ Uses extra memory
+ ✔ Suitable when memory is not a constraint
+
+===============================================================================
+ TIME COMPLEXITY:
+ ----------------
+ O(n)
+ (Each node is visited once)
+
+===============================================================================
+ SPACE COMPLEXITY:
+ -----------------
+ O(n)
+ (HashSet stores visited nodes)
+
+===============================================================================
+ SPECIAL NOTES FOR LOGIC:
+ ------------------------
+ • HashSet stores node references, NOT values.
+ • Comparison is based on memory address (object identity).
+ • First repeated node is guaranteed to be the cycle entry point.
+
+===============================================================================
+*/
+
+import java.util.HashSet;
+
+public class Solution {
+
+    public ListNode detectCycle(ListNode head) {
+
+        // HashSet to store visited nodes
+        HashSet<ListNode> set = new HashSet<>();
+
+        // Traverse the linked list
+        while (head != null) {
+
+            // If node already exists in set, cycle detected
+            if (set.contains(head)) {
+                return head; // starting point of cycle
+            }
+
+            // Mark current node as visited
+            set.add(head);
+
+            // Move to next node
+            head = head.next;
+        }
+
+        // No cycle found
+        return null;
+    }
+}
+/**
+===============================================================================
+ TITLE:
+ Detect Cycle in Linked List – Approach 2 (Floyd’s Cycle Detection Algorithm)
+===============================================================================
+
+ PROBLEM STATEMENT:
+ ------------------
+ Given the head of a singly linked list, return the node where the cycle begins.
+ If there is no cycle, return null.
+
+===============================================================================
+ PROBLEM RESOURCE:
+ -----------------
+ https://leetcode.com/problems/linked-list-cycle-ii/
+
+===============================================================================
+ INTUITION:
+ ----------
+ • If a linked list has a cycle, a fast pointer (2 steps) and a slow pointer
+   (1 step) will eventually meet inside the cycle.
+ • After they meet, resetting one pointer to the head and moving both
+   pointers one step at a time will make them meet again at the
+   cycle’s starting node.
+
+===============================================================================
+ APPROACH-2 (FLOYD’S ALGORITHM – TORTOISE & HARE):
+ ------------------------------------------------
+ STEP 1: Detect if a cycle exists
+   • Use two pointers:
+       slow → moves 1 step
+       fast → moves 2 steps
+   • If slow == fast → cycle detected
+
+ STEP 2: Find the start of the cycle
+   • Initialize a pointer `p` at head
+   • Move `p` and `slow` one step at a time
+   • The node where they meet is the cycle entry point
+
+===============================================================================
+ EXAMPLE:
+ --------
+ Linked List:
+   3 → 2 → 0 → -4
+        ↑         ↓
+        ← ← ← ← ←
+
+ slow & fast meet at node 0
+ Reset p = head (3)
+
+ Move both:
+   p → 2
+   slow → 2
+
+ Meeting point = 2 (cycle start)
+
+===============================================================================
+ DRY RUN:
+ --------
+ Initial:
+   slow = head, fast = head
+
+ Loop 1:
+   slow = 2
+   fast = 0
+
+ Loop 2:
+   slow = 0
+   fast = 2
+
+ Loop 3:
+   slow = -4
+   fast = -4  ← meeting point
+
+ Reset:
+   p = head (3)
+
+ Move both:
+   p = 2
+   slow = 2  ← cycle start found
+
+===============================================================================
+ SPECIAL NOTE – WHY THIS WORKS ⭐:
+ --------------------------------
+ Let:
+   • Distance from head to cycle start = a
+   • Distance from cycle start to meeting point = b
+   • Remaining cycle length = c
+
+ Then:
+   slow distance = a + b
+   fast distance = a + b + c + b = a + 2b + c
+
+ Since fast moves twice as fast:
+   2(a + b) = a + 2b + c
+   a = c
+
+ Meaning:
+   Distance from head to cycle start
+   == distance from meeting point to cycle start
+
+ So when:
+   • One pointer starts from head
+   • One pointer starts from meeting point
+   • Both move one step at a time
+
+ They will meet exactly at the cycle start.
+
+===============================================================================
+ KEY POINTS:
+ ------------
+ ✔ No extra memory used
+ ✔ Two-pointer technique
+ ✔ Mathematical guarantee of correctness
+ ✔ Industry-standard optimal solution
+
+===============================================================================
+ TIME COMPLEXITY:
+ ----------------
+ O(n)
+ (Each pointer traverses the list at most twice)
+
+===============================================================================
+ SPACE COMPLEXITY:
+ -----------------
+ O(1)
+ (Constant extra space)
+
+===============================================================================
+*/
+
+public class Solution {
+    public ListNode detectCycle(ListNode head) {
+
+        // Slow and fast pointers start at head
+        ListNode slow = head, fast = head;
+
+        // Step 1: Detect cycle
+        while (fast != null && fast.next != null) {
+
+            slow = slow.next;          // move 1 step
+            fast = fast.next.next;    // move 2 steps
+
+            // Cycle detected
+            if (slow == fast) {
+
+                // Step 2: Find cycle entry point
+                ListNode p = head;
+
+                // Move both pointers one step at a time
+                while (p != slow) {
+                    p = p.next;
+                    slow = slow.next;
+                }
+
+                // Cycle start node
+                return slow;
+            }
+        }
+
+        // No cycle
+        return null;
+    }
+}
