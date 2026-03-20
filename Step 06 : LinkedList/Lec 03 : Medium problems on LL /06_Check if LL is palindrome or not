@@ -1,0 +1,158 @@
+/**
+ * ============================================================================
+ *  TITLE:
+ *  Check if a Singly Linked List is a Palindrome
+ * ============================================================================
+ *
+ *  PROBLEM STATEMENT:
+ *  ------------------
+ *  Given the head of a singly linked list, determine whether the list
+ *  represents a palindrome.
+ *
+ *  A linked list is a palindrome if it reads the same forward and backward.
+ *
+ * ============================================================================
+ *  PROBLEM RESOURCE:
+ *  -----------------
+ *  https://leetcode.com/problems/palindrome-linked-list/
+ *
+ * ============================================================================
+ *  INTUITION:
+ *  ----------
+ *  • A palindrome requires comparing the first half of the list
+ *    with the reversed second half.
+ *  • Since singly linked lists cannot be traversed backward,
+ *    we reverse the second half and then compare node by node.
+ *
+ * ============================================================================
+ *  APPROACH:
+ *  ----------
+ *  1. Use the slow–fast pointer technique to find the middle of the list.
+ *  2. Reverse the second half of the linked list.
+ *  3. Compare the first half and the reversed second half.
+ *  4. If all corresponding values match → palindrome.
+ *
+ * ============================================================================
+ *  EXAMPLE:
+ *  --------
+ *  Input:
+ *      1 → 2 → 2 → 1
+ *
+ *  Output:
+ *      true
+ *
+ * ============================================================================
+ *  DRY RUN:
+ *  --------
+ *  List: 1 → 2 → 2 → 1
+ *
+ *  Step 1: Find middle
+ *      slow → points to 2 (second node)
+ *
+ *  Step 2: Reverse second half
+ *      right = 1 → 2
+ *
+ *  Step 3: Compare
+ *      left:  1 → 2
+ *      right: 1 → 2
+ *      ✔ All match → palindrome
+ *
+ * ============================================================================
+ *  KEY POINTS:
+ *  ------------
+ *  ✔ Uses slow–fast pointer to find middle
+ *  ✔ Reverses list in-place (no extra data structures)
+ *  ✔ Compares only half of the list
+ *
+ * ============================================================================
+ *  TIME COMPLEXITY:
+ *  ----------------
+ *  O(n)
+ *  • Finding middle → O(n)
+ *  • Reversing half → O(n)
+ *  • Comparison → O(n)
+ *
+ * ============================================================================
+ *  SPACE COMPLEXITY:
+ *  -----------------
+ *  O(1)
+ *  • Constant extra space
+ *
+ * ============================================================================
+ *  SPECIAL NOTES FOR LOGIC:
+ *  ------------------------
+ *  • `fast` moves 2 steps while `slow` moves 1 step:
+ *      - When `fast` reaches the end, `slow` is at the middle.
+ *
+ *  • Reversing from `slow`:
+ *      - This handles both even and odd length lists correctly.
+ *
+ *  • Comparing until `right != null`:
+ *      - Only the reversed second half needs to be checked.
+ *
+ * ============================================================================
+ */
+
+class Solution {
+
+    /**
+     * PURPOSE:
+     * --------
+     * Reverses a singly linked list starting from the given head node.
+     *
+     * PARAMETERS:
+     * -----------
+     * head → starting node of the list to be reversed
+     *
+     * RETURNS:
+     * --------
+     * New head of the reversed list
+     */
+    private ListNode reverseList(ListNode head) {
+
+        ListNode prev = null; // will become new head after reversal
+
+        // iterate through list
+        while (head != null) {
+
+            ListNode next = head.next; // store next node
+            head.next = prev;          // reverse link
+            prev = head;               // move prev forward
+            head = next;               // move head forward
+        }
+
+        return prev;
+    }
+
+    /**
+     * PURPOSE:
+     * --------
+     * Checks whether the linked list is a palindrome.
+     */
+    public boolean isPalindrome(ListNode head) {
+
+        // Step 1: Find middle of the list using slow–fast pointers
+        ListNode slow = head, fast = head;
+
+        while (fast != null && fast.next != null) {
+            slow = slow.next;           // move 1 step
+            fast = fast.next.next;     // move 2 steps
+        }
+
+        // Step 2: Reverse second half of the list
+        ListNode left = head;                 // start of first half
+        ListNode right = reverseList(slow);   // start of reversed second half
+
+        // Step 3: Compare both halves
+        while (right != null) {
+            if (left.val != right.val) {
+                return false; // mismatch found
+            }
+            left = left.next;
+            right = right.next;
+        }
+
+        // All matched → palindrome
+        return true;
+    }
+}
