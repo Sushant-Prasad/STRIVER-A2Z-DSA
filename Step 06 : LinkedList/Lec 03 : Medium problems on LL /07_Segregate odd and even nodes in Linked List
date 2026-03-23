@@ -1,0 +1,127 @@
+/**
+ * ============================================================================
+ *  TITLE:
+ *  Odd Even Linked List (Index-based Rearrangement)
+ * ============================================================================
+ *
+ *  PROBLEM STATEMENT:
+ *  ------------------
+ *  Given the head of a singly linked list, rearrange the list such that:
+ *   • All nodes at odd positions come first
+ *   • Followed by all nodes at even positions
+ *
+ *  Note:
+ *  • Position indexing is 1-based (NOT value-based)
+ *  • Relative order within odd and even groups must be preserved
+ *
+ * ============================================================================
+ *  PROBLEM RESOURCE:
+ *  -----------------
+ *  https://leetcode.com/problems/odd-even-linked-list/
+ *
+ * ============================================================================
+ *  INTUITION:
+ *  ----------
+ *  • Split the linked list into two chains:
+ *      1️⃣ Odd-position nodes
+ *      2️⃣ Even-position nodes
+ *  • Traverse the list once and rewire pointers.
+ *  • Finally, attach the even list after the odd list.
+ *
+ * ============================================================================
+ *  APPROACH:
+ *  ----------
+ *  1. Handle edge cases (0 or 1 node).
+ *  2. Use three pointers:
+ *      • odd  → tracks last node in odd list
+ *      • even → tracks last node in even list
+ *      • temp → stores head of even list (to attach later)
+ *  3. Rearrange pointers while both odd.next and even.next exist.
+ *  4. Connect odd list with even list.
+ *
+ * ============================================================================
+ *  EXAMPLE:
+ *  --------
+ *  Input:
+ *      1 → 2 → 3 → 4 → 5
+ *
+ *  Output:
+ *      1 → 3 → 5 → 2 → 4
+ *
+ * ============================================================================
+ *  DRY RUN:
+ *  --------
+ *  Initial:
+ *      odd = 1, even = 2, temp = 2
+ *
+ *  Iteration 1:
+ *      odd.next = 3
+ *      even.next = 4
+ *
+ *  Iteration 2:
+ *      odd.next = 5
+ *      even.next = null
+ *
+ *  Final attach:
+ *      odd.next = temp (2)
+ *
+ * ============================================================================
+ *  KEY POINTS:
+ *  ------------
+ *  ✔ Index-based problem, NOT value-based
+ *  ✔ One-pass traversal
+ *  ✔ No extra memory used
+ *  ✔ Order preserved
+ *
+ * ============================================================================
+ *  TIME COMPLEXITY:
+ *      O(n)
+ *
+ *  SPACE COMPLEXITY:
+ *      O(1)
+ *
+ * ============================================================================
+ *  SPECIAL NOTES FOR LOGIC ⭐:
+ *  --------------------------
+ *  • `temp` stores the starting node of the even list.
+ *  • `odd.next = even.next` skips even node and links odd nodes together.
+ *  • `even.next = even.next.next` skips odd node and links even nodes together.
+ *  • Final step `odd.next = temp` reconnects both lists.
+ *
+ * ============================================================================
+ */
+class Solution {
+    public ListNode oddEvenList(ListNode head) {
+
+        // Edge case: empty list or single node
+        if (head == null || head.next == null)
+            return head;
+
+        // odd → points to odd-position nodes
+        ListNode odd = head;
+
+        // even → points to even-position nodes
+        ListNode even = head.next;
+
+        // temp → stores head of even list
+        ListNode temp = head.next;
+
+        // Rearranging links
+        while (odd != null && even != null &&
+               odd.next != null && even.next != null) {
+
+            // Link current odd node to next odd node
+            odd.next = even.next;
+            odd = odd.next;
+
+            // Link current even node to next even node
+            even.next = even.next.next;
+            even = even.next;
+        }
+
+        // Attach even list after odd list
+        odd.next = temp;
+
+        return head;
+    }
+}
