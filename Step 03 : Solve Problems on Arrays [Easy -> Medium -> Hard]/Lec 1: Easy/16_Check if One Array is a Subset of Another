@@ -1,0 +1,117 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Check if One Array is a Subset of Another
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given two integer arrays:
+• arr1 (main array)
+• arr2 (subset array)
+
+Check whether all elements of arr2 are present in arr1.
+
+Return:
+• true  → if arr2 is a subset of arr1
+• false → otherwise
+
+PROBLEM RESOURCE (links)
+https://www.geeksforgeeks.org/find-whether-an-array-is-subset-of-another-array/
+
+===========================================================
+INTUITION
+===========================================================
+• We need fast lookup to check if elements exist in arr1
+• HashSet provides O(1) average lookup time
+• Insert all elements of arr1 into a HashSet
+• Then check each element of arr2 in the set
+
+===========================================================
+APPROACH (HASHSET)
+===========================================================
+1) Insert all elements of arr1 into a HashSet
+2) Traverse arr2:
+   - If any element is not found → return false
+3) If all elements are found → return true
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+arr1 = [11, 1, 13, 21, 3, 7]
+arr2 = [11, 3, 7, 1]
+
+Output:
+true
+
+===========================================================
+DRY RUN
+===========================================================
+HashSet = {11, 1, 13, 21, 3, 7}
+
+Check 11 → present
+Check 3  → present
+Check 7  → present
+Check 1  → present
+
+All found → return true
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n + m)
+• n = size of arr1 (building set)
+• m = size of arr2 (checking elements)
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(n)
+• HashSet stores elements of arr1
+
+===========================================================
+SPECIAL NOTES
+===========================================================
+• Handles duplicates automatically
+• Order does not matter
+• Preferred approach in interviews
+===========================================================
+*/
+
+import java.util.*;
+
+class Solution {
+
+    public static boolean isSubset(int[] arr1, int[] arr2) {
+
+        // Create HashSet and store all elements of arr1
+        HashSet<Integer> set = new HashSet<>();
+
+        for (int num : arr1) {
+            set.add(num);
+        }
+
+        // Check each element of arr2
+        for (int num : arr2) {
+
+            // If element not found → not a subset
+            if (!set.contains(num)) {
+                return false;
+            }
+        }
+
+        // All elements found → subset confirmed
+        return true;
+    }
+
+    // ================= DRIVER CODE =================
+    public static void main(String[] args) {
+
+        int[] arr1 = {11, 1, 13, 21, 3, 7};
+        int[] arr2 = {11, 3, 7, 1};
+
+        System.out.println(isSubset(arr1, arr2)); // true
+    }
+}
