@@ -1,0 +1,313 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Remove Nth Node From the End of a Singly Linked List
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given the head of a singly linked list and an integer `n`,
+remove the **n-th node from the end** of the list and return
+the modified head of the list.
+
+It is guaranteed that `n` is valid.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+
+===========================================================
+INTUITION
+===========================================================
+To remove the n-th node from the end:
+- We need to know the total length of the linked list.
+- Once the length is known, the position of the node to be removed
+  from the start can be calculated.
+
+Key idea:
+If length = L, then the node to remove from the start is:
+(L - n + 1)-th node (1-based indexing)
+
+===========================================================
+APPROACH
+===========================================================
+1) Traverse the linked list once to calculate its length.
+2) If `n` equals the length:
+   - The node to be removed is the head itself.
+   - Return `head.next`.
+3) Otherwise:
+   - Calculate position `k = length - n + 1`.
+4) Traverse the list again up to the k-th node, keeping track of:
+   - `curr` → current node
+   - `prev` → previous node
+5) Remove the k-th node by adjusting pointers:
+   - `prev.next = curr.next`
+6) Return the original head.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+head = [1, 2, 3, 4, 5], n = 2
+
+Length = 5
+Node to remove = 5 - 2 + 1 = 4th node (value = 4)
+
+Output:
+[1, 2, 3, 5]
+
+===========================================================
+DRY RUN
+===========================================================
+List: 1 → 2 → 3 → 4 → 5
+n = 2
+
+Step 1: Count length
+count = 5
+
+Step 2: n != count → head not removed
+
+Step 3:
+k = 5 - 2 + 1 = 4
+
+Step 4: Traverse to k-th node
+i = 1 → curr = 1, prev = 1
+i = 2 → curr = 2, prev = 1
+i = 3 → curr = 3, prev = 2
+i = 4 → curr = 4, prev = 3
+
+Step 5:
+prev.next = curr.next → 3.next = 5
+
+Final List:
+1 → 2 → 3 → 5
+
+===========================================================
+KEY POINTS
+===========================================================
+• Uses two passes over the linked list
+• Handles head deletion separately
+• Pointer manipulation is done safely
+• No extra data structures are used
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n)
+- One pass to count nodes
+- One pass to remove the target node
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• `count == n` means the head node must be removed
+• `k = count - n + 1` gives the position from the start
+• `prev` and `curr` pointers help in safe node deletion
+• Two-pointer (fast & slow) approach can solve this in one pass
+===========================================================
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+
+        int count = 0;               // Stores length of the linked list
+        ListNode temp = head;
+
+        // First pass: count total number of nodes
+        while (temp != null) {
+            temp = temp.next;
+            count++;
+        }
+
+        // If the head node needs to be removed
+        if (count == n)
+            return head.next;
+
+        // Position of node to remove from start (1-based)
+        int k = count - n + 1;
+
+        ListNode curr = head;
+        ListNode prev = head;
+
+        // Traverse to the k-th node
+        for (int i = 1; i < k; i++) {
+            prev = curr;
+            curr = curr.next;
+        }
+
+        // Remove the k-th node
+        prev.next = curr.next;
+
+        return head; // Return updated head
+    }
+}
+# Method-2
+/*
+===========================================================
+TITLE
+===========================================================
+Remove Nth Node From the End of a Singly Linked List (One-Pass)
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given the head of a singly linked list and an integer `n`,
+remove the **n-th node from the end** of the list and return
+the modified head.
+
+The operation must be performed efficiently.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+
+===========================================================
+INTUITION
+===========================================================
+To remove the n-th node from the end in one pass:
+- Use two pointers (`temp` and `prev`)
+- Move the `temp` pointer `n` steps ahead
+- Then move both pointers together until `temp` reaches the end
+
+At that point:
+- `prev` will be just before the node that needs to be removed
+
+===========================================================
+APPROACH
+===========================================================
+1) Initialize two pointers:
+   - `temp` → points to the head
+   - `prev` → also points to the head
+2) Move `temp` ahead by `n` steps.
+3) If `temp` becomes `null` after this:
+   - The node to be removed is the head itself.
+4) Otherwise, move both pointers one step at a time until:
+   - `temp.next == null`
+5) Remove the target node by adjusting:
+   - `prev.next = prev.next.next`
+6) Return the head of the modified list.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+head = [1, 2, 3, 4, 5], n = 2
+
+Process:
+temp moves 2 steps → points to node 3
+
+Move together:
+temp → 5
+prev → 3
+
+Remove:
+prev.next = 4.next → 5
+
+Output:
+[1, 2, 3, 5]
+
+===========================================================
+DRY RUN
+===========================================================
+List: 1 → 2 → 3 → 4 → 5
+n = 2
+
+Step 1: Move temp n steps
+temp → 3
+
+Step 2: Move both pointers
+temp → 4, prev → 2
+temp → 5, prev → 3
+
+Step 3:
+prev.next = prev.next.next
+3.next = 5
+
+Final List:
+1 → 2 → 3 → 5
+
+===========================================================
+KEY POINTS
+===========================================================
+• One-pass solution using two pointers
+• Efficient and interview-preferred
+• Handles head deletion cleanly
+• No extra memory used
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n), where n is the number of nodes in the list
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• If `temp` becomes null after initial shift, head must be removed
+• `prev` always stays one node behind the target
+• This approach avoids counting nodes explicitly
+===========================================================
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+
+        // Initialize two pointers
+        ListNode temp = head;
+        ListNode prev = head;
+
+        // Move temp pointer n steps ahead
+        for (int i = 0; i < n; i++) {
+            temp = temp.next;
+        }
+
+        // If temp is null, the node to remove is the head
+        if (temp == null)
+            return head.next;
+
+        // Move both pointers until temp reaches the last node
+        while (temp != null && temp.next != null) {
+            temp = temp.next;
+            prev = prev.next;
+        }
+
+        // Remove the target node
+        prev.next = prev.next.next;
+
+        return head; // Return updated head
+    }
+}
