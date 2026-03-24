@@ -101,6 +101,7 @@ SPECIAL NOTES FOR LOGIC
 • Always normalize k using k % n
 • Reversal algorithm is the most optimal solution
 • Approach 2 is preferred in interviews
+• Left Rotate by k  = Right Rotate by (n - k)
 ===========================================================
 */
 
