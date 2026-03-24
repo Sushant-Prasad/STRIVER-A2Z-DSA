@@ -1,0 +1,111 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Find Equilibrium Index in an Array
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer array, find an index such that:
+
+Sum of elements before it = Sum of elements after it
+
+If multiple equilibrium indexes exist, return the first one.
+If no such index exists, return -1.
+
+PROBLEM RESOURCE (links)
+https://www.geeksforgeeks.org/equilibrium-index-of-an-array/
+
+===========================================================
+INTUITION
+===========================================================
+• For each index, compute:
+  - Sum of elements on the left
+  - Sum of elements on the right
+• If both sums are equal → equilibrium index found
+
+===========================================================
+APPROACH (BRUTE FORCE)
+===========================================================
+1) Traverse each index i
+2) Calculate left sum from 0 to i-1
+3) Calculate right sum from i+1 to n-1
+4) If leftSum == rightSum → return i
+5) If none found → return -1
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:  [-7, 1, 5, 2, -4, 3, 0]
+
+Output: 3
+
+===========================================================
+DRY RUN
+===========================================================
+i=0 → left=0, right=7 → not equal
+i=1 → left=-7, right=6 → not equal
+i=2 → left=-6, right=1 → not equal
+i=3 → left=-1, right=-1 → equal → return 3
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n²)
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1)
+
+===========================================================
+SPECIAL NOTES
+===========================================================
+• Works with negative numbers
+• First equilibrium index is returned
+• Can be optimized to O(n)
+===========================================================
+*/
+
+class Solution {
+
+    public static int findEquilibrium(int[] arr) {
+
+        int n = arr.length;
+
+        // Traverse each index
+        for (int i = 0; i < n; i++) {
+
+            int leftSum = 0;
+
+            // Calculate left sum
+            for (int j = 0; j < i; j++) {
+                leftSum += arr[j];
+            }
+
+            int rightSum = 0;
+
+            // Calculate right sum
+            for (int j = i + 1; j < n; j++) {
+                rightSum += arr[j];
+            }
+
+            // Check equilibrium condition
+            if (leftSum == rightSum) {
+                return i;
+            }
+        }
+
+        // No equilibrium index found
+        return -1;
+    }
+
+    // ================= DRIVER CODE =================
+    public static void main(String[] args) {
+
+        int[] arr = {-7, 1, 5, 2, -4, 3, 0};
+
+        System.out.println(findEquilibrium(arr)); // Output: 3
+    }
+}
