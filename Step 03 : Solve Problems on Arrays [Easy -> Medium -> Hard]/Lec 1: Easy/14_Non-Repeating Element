@@ -1,0 +1,104 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Find First Non-Repeating Element in an Array
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given an integer array, find the first element that does
+not repeat anywhere in the array.
+
+Return the element if found, otherwise return -1.
+
+PROBLEM RESOURCE (links)
+https://www.geeksforgeeks.org/first-non-repeating-element/
+
+===========================================================
+INTUITION
+===========================================================
+• For each element, check whether it appears again
+• If it does not repeat → return it immediately
+• If all elements repeat → return -1
+
+===========================================================
+APPROACH (BRUTE FORCE - NESTED LOOP)
+===========================================================
+1) Traverse each element using outer loop (index i)
+2) For each element, check entire array using inner loop (index j)
+3) If duplicate is found → break inner loop
+4) If inner loop completes (j == n) → element is non-repeating
+5) Return that element
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:  [9, 4, 9, 6, 7, 4]
+
+Output: 6
+
+===========================================================
+DRY RUN
+===========================================================
+i=0 → 9 → repeats → skip
+i=1 → 4 → repeats → skip
+i=2 → 9 → repeats → skip
+i=3 → 6 → no duplicate → return 6
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n²)
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1)
+
+===========================================================
+SPECIAL NOTES
+===========================================================
+• Simple brute-force approach
+• Can be optimized using HashMap (O(n))
+===========================================================
+*/
+
+class Solution {
+
+    public static int firstNonRepeating(int[] arr) {
+
+        int n = arr.length;
+
+        // Traverse each element
+        for (int i = 0; i < n; i++) {
+
+            int j;
+
+            // Check if arr[i] repeats
+            for (j = 0; j < n; j++) {
+
+                // If same element found at different index
+                if (i != j && arr[i] == arr[j]) {
+                    break; // duplicate found
+                }
+            }
+
+            // If loop completed → no duplicate found
+            if (j == n) {
+                return arr[i];
+            }
+        }
+
+        // No non-repeating element
+        return -1;
+    }
+
+    // ================= DRIVER CODE =================
+    public static void main(String[] args) {
+
+        int[] arr = {9, 4, 9, 6, 7, 4};
+
+        System.out.println(firstNonRepeating(arr)); // Output: 6
+    }
+}
