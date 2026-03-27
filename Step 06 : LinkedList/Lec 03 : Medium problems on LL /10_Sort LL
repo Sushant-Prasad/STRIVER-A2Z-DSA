@@ -1,0 +1,200 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Sort a Singly Linked List Using Merge Sort (Top-Down Approach)
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given the head of a singly linked list, sort the list in
+**ascending order** and return the sorted list.
+
+The solution should be efficient for large lists.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/sort-list/
+
+===========================================================
+INTUITION
+===========================================================
+Linked lists do not support random access, so algorithms like
+Quick Sort or Heap Sort are not ideal.
+
+**Merge Sort** is the best choice because:
+• It works efficiently on linked lists
+• It does not require random access
+• Splitting a list can be done using slow–fast pointers
+• Merging two sorted linked lists is straightforward
+
+Hence, we use a **top-down merge sort** approach.
+
+===========================================================
+APPROACH
+===========================================================
+1) Base Case:
+   - If the list is empty or has only one node, it is already sorted.
+
+2) Divide:
+   - Use slow and fast pointers to find the middle of the list.
+   - Split the list into two halves.
+
+3) Conquer:
+   - Recursively sort both halves using merge sort.
+
+4) Combine:
+   - Merge the two sorted halves using a helper `merge()` function.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+head = [4, 2, 1, 3]
+
+Output:
+[1, 2, 3, 4]
+
+===========================================================
+DRY RUN
+===========================================================
+Initial List:
+4 → 2 → 1 → 3
+
+Split:
+Left  = 4 → 2
+Right = 1 → 3
+
+Sort Left:
+4 → 2 → split → 4 | 2 → merge → 2 → 4
+
+Sort Right:
+1 → 3 → split → 1 | 3 → merge → 1 → 3
+
+Merge Final:
+2 → 4  &  1 → 3
+→ 1 → 2 → 3 → 4
+
+===========================================================
+KEY POINTS
+===========================================================
+• Merge Sort guarantees O(n log n) time complexity
+• Slow–fast pointer technique finds middle efficiently
+• Recursive divide-and-conquer approach
+• Dummy node simplifies merge logic
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n log n)
+- Each level splits the list
+- Each merge processes all nodes once
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(n)
+- Due to creation of new nodes during merge
+- Plus recursion stack O(log n)
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+🔹 Dummy Node Usage:
+• A dummy node is an extra node placed before the real head
+• It helps avoid special handling for the first node insertion
+• In `merge()`:
+  - `ansHead` is the dummy node
+  - `ansTail` builds the new sorted list
+• The actual sorted list starts from `ansHead.next`
+
+🔹 Why Dummy Node Helps Here:
+• Eliminates the need to check if the merged list is empty
+• Simplifies pointer movement
+• Makes merging logic clean and less error-prone
+
+===========================================================
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+
+    // Recursive merge sort on linked list
+    private ListNode mergeSort(ListNode head) {
+
+        // Base case: empty list or single node
+        if (head == null || head.next == null)
+            return head;
+
+        // Find middle using slow-fast pointers
+        ListNode slow = head, fast = head, prev = null;
+
+        while (fast != null && fast.next != null) {
+            prev = slow;           // Track node before slow
+            slow = slow.next;      // Move slow by 1
+            fast = fast.next.next; // Move fast by 2
+        }
+
+        // Split the list into two halves
+        prev.next = null;
+
+        // Recursively sort both halves
+        ListNode head1 = mergeSort(head);
+        ListNode head2 = mergeSort(slow);
+
+        // Merge the two sorted halves
+        return merge(head1, head2);
+    }
+
+    // Merge two sorted linked lists
+    private ListNode merge(ListNode head1, ListNode head2) {
+
+        // Dummy node to simplify merge process
+        ListNode ansHead = new ListNode(-1);
+        ListNode ansTail = ansHead;
+
+        // Merge nodes in ascending order
+        while (head1 != null && head2 != null) {
+
+            if (head1.val <= head2.val) {
+                ansTail.next = new ListNode(head1.val); // Attach smaller value
+                head1 = head1.next;
+            } else {
+                ansTail.next = new ListNode(head2.val); // Attach smaller value
+                head2 = head2.next;
+            }
+            ansTail = ansTail.next; // Move tail forward
+        }
+
+        // Append remaining nodes from head1
+        while (head1 != null) {
+            ansTail.next = new ListNode(head1.val);
+            head1 = head1.next;
+            ansTail = ansTail.next;
+        }
+
+        // Append remaining nodes from head2
+        while (head2 != null) {
+            ansTail.next = new ListNode(head2.val);
+            head2 = head2.next;
+            ansTail = ansTail.next;
+        }
+
+        // Return actual head (skip dummy node)
+        return ansHead.next;
+    }
+
+    public ListNode sortList(ListNode head) {
+        return mergeSort(head);
+    }
+}
