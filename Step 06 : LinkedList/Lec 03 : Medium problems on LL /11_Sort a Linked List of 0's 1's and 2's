@@ -1,0 +1,153 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Segregate 0s, 1s, and 2s in a Singly Linked List
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given the head of a singly linked list consisting only of
+nodes with data values **0, 1, or 2**, rearrange the list so that
+all 0s come first, followed by all 1s, and then all 2s.
+
+The relative order within each group does not matter.
+The structure of the linked list should remain the same
+(only node values can be modified).
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://practice.geeksforgeeks.org/problems/given-a-linked-list-of-0s-1s-and-2s-sort-it/1
+
+===========================================================
+INTUITION
+===========================================================
+Since the linked list contains only three possible values (0, 1, 2):
+- We do not need to sort in the traditional sense.
+- We can simply count how many times each value appears.
+- Then overwrite the linked list nodes in order:
+  first 0s, then 1s, then 2s.
+
+This avoids complex pointer manipulation and keeps the solution simple.
+
+===========================================================
+APPROACH
+===========================================================
+1) Traverse the linked list once and count the frequency of:
+   - 0s, 1s, and 2s using an array `freq[3]`.
+2) Traverse the linked list again:
+   - First fill nodes with value 0 while `freq[0] > 0`
+   - Then fill nodes with value 1 while `freq[1] > 0`
+   - Finally fill nodes with value 2 while `freq[2] > 0`
+3) Return the head of the modified list.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+Linked List: 1 → 2 → 0 → 1 → 2 → 0
+
+Frequencies:
+0 → 2
+1 → 2
+2 → 2
+
+Output:
+0 → 0 → 1 → 1 → 2 → 2
+
+===========================================================
+DRY RUN
+===========================================================
+Initial List:
+2 → 1 → 0 → 2 → 1
+
+Step 1: Count frequencies
+freq[0] = 1
+freq[1] = 2
+freq[2] = 2
+
+Step 2: Rewrite list
+temp = head
+
+freq[0] > 0 → temp.data = 0
+freq[1] > 0 → temp.data = 1
+freq[1] > 0 → temp.data = 1
+freq[2] > 0 → temp.data = 2
+freq[2] > 0 → temp.data = 2
+
+Final List:
+0 → 1 → 1 → 2 → 2
+
+===========================================================
+KEY POINTS
+===========================================================
+• Uses counting instead of sorting
+• Two-pass solution (count + overwrite)
+• No node links are changed, only data is updated
+• Simple and efficient for restricted values
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n)
+- One traversal for counting
+- One traversal for rewriting
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1)
+- Uses a fixed-size array of length 3
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• This approach works because values are limited to {0,1,2}
+• Safer than pointer-based segregation for beginners
+• If data modification were not allowed, a pointer-based
+  three-list approach would be required
+===========================================================
+*/
+
+class Solution {
+
+    public Node segregate(Node head) {
+
+        // Temporary pointer to traverse the list
+        Node temp = head;
+
+        // Frequency array to count 0s, 1s, and 2s
+        int freq[] = new int[3];
+
+        // First pass: count occurrences of 0, 1, and 2
+        while (temp != null) {
+            freq[temp.data]++;
+            temp = temp.next;
+        }
+
+        // Second pass: overwrite node data based on frequencies
+        temp = head;
+
+        while (temp != null) {
+
+            if (freq[0] > 0) {
+                temp.data = 0;
+                freq[0]--;
+            }
+            else if (freq[1] > 0) {
+                temp.data = 1;
+                freq[1]--;
+            }
+            else {
+                temp.data = 2;
+                freq[2]--;
+            }
+
+            temp = temp.next;
+        }
+
+        // Return the head of the modified list
+        return head;
+    }
+}
