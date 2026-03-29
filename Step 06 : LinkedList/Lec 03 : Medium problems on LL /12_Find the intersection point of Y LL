@@ -1,0 +1,149 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Find the Intersection Point of Two Singly Linked Lists
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given the heads of two singly linked lists `headA` and `headB`,
+return the node at which the two lists **intersect**.
+
+If the two linked lists do not intersect, return `null`.
+
+Note:
+• The intersection is based on **reference**, not value.
+• The linked lists must retain their original structure.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/intersection-of-two-linked-lists/
+
+===========================================================
+INTUITION
+===========================================================
+If two linked lists intersect:
+- From the intersection point onward, they share the same nodes.
+
+Key idea:
+- If we traverse both lists fully and align their traversal lengths,
+  they will meet at the intersection node.
+- If they do not intersect, both pointers will eventually become `null`
+  at the same time.
+
+This can be achieved **without knowing the lengths** of the lists.
+
+===========================================================
+APPROACH
+===========================================================
+1) Initialize two pointers:
+   - `temp1` starting at `headA`
+   - `temp2` starting at `headB`
+2) Traverse both lists simultaneously:
+   - Move each pointer one step at a time.
+3) When a pointer reaches the end of its list:
+   - Redirect it to the head of the other list.
+4) Continue traversal until:
+   - Both pointers meet at the same node (intersection), or
+   - Both pointers become `null` (no intersection).
+5) Return the meeting node.
+
+===========================================================
+EXAMPLE
+===========================================================
+List A:
+1 → 2 → 3
+           ↘
+             8 → 9
+           ↗
+List B:
+4 → 5
+
+Intersection Node = 8
+
+Output:
+Node with value 8
+
+===========================================================
+DRY RUN
+===========================================================
+List A length = a + c
+List B length = b + c
+(where c is the common part)
+
+Traversal:
+temp1 → A then B
+temp2 → B then A
+
+After (a + b) steps:
+- Both pointers enter the common part together
+- They meet at the intersection node
+
+If no intersection:
+- Both pointers become `null` after (a + b) steps
+
+===========================================================
+KEY POINTS
+===========================================================
+• No extra space is used
+• No length calculation is required
+• Works even if lists are of different lengths
+• Based on reference equality, not node values
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n + m)
+- n = length of list A
+- m = length of list B
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• Pointer switching equalizes traversal length
+• If lists intersect, pointers meet at intersection
+• If lists do not intersect, both pointers reach `null` together
+• This is the most optimal and interview-preferred solution
+===========================================================
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) {
+ *         val = x;
+ *         next = null;
+ *     }
+ * }
+ */
+public class Solution {
+
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+
+        // Initialize two pointers at the heads of both lists
+        ListNode temp1 = headA;
+        ListNode temp2 = headB;
+
+        // Traverse until both pointers meet
+        while (temp1 != temp2) {
+
+            // Move temp1 forward or redirect to headB when reaching end
+            temp1 = (temp1 != null) ? temp1.next : headB;
+
+            // Move temp2 forward or redirect to headA when reaching end
+            temp2 = (temp2 != null) ? temp2.next : headA;
+        }
+
+        // Either intersection node or null
+        return temp1;
+    }
+}
