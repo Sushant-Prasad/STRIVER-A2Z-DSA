@@ -1,0 +1,181 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Add One to a Number Represented as a Singly Linked List
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given a non-empty singly linked list representing a non-negative
+integer, where each node contains a single digit (most significant
+digit first), add **1** to the number and return the head of the
+updated linked list.
+
+The digits are stored such that:
+• Each node contains a digit from 0 to 9
+• The most significant digit comes first
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://practice.geeksforgeeks.org/problems/add-1-to-a-number-represented-as-linked-list/1
+
+===========================================================
+INTUITION
+===========================================================
+Adding 1 to a number is easiest when we start from the **least
+significant digit (LSB)**.
+
+However, in the linked list:
+• The LSB is at the **end** of the list
+• Traversing backward is not possible in a singly linked list
+
+So the idea is:
+1) Reverse the linked list
+2) Add 1 starting from the head (which becomes LSB)
+3) Handle carry propagation
+4) Reverse the list back to restore original order
+
+===========================================================
+APPROACH
+===========================================================
+1) Reverse the linked list so the least significant digit comes first.
+2) Traverse the reversed list:
+   - Add 1 to the first node only
+   - For remaining nodes, add carry (if any)
+3) Update each node’s value and propagate carry as needed.
+4) If carry remains after the last node, append a new node with value 1.
+5) Reverse the linked list again to restore original digit order.
+6) Return the updated head.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+Linked List: 1 → 9 → 9
+
+Number: 199
+
+After adding 1:
+200
+
+Output:
+2 → 0 → 0
+
+===========================================================
+DRY RUN
+===========================================================
+Input:
+9 → 9 → 9
+
+Step 1: Reverse
+9 → 9 → 9
+
+Step 2: Add one
+Node 1: 9 + 1 = 10 → data = 0, carry = 1
+Node 2: 9 + 1 = 10 → data = 0, carry = 1
+Node 3: 9 + 1 = 10 → data = 0, carry = 1
+
+Step 3: Carry remains
+Append node with value 1
+0 → 0 → 0 → 1
+
+Step 4: Reverse back
+1 → 0 → 0 → 0
+
+===========================================================
+KEY POINTS
+===========================================================
+• Reversal simplifies addition from least significant digit
+• Carry is propagated correctly across nodes
+• Extra node is added if carry remains at the end
+• No extra data structures are used
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n)
+- One traversal for reversing
+- One traversal for addition
+- One traversal for reversing back
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space (in-place operations)
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• Boolean `flag` ensures that +1 is added only once
+• Carry is added to subsequent digits if required
+• This approach avoids recursion and stack overhead
+• Reversing twice is safe and efficient for linked lists
+===========================================================
+*/
+
+/*
+class Node{
+    int data;
+    Node next;
+
+    Node(int x){
+        data = x;
+        next = null;
+    }
+}
+*/
+
+class Solution {
+
+    // Helper function to reverse a singly linked list
+    private Node reverse(Node head) {
+
+        Node prev = null;
+
+        // Standard iterative reversal
+        while (head != null) {
+            Node next = head.next; // Store next node
+            head.next = prev;      // Reverse link
+            prev = head;           // Move prev forward
+            head = next;           // Move head forward
+        }
+
+        return prev; // New head after reversal
+    }
+
+    public Node addOne(Node head) {
+
+        // Step 1: Reverse the linked list
+        head = reverse(head);
+
+        Node prev = head, curr = head;
+        int sum = 0, carry = 0;
+        boolean flag = false; // Ensures +1 is added only once
+
+        // Step 2: Add 1 and handle carry
+        while (curr != null) {
+
+            if (!flag) {
+                sum = curr.data + 1; // Add 1 to least significant digit
+                flag = true;
+            } else {
+                sum = curr.data + carry; // Add carry to remaining digits
+            }
+
+            carry = (sum >= 10) ? 1 : 0; // Calculate carry
+            curr.data = sum % 10;        // Update digit
+
+            prev = curr;
+            curr = curr.next;
+        }
+
+        // Step 3: If carry remains, add new node
+        if (carry > 0)
+            prev.next = new Node(1);
+
+        // Step 4: Reverse back to restore original order
+        return reverse(head);
+    }
+}
