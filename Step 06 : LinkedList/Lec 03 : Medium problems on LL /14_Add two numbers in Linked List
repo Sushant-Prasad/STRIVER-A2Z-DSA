@@ -1,0 +1,165 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Add Two Numbers Represented as Singly Linked Lists
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+You are given two non-empty singly linked lists `l1` and `l2`
+representing two non-negative integers.
+
+• The digits are stored in **reverse order**
+• Each node contains a single digit
+• Add the two numbers and return the sum as a linked list
+• The result should also be in reverse order
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/add-two-numbers/
+
+===========================================================
+INTUITION
+===========================================================
+Since digits are stored in reverse order:
+- The head of each list represents the least significant digit (LSD)
+- Addition can be performed exactly like manual digit-by-digit addition
+
+Key ideas:
+• Traverse both lists simultaneously
+• Add corresponding digits and carry
+• Create new nodes for each digit of the sum
+• Continue until all digits and carry are processed
+
+===========================================================
+APPROACH
+===========================================================
+1) Initialize `carry = 0`.
+2) Traverse both linked lists while:
+   - At least one list still has nodes OR
+   - Carry is non-zero
+3) For each iteration:
+   - Read digit values from `l1` and `l2` (0 if null)
+   - Compute `sum = val1 + val2 + carry`
+   - Update `carry = sum / 10`
+   - Create a new node with value `sum % 10`
+4) Append the new node to the result list.
+5) Move input list pointers forward.
+6) Return the head of the newly formed list.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+l1 = 2 → 4 → 3
+l2 = 5 → 6 → 4
+
+Represents:
+342 + 465 = 807
+
+Output:
+7 → 0 → 8
+
+===========================================================
+DRY RUN
+===========================================================
+Iteration 1:
+val1 = 2, val2 = 5, carry = 0
+sum = 7 → node = 7, carry = 0
+
+Iteration 2:
+val1 = 4, val2 = 6, carry = 0
+sum = 10 → node = 0, carry = 1
+
+Iteration 3:
+val1 = 3, val2 = 4, carry = 1
+sum = 8 → node = 8, carry = 0
+
+Final List:
+7 → 0 → 8
+
+===========================================================
+KEY POINTS
+===========================================================
+• Reverse order simplifies addition
+• Handles different length lists
+• Handles leftover carry
+• No modification of input lists
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(max(n, m))
+where n and m are lengths of the two lists
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(max(n, m))
+Space used for the result list
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• Loop condition `l1 != null || l2 != null || carry != 0`
+  ensures no digit or carry is missed
+• Using `null` checks avoids extra edge cases
+• This approach avoids reversing or recursion
+• Interview-preferred clean iterative solution
+===========================================================
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+
+        int carry = 0;            // Stores carry during addition
+        ListNode head = null;     // Head of the result list
+        ListNode temp = null;     // Pointer to build the result list
+
+        // Traverse until both lists and carry are exhausted
+        while (l1 != null || l2 != null || carry != 0) {
+
+            // Get current digit values (0 if list ended)
+            int val1 = (l1 != null) ? l1.val : 0;
+            int val2 = (l2 != null) ? l2.val : 0;
+
+            // Compute sum of digits and carry
+            int sum = val1 + val2 + carry;
+
+            // Create new node for current digit
+            ListNode newNode = new ListNode(sum % 10);
+
+            // Update carry for next iteration
+            carry = sum / 10;
+
+            // Append node to result list
+            if (head == null) {
+                head = newNode;
+                temp = newNode;
+            } else {
+                temp.next = newNode;
+                temp = temp.next;
+            }
+
+            // Move input list pointers forward
+            if (l1 != null) l1 = l1.next;
+            if (l2 != null) l2 = l2.next;
+        }
+
+        // Return head of the result list
+        return head;
+    }
+}
