@@ -1,0 +1,178 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Reverse Nodes in K-Group in a Singly Linked List
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given the head of a singly linked list and an integer `k`,
+reverse the nodes of the list **k at a time** and return the
+modified list.
+
+Rules:
+• Nodes are reversed only in complete groups of size `k`
+• If the number of remaining nodes is less than `k`,
+  they should remain in their original order
+• Only node links should be changed, not node values
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/reverse-nodes-in-k-group/
+
+===========================================================
+INTUITION
+===========================================================
+Reversing every `k` nodes requires:
+• Knowing whether a complete group of size `k` exists
+• Reversing pointers within that group
+• Correctly connecting reversed groups together
+
+Key idea:
+- First determine how many complete groups of size `k` exist
+- Reverse each group individually
+- Attach leftover nodes (less than `k`) without reversing
+
+===========================================================
+APPROACH
+===========================================================
+1) Compute the total length of the linked list.
+2) Calculate how many complete groups exist: `groups = length / k`.
+3) For each group:
+   - Reverse exactly `k` nodes using pointer manipulation.
+   - Connect the reversed group to the previously reversed group.
+4) After all groups are processed:
+   - Attach the remaining nodes (if any) to the end.
+5) Return the head of the newly formed list.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+head = 1 → 2 → 3 → 4 → 5
+k = 2
+
+Output:
+2 → 1 → 4 → 3 → 5
+
+===========================================================
+DRY RUN
+===========================================================
+List: 1 → 2 → 3 → 4 → 5
+k = 2
+
+Length = 5
+Groups = 5 / 2 = 2
+
+Group 1:
+Reverse 1 → 2 → becomes 2 → 1
+
+Group 2:
+Reverse 3 → 4 → becomes 4 → 3
+
+Remaining nodes:
+5 (less than k, unchanged)
+
+Final List:
+2 → 1 → 4 → 3 → 5
+
+===========================================================
+KEY POINTS
+===========================================================
+• Only complete groups of size `k` are reversed
+• Uses iterative pointer reversal
+• Does not require extra memory
+• Preserves remaining nodes as-is
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n)
+- Each node is visited a constant number of times
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1)
+- In-place reversal using pointers
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• Precomputing length avoids partial group reversal
+• `prevHead` connects consecutive reversed groups
+• `currHead` always points to the start of the next group
+• Final connection ensures leftover nodes are retained
+===========================================================
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+
+    // Helper function to calculate length of linked list
+    private int length(ListNode head) {
+        int count = 0;
+        while (head != null) {
+            count++;
+            head = head.next;
+        }
+        return count;
+    }
+
+    public ListNode reverseKGroup(ListNode head, int k) {
+
+        // Total number of nodes
+        int length = length(head);
+
+        // Number of complete groups of size k
+        int groups = length / k;
+
+        ListNode prevHead = null;  // Tail of previous reversed group
+        ListNode currHead = head;  // Start of current group
+        ListNode ansNode = null;   // Head of final answer list
+
+        // Reverse each complete group
+        for (int i = 0; i < groups; i++) {
+
+            ListNode prev = null;
+            ListNode curr = currHead;
+            ListNode nextNode = null;
+
+            // Reverse exactly k nodes
+            for (int j = 0; j < k; j++) {
+                nextNode = curr.next;
+                curr.next = prev;
+                prev = curr;
+                curr = nextNode;
+            }
+
+            // Set head for the first reversed group
+            if (prevHead == null)
+                ansNode = prev;
+            else
+                prevHead.next = prev;
+
+            // Move prevHead to the tail of the reversed group
+            prevHead = currHead;
+
+            // Move currHead to the start of the next group
+            currHead = curr;
+        }
+
+        // Attach remaining nodes (less than k)
+        prevHead.next = currHead;
+
+        return ansNode;
+    }
+}
