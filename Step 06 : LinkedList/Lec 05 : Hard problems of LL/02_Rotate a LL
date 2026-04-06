@@ -1,0 +1,153 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Rotate a Singly Linked List to the Right by K Positions
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given the head of a singly linked list and an integer `k`,
+rotate the list to the **right** by `k` positions.
+
+Right rotation means:
+- The last `k` nodes are moved to the front of the list
+- The relative order of the remaining nodes is preserved
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/rotate-list/
+
+===========================================================
+INTUITION
+===========================================================
+Right-rotating a linked list by `k` positions can be simplified by:
+- Observing that rotating by the list length results in the same list
+- Therefore, we only need to rotate by `k % length` positions
+- After finding the new tail of the list, we can:
+  • Break the list at that point
+  • Connect the old tail to the old head
+
+===========================================================
+APPROACH
+===========================================================
+1) Handle edge cases:
+   - If the list is empty, has one node, or `k == 0`, return head.
+2) Traverse the list to:
+   - Count the total number of nodes (`count`)
+   - Identify the last node (`lastNode`)
+3) Compute effective rotations:
+   - `r = k % count`
+   - If `r == 0`, no rotation is needed.
+4) Find the new tail:
+   - It is the `(count - r)`-th node from the start.
+5) Update pointers:
+   - New head = `curr.next`
+   - Connect `lastNode.next` to old head
+   - Break the list by setting `curr.next = null`
+6) Return the new head.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+head = 1 → 2 → 3 → 4 → 5
+k = 2
+
+Output:
+4 → 5 → 1 → 2 → 3
+
+===========================================================
+DRY RUN
+===========================================================
+List: 1 → 2 → 3 → 4 → 5
+k = 2
+
+Step 1: count = 5
+Step 2: r = 2 % 5 = 2
+Step 3: Find (5 - 2) = 3rd node → curr = 3
+Step 4:
+- new head = 4
+- lastNode.next = 1
+- curr.next = null
+
+Result:
+4 → 5 → 1 → 2 → 3
+
+===========================================================
+KEY POINTS
+===========================================================
+• Using `k % length` avoids unnecessary full rotations
+• Only pointer manipulation is required (no new nodes)
+• List is rotated in-place
+• Works efficiently for large `k`
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n), where n is the number of nodes in the list
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1), constant extra space
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• `count - r` gives the position of the new tail
+• Connecting last node to head temporarily forms a cycle
+• Breaking the cycle at the right point completes rotation
+===========================================================
+*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+
+    public ListNode rotateRight(ListNode head, int k) {
+
+        // Edge cases: empty list, single node, or no rotation
+        if (head == null || head.next == null || k == 0)
+            return head;
+
+        int count = 0;
+        ListNode temp = head;
+        ListNode temp2 = head;     // Stores original head
+        ListNode lastNode = head;  // Will store the last node
+
+        // Count length and find last node
+        while (temp != null) {
+            count++;
+            lastNode = temp;
+            temp = temp.next;
+        }
+
+        // Effective rotations
+        int r = k % count;
+        if (r == 0)
+            return head;
+
+        // Find the new tail: (count - r)-th node
+        ListNode curr = head;
+        for (int i = 1; i < count - r; i++) {
+            curr = curr.next;
+        }
+
+        // Re-link nodes to rotate the list
+        head = curr.next;        // New head
+        lastNode.next = temp2;  // Connect old tail to old head
+        curr.next = null;       // Break the list
+
+        return head;
+    }
+}
