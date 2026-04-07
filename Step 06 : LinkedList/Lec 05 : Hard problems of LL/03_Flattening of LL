@@ -1,0 +1,183 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Flatten a Multilevel Linked List (Using Bottom Pointers)
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given a linked list where:
+• Each node has two pointers:
+  - `next`   → points to the next list (right side)
+  - `bottom` → points to a sorted linked list (downwards)
+• Each vertical list (via `bottom`) is already sorted
+
+Your task is to **flatten the entire structure into a single
+sorted linked list** using only the `bottom` pointer.
+
+After flattening:
+• All nodes must be connected via `bottom`
+• `next` pointers should be ignored
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://practice.geeksforgeeks.org/problems/flattening-a-linked-list/1
+
+===========================================================
+INTUITION
+===========================================================
+Each vertical list is already sorted.
+So, the problem becomes similar to:
+• Merging multiple sorted linked lists into one sorted list
+
+Key idea:
+- Recursively flatten the list on the right (`root.next`)
+- Merge the current vertical list with the already flattened list
+- Use a standard merge process (like merge sort)
+
+===========================================================
+APPROACH
+===========================================================
+1) Base Case:
+   - If the list is empty or has only one column, return it as is.
+2) Recursively flatten the list on the right (`root.next`).
+3) Merge:
+   - Merge the current list (`root`) with the flattened right list
+   - Use only `bottom` pointers for merging
+4) Return the merged list’s head.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input Structure:
+5 → 10 → 19 → 28
+|    |     |
+7    20    22
+|          |
+8          50
+|
+30
+
+Output (bottom-linked):
+5 → 7 → 8 → 10 → 19 → 20 → 22 → 28 → 30 → 50
+
+===========================================================
+DRY RUN
+===========================================================
+Step 1:
+Flatten rightmost list:
+28 → 50
+
+Step 2:
+Merge 19-list with flattened list:
+19 → 22 → 28 → 50
+
+Step 3:
+Merge 10-list:
+10 → 20 → 19 → 22 → 28 → 50
+
+Step 4:
+Merge 5-list:
+5 → 7 → 8 → 10 → 19 → 20 → 22 → 28 → 30 → 50
+
+===========================================================
+KEY POINTS
+===========================================================
+• Each vertical list is already sorted
+• Merging is similar to merge sort on linked lists
+• No new nodes are created
+• Only pointer manipulation is used
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n)
+- Each node is visited once during merging
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1)
+- No extra data structures used
+- (Ignoring recursion stack)
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• Dummy node (`ansHead`) simplifies merge logic
+• Always move using `bottom` pointers
+• `next` pointers are used only for recursion, not for final list
+• Resulting flattened list uses `bottom` links only
+===========================================================
+*/
+
+/*
+class Node {
+    int data;
+    Node next;
+    Node bottom;
+
+    Node(int x) {
+        data = x;
+        next = null;
+        bottom = null;
+    }
+}
+*/
+
+class Solution {
+
+    // Merge two sorted linked lists using bottom pointer
+    private Node merge(Node head1, Node head2) {
+
+        // Dummy node to simplify merging
+        Node ansHead = new Node(-1);
+        Node ansTail = ansHead;
+
+        // Merge while both lists have nodes
+        while (head1 != null && head2 != null) {
+
+            if (head1.data <= head2.data) {
+                ansTail.bottom = head1;
+                head1 = head1.bottom;
+            } else {
+                ansTail.bottom = head2;
+                head2 = head2.bottom;
+            }
+
+            ansTail = ansTail.bottom; // Move tail forward
+        }
+
+        // Attach remaining nodes from head1
+        while (head1 != null) {
+            ansTail.bottom = head1;
+            head1 = head1.bottom;
+            ansTail = ansTail.bottom;
+        }
+
+        // Attach remaining nodes from head2
+        while (head2 != null) {
+            ansTail.bottom = head2;
+            head2 = head2.bottom;
+            ansTail = ansTail.bottom;
+        }
+
+        // Return head of merged list (skip dummy node)
+        return ansHead.bottom;
+    }
+
+    public Node flatten(Node root) {
+
+        // Base case: empty list or single column
+        if (root == null || root.next == null)
+            return root;
+
+        // Recursively flatten the list on the right
+        root.next = flatten(root.next);
+
+        // Merge current list with flattened right list
+        return merge(root, root.next);
+    }
+}
