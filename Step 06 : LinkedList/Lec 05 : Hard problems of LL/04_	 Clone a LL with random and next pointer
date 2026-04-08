@@ -1,0 +1,400 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Copy List with Random Pointer (Deep Copy using HashMap)
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+You are given a linked list where each node contains:
+• `val`    → the value of the node
+• `next`   → pointer to the next node
+• `random` → pointer to any node in the list or null
+
+Your task is to create a **deep copy** of this linked list.
+The copied list must contain entirely new nodes, such that:
+• `next` and `random` pointers of the new list replicate the structure
+• No node from the original list is reused
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/copy-list-with-random-pointer/
+
+===========================================================
+INTUITION
+===========================================================
+The main difficulty is handling the `random` pointer, because:
+• It can point to any node (ahead, behind, or itself)
+• During copying, the corresponding copied node may not yet exist
+
+Key idea:
+- Use a HashMap to store a mapping:
+  Original Node → Copied Node
+- This allows us to resolve random pointers easily in a second pass
+
+===========================================================
+APPROACH
+===========================================================
+We solve this problem in **two passes**:
+
+PASS 1: Copy nodes and `next` pointers
+------------------------------------
+1) Traverse the original list.
+2) For each node:
+   - Create a new node with the same value.
+   - Store mapping: original → copy in a HashMap.
+3) Connect copied nodes using `next` pointers.
+
+PASS 2: Copy `random` pointers
+-------------------------------
+1) Traverse original and copied lists together.
+2) For each original node:
+   - Set `copied.random = map.get(original.random)`
+3) If original.random is null, copied.random automatically becomes null.
+
+===========================================================
+EXAMPLE
+===========================================================
+Original List:
+1 → 2 → 3
+|    |    |
+v    v    v
+3    1   null   (random pointers)
+
+Copied List:
+1' → 2' → 3'
+|     |     |
+v     v     v
+3'    1'   null
+
+===========================================================
+DRY RUN
+===========================================================
+Input:
+1 → 2
+random: 1→2, 2→1
+
+First Pass:
+map = { 1→1', 2→2' }
+Copied next list: 1' → 2'
+
+Second Pass:
+1'.random = map.get(1.random) = map.get(2) = 2'
+2'.random = map.get(2.random) = map.get(1) = 1'
+
+Output:
+Deep copy created correctly.
+
+===========================================================
+KEY POINTS
+===========================================================
+• HashMap enables O(1) access to copied nodes
+• Two-pass solution avoids random-pointer dependency issues
+• `map.get(null)` safely returns null
+• Original list remains unchanged
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n)
+- One traversal to copy nodes
+- One traversal to assign random pointers
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(n)
+- Extra space used by HashMap to store node mappings
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• `curr` traverses the original list
+• `newCurr` traverses the copied list in parallel
+• HashMap ensures correct random pointer mapping
+• This is the most intuitive and beginner-friendly approach
+===========================================================
+*/
+
+/*
+// Definition for a Node.
+class Node {
+    int val;
+    Node next;
+    Node random;
+
+    public Node(int val) {
+        this.val = val;
+        this.next = null;
+        this.random = null;
+    }
+}
+*/
+
+class Solution {
+
+    public Node copyRandomList(Node head) {
+
+        // HashMap to store mapping:
+        // original node -> copied node
+        HashMap<Node, Node> map = new HashMap<>();
+
+        Node curr = head;     // Pointer to traverse original list
+        Node prev = null;     // Pointer to track previous node in copied list
+        Node newHead = null;  // Head of the copied list
+
+        // -------------------------------------------------
+        // PASS 1: Create copied nodes and set next pointers
+        // -------------------------------------------------
+        while (curr != null) {
+
+            // Create a new node with same value as current node
+            Node newNode = new Node(curr.val);
+
+            // Store mapping from original node to copied node
+            map.put(curr, newNode);
+
+            // If this is the first node, initialize newHead
+            if (newHead == null) {
+                newHead = newNode;
+                prev = newHead;
+            } else {
+                // Link previous copied node to current copied node
+                prev.next = newNode;
+                prev = newNode;
+            }
+
+            // Move to next node in original list
+            curr = curr.next;
+        }
+
+        // -------------------------------------------------
+        // PASS 2: Assign random pointers using HashMap
+        // -------------------------------------------------
+        curr = head;           // Reset pointer to original list
+        Node newCurr = newHead; // Pointer to traverse copied list
+
+        while (curr != null) {
+
+            // Assign random pointer:
+            // map.get(curr.random) gives copied version of random node
+            // If curr.random is null, map.get(null) returns null safely
+            newCurr.random = map.get(curr.random);
+
+            // Move both pointers forward
+            curr = curr.next;
+            newCurr = newCurr.next;
+        }
+
+        // Return head of deep-copied linked list
+        return newHead;
+    }
+}
+
+# Method-2
+/*
+===========================================================
+TITLE
+===========================================================
+Copy List with Random Pointer (Deep Copy using O(1) Extra Space)
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+You are given a linked list where each node contains:
+• `val`    → value of the node
+• `next`   → pointer to the next node
+• `random` → pointer to any node in the list or null
+
+Your task is to create a **deep copy** of the linked list such that:
+• Each node in the copied list is a new node
+• `next` and `random` pointers replicate the original structure
+• No pointer in the copied list refers to any node in the original list
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/copy-list-with-random-pointer/
+
+===========================================================
+INTUITION
+===========================================================
+The challenge is copying the `random` pointer efficiently without
+using extra space (like a HashMap).
+
+Key observation:
+If every original node is followed immediately by its copied node,
+then:
+• The copied node of `curr` is `curr.next`
+• The copied node of `curr.random` is `curr.random.next`
+
+This allows us to set random pointers **without extra memory**.
+
+===========================================================
+APPROACH
+===========================================================
+We solve this problem in **three passes**:
+
+PASS 1: Clone nodes and interleave them
+---------------------------------------
+• For each original node, create its copy
+• Insert the copied node just after the original node
+
+PASS 2: Assign random pointers to copied nodes
+-----------------------------------------------
+• For original node `curr`:
+  copied node = `curr.next`
+  copied.random = `curr.random.next`
+
+PASS 3: Separate original and copied lists
+-------------------------------------------
+• Restore the original list
+• Extract the copied list as a separate deep copy
+
+===========================================================
+EXAMPLE
+===========================================================
+Original List:
+1 → 2 → 3
+|    |    |
+v    v    v
+3    1   null   (random pointers)
+
+After PASS 1:
+1 → 1' → 2 → 2' → 3 → 3'
+
+After PASS 2:
+1'.random → 3'
+2'.random → 1'
+3'.random → null
+
+After PASS 3:
+Original: 1 → 2 → 3
+Copied:   1' → 2' → 3'
+
+===========================================================
+DRY RUN
+===========================================================
+Input:
+1 → 2
+random: 1→2, 2→1
+
+PASS 1:
+1 → 1' → 2 → 2'
+
+PASS 2:
+1'.random = 2'
+2'.random = 1'
+
+PASS 3:
+Original restored: 1 → 2
+Copied list:       1' → 2'
+
+===========================================================
+KEY POINTS
+===========================================================
+• No HashMap is used
+• Each node is copied exactly once
+• Random pointers resolved using structural placement
+• Original list structure is restored
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n)
+- Three linear traversals of the list
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(1)
+- No extra data structures used (excluding output list)
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• Copied node of `curr` is always `curr.next`
+• Copied node of `curr.random` is `curr.random.next`
+• Interleaving nodes is the core trick
+• This is the most optimal and interview-preferred solution
+===========================================================
+*/
+
+/*
+// Definition for a Node.
+class Node {
+    int val;
+    Node next;
+    Node random;
+
+    public Node(int val) {
+        this.val = val;
+        this.next = null;
+        this.random = null;
+    }
+}
+*/
+
+class Solution {
+
+    public Node copyRandomList(Node head) {
+
+        // Edge case: empty list
+        if (head == null) return head;
+
+        Node curr = head;
+
+        // -------------------------------------------------
+        // PASS 1: Create copied nodes and interleave them
+        // -------------------------------------------------
+        while (curr != null) {
+
+            Node currNext = curr.next;        // Store next original node
+            curr.next = new Node(curr.val);  // Create copied node
+            curr.next.next = currNext;       // Insert copied node after original
+
+            curr = currNext;                 // Move to next original node
+        }
+
+        // -------------------------------------------------
+        // PASS 2: Assign random pointers to copied nodes
+        // -------------------------------------------------
+        curr = head;
+
+        while (curr != null && curr.next != null) {
+
+            if (curr.random == null) {
+                curr.next.random = null;     // If original random is null
+            } else {
+                // copied.random = copied version of original.random
+                curr.next.random = curr.random.next;
+            }
+
+            curr = curr.next.next;           // Move to next original node
+        }
+
+        // -------------------------------------------------
+        // PASS 3: Separate original and copied lists
+        // -------------------------------------------------
+        Node newHead = head.next;             // Head of copied list
+        curr = head;
+        Node newCurr = newHead;
+
+        while (curr != null && newCurr != null) {
+
+            // Restore original list next pointer
+            curr.next = (curr.next == null) ? null : curr.next.next;
+
+            // Fix copied list next pointer
+            newCurr.next = (newCurr.next == null) ? null : newCurr.next.next;
+
+            curr = curr.next;                // Move original pointer
+            newCurr = newCurr.next;          // Move copied pointer
+        }
+
+        // Return head of deep-copied list
+        return newHead;
+    }
+}
