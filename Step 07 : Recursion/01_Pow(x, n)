@@ -1,0 +1,120 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Power Function using Binary Exponentiation (xⁿ)
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Implement a function `myPow(x, n)` that calculates `x` raised
+to the power `n` (xⁿ), where:
+• `x` is a double
+• `n` is a long integer (can be positive, zero, or negative)
+
+The function should be efficient and handle large values of `n`.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/powx-n/
+
+===========================================================
+INTUITION
+===========================================================
+A naive approach of multiplying `x` exactly `n` times takes O(n)
+time, which is too slow for large `n`.
+
+Using **Binary Exponentiation**:
+• If `n` is even → xⁿ = (x²)^(n/2)
+• If `n` is odd  → xⁿ = x × (x²)^((n−1)/2)
+
+This reduces the problem size by half at every step, leading to
+a logarithmic time solution.
+
+===========================================================
+APPROACH
+===========================================================
+1) Handle base cases:
+   - If `n == 0`, return 1
+   - If `n == 1`, return x
+2) If `n` is negative:
+   - Convert the problem to positive power using:
+     x⁻ⁿ = (1/x)ⁿ
+3) Apply binary exponentiation:
+   - If `n` is even, recursively compute `myPow(x*x, n/2)`
+   - If `n` is odd, return `x * myPow(x*x, (n-1)/2)`
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+x = 2.0, n = 10
+
+Output:
+1024.0
+
+Explanation:
+2¹⁰ = (2²)⁵ = (4²)² × 4 = 1024
+
+===========================================================
+DRY RUN
+===========================================================
+myPow(2, 5)
+→ 2 * myPow(4, 2)
+→ 2 * myPow(16, 1)
+→ 2 * 16
+→ 32
+
+===========================================================
+KEY POINTS
+===========================================================
+• Uses divide-and-conquer
+• Handles negative powers correctly
+• Much faster than naive multiplication
+• Recursion depth is logarithmic
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(log n)
+- Each recursive call halves the power
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(log n)
+- Due to recursive call stack
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• For negative `n`, result is computed using reciprocal (1/x)
+• Squaring `x` early reduces the number of multiplications
+• Works efficiently even for very large `n`
+===========================================================
+*/
+
+class Solution {
+
+    public double myPow(double x, long n) {
+
+        // Base case: x^0 = 1
+        if (n == 0) return 1;
+
+        // Base case: x^1 = x
+        if (n == 1) return x;
+
+        // If power is negative, convert to positive by reciprocal
+        if (n < 0) 
+            return myPow(1 / x, -n);
+
+        // If n is even, use (x^2)^(n/2)
+        if (n % 2 == 0) 
+            return myPow(x * x, n / 2);
+
+        // If n is odd, reduce one power of x
+        else 
+            return x * myPow(x * x, (n - 1) / 2);
+    }
+}
