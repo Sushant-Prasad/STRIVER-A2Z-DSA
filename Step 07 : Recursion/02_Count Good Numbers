@@ -1,0 +1,150 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Count Good Numbers using Fast Modular Exponentiation
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+A number is called **good** if:
+• Digits at even indices (0-based) can be one of {0, 2, 4, 6, 8} → 5 choices
+• Digits at odd indices can be one of {2, 3, 5, 7} → 4 choices
+
+Given a long integer `n` representing the length of the number,
+return the total count of good numbers of length `n`.
+
+Since the answer can be very large, return it modulo **10⁹ + 7**.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/count-good-numbers/
+
+===========================================================
+INTUITION
+===========================================================
+Each position contributes independently to the total count.
+
+• Even indices → 5 choices each
+• Odd indices  → 4 choices each
+
+So the total number of good numbers is:
+5^(number of even indices) × 4^(number of odd indices)
+
+To compute large powers efficiently, we use **Binary Exponentiation**
+with modulo arithmetic.
+
+===========================================================
+APPROACH
+===========================================================
+1) Count how many even and odd index positions exist:
+   - evenIdx = (n + 1) / 2
+   - oddIdx  = n / 2
+2) Compute:
+   - 5^evenIdx % MOD
+   - 4^oddIdx  % MOD
+3) Multiply both results under modulo.
+4) Use fast exponentiation to ensure O(log n) time complexity.
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+n = 4
+
+Even indices: 0, 2 → 2 positions → 5²
+Odd indices:  1, 3 → 2 positions → 4²
+
+Answer:
+5² × 4² = 25 × 16 = 400
+
+===========================================================
+DRY RUN
+===========================================================
+n = 5
+
+evenIdx = (5 + 1) / 2 = 3
+oddIdx  = 5 / 2 = 2
+
+Compute:
+5³ = 125
+4² = 16
+
+Result:
+125 × 16 = 2000
+
+===========================================================
+KEY POINTS
+===========================================================
+• Even and odd positions are independent
+• Use modulo at every multiplication to avoid overflow
+• Binary exponentiation reduces time from O(n) to O(log n)
+• Works efficiently for very large `n`
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(log n)
+- Fast exponentiation halves the power at each step
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(log n)
+- Due to recursion stack
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• (n + 1) / 2 correctly counts even indices for both odd and even `n`
+• Binary exponentiation formula:
+  - xⁿ = (x^(n/2))²                if n is even
+  - xⁿ = x × (x^(n/2))²            if n is odd
+• Modulo is applied at every step to prevent overflow
+===========================================================
+*/
+
+class Solution {
+
+    // Modulo constant
+    long M = 1000000007;
+
+    // Fast modular exponentiation
+    private long findPow(long x, long n) {
+
+        // Base case: x^0 = 1
+        if (n == 0) return 1;
+
+        // Base case: x^1 = x
+        if (n == 1) return x % M;
+
+        // Recursively compute power for n/2
+        long halfpow = findPow(x, n / 2);
+
+        // Square the half result under modulo
+        long result = (halfpow * halfpow) % M;
+
+        // If n is odd, multiply one extra x
+        if (n % 2 == 1)
+            return (x % M * result) % M;
+
+        // If n is even, return squared result
+        return result;
+    }
+
+    public int countGoodNumbers(long n) {
+
+        // Number of even index positions
+        long evenIdx = (n + 1) / 2;
+
+        // Number of odd index positions
+        long oddIdx = n / 2;
+
+        // Compute final answer using modular exponentiation
+        long ans = (findPow(5, evenIdx) * findPow(4, oddIdx)) % M;
+
+        // Return result as integer
+        return (int) ans;
+    }
+}
