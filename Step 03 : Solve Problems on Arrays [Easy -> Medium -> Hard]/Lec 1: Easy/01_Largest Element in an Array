@@ -7,7 +7,7 @@ Find the Largest Element in an Array
 ===========================================================
 PROBLEM STATEMENT
 ===========================================================
-Given an integer array `arr`, find and return the **largest**
+Given an integer array `arr`, find and return the largest
 (maximum) element present in the array.
 
 It is guaranteed that the array contains at least one element.
