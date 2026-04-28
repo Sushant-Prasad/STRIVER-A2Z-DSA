@@ -7,7 +7,7 @@ Count Good Numbers using Fast Modular Exponentiation
 ===========================================================
 PROBLEM STATEMENT
 ===========================================================
-A number is called **good** if:
+A number is called good if:
 • Digits at even indices (0-based) can be one of {0, 2, 4, 6, 8} → 5 choices
 • Digits at odd indices can be one of {2, 3, 5, 7} → 4 choices
 
