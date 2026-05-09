@@ -1,0 +1,166 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Sort a Stack Using Recursion
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given a stack of integers, sort the stack in ascending order
+using recursion only.
+
+You are NOT allowed to use:
+• Extra data structures like arrays, lists, or another stack
+• Iterative sorting methods
+
+The top of the stack should contain the largest element
+after sorting.
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://www.geeksforgeeks.org/problems/sort-a-stack/1
+
+===========================================================
+INTUITION
+===========================================================
+The idea is similar to recursive insertion sort.
+
+Steps:
+1) Remove the top element
+2) Recursively sort the remaining stack
+3) Insert the removed element back into its correct position
+
+The helper function `insertAtCorrectPos()` ensures that:
+• Elements smaller than `temp` stay below it
+• Elements larger than `temp` stay above it
+
+===========================================================
+APPROACH
+===========================================================
+MAIN FUNCTION: sortStack()
+--------------------------------
+1) Base case:
+   - If stack is empty → return
+2) Remove top element
+3) Recursively sort remaining stack
+4) Insert removed element in sorted order
+
+HELPER FUNCTION: insertAtCorrectPos()
+--------------------------------------
+1) If stack is empty OR top element < temp:
+   - Push temp
+2) Else:
+   - Remove top element
+   - Recursively insert temp
+   - Push removed element back
+
+===========================================================
+EXAMPLE
+===========================================================
+Input Stack:
+Top → 3 1 4 2
+
+After Sorting:
+Top → 4 3 2 1
+
+===========================================================
+DRY RUN
+===========================================================
+Stack:
+[3, 1, 4]
+
+Step 1:
+Pop 4
+Sort [3,1]
+
+Step 2:
+Pop 1
+Sort [3]
+
+Step 3:
+Pop 3
+Sort []
+
+Insert 3 → [3]
+Insert 1 → [1,3]
+Insert 4 → [1,3,4]
+
+Final Sorted Stack:
+[1,3,4]
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n²)
+
+Explanation:
+• Each recursive insertion may traverse the stack
+• Total recursive operations:
+  n + (n-1) + (n-2) + ... + 1
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(n)
+
+• Recursive call stack stores stack elements temporarily
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• Recursion itself acts like an auxiliary stack
+• `insertAtCorrectPos()` maintains sorted order
+• Elements are restored after recursive insertion
+• No extra data structure is used
+===========================================================
+*/
+
+class Solution {
+
+    /*
+     * Main recursive function to sort the stack
+     */
+    public void sortStack(Stack<Integer> st) {
+
+        // Base case: empty stack is already sorted
+        if (st.isEmpty()) {
+            return;
+        }
+
+        // Remove top element
+        int temp = st.pop();
+
+        // Recursively sort remaining stack
+        sortStack(st);
+
+        // Insert removed element into correct sorted position
+        insertAtCorrectPos(st, temp);
+    }
+
+    /*
+     * Helper function to insert element
+     * at its correct position in sorted stack
+     */
+    public void insertAtCorrectPos(Stack<Integer> st, int temp) {
+
+        // Correct position found
+        // Push if:
+        // 1) stack is empty
+        // 2) top element is smaller than temp
+        if (st.isEmpty() || st.peek() < temp) {
+            st.push(temp);
+            return;
+        }
+
+        // Remove top element temporarily
+        int ele = st.pop();
+
+        // Recursively find correct position for temp
+        insertAtCorrectPos(st, temp);
+
+        // Restore removed element
+        st.push(ele);
+    }
+}
