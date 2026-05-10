@@ -1,0 +1,161 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Reverse a Stack Using Recursion
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given a stack of integers, reverse the stack using recursion.
+
+You are NOT allowed to use:
+• Extra data structures like arrays or queues
+• Iterative approaches
+
+After reversing:
+• The top element becomes the bottom
+• The bottom element becomes the top
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://www.geeksforgeeks.org/problems/reverse-a-stack/1
+
+===========================================================
+INTUITION
+===========================================================
+To reverse a stack recursively:
+
+1) Remove the top element
+2) Recursively reverse the remaining stack
+3) Insert the removed element at the bottom
+
+The helper function `insertAtLast()` inserts an element
+at the bottom of the stack using recursion.
+
+===========================================================
+APPROACH
+===========================================================
+MAIN FUNCTION: reverseStack()
+--------------------------------
+1) Base case:
+   - If stack is empty → return
+2) Remove top element
+3) Recursively reverse remaining stack
+4) Insert removed element at the bottom
+
+HELPER FUNCTION: insertAtLast()
+--------------------------------
+1) If stack becomes empty:
+   - Push element (bottom position found)
+2) Else:
+   - Remove top element
+   - Recursively insert target element
+   - Restore removed element
+
+===========================================================
+EXAMPLE
+===========================================================
+Input Stack:
+Top → 4 3 2 1
+
+After Reversing:
+Top → 1 2 3 4
+
+===========================================================
+DRY RUN
+===========================================================
+Stack:
+[1, 2, 3]
+
+Step 1:
+Pop 3
+Reverse [1,2]
+
+Step 2:
+Pop 2
+Reverse [1]
+
+Step 3:
+Pop 1
+Reverse []
+
+Insert 1 at bottom → [1]
+Insert 2 at bottom → [2,1]
+Insert 3 at bottom → [3,2,1]
+
+Final Reversed Stack:
+[3,2,1]
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(n²)
+
+Explanation:
+• Each insertion at bottom may traverse entire stack
+• Total recursive operations:
+  n + (n-1) + (n-2) + ... + 1
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(n)
+
+• Recursive call stack stores elements temporarily
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• Recursion itself acts like an auxiliary stack
+• `insertAtLast()` is the key operation
+• Elements are restored after recursive insertion
+• No extra data structure is used
+===========================================================
+*/
+
+class Solution {
+
+    /*
+     * Main recursive function to reverse the stack
+     */
+    public static void reverseStack(Stack<Integer> st) {
+
+        // Base case: empty stack
+        if (st.isEmpty()) {
+            return;
+        }
+
+        // Remove top element
+        int temp = st.pop();
+
+        // Recursively reverse remaining stack
+        reverseStack(st);
+
+        // Insert removed element at bottom
+        insertAtLast(st, temp);
+    }
+
+    /*
+     * Helper function to insert element
+     * at the bottom of the stack
+     */
+    public static void insertAtLast(Stack<Integer> st, int temp) {
+
+        // Bottom position reached
+        if (st.isEmpty()) {
+            st.push(temp);
+            return;
+        }
+
+        // Remove top element temporarily
+        int topEle = st.pop();
+
+        // Recursively insert target element at bottom
+        insertAtLast(st, temp);
+
+        // Restore removed element
+        st.push(topEle);
+    }
+}
