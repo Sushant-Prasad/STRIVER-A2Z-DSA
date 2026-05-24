@@ -1,0 +1,398 @@
+/*
+===========================================================
+TITLE
+===========================================================
+Generate Parentheses (Brute Force + Validation)
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given `n` pairs of parentheses, generate all combinations
+of well-formed (valid) parentheses.
+
+A valid parentheses string:
+• Every opening bracket '(' must have a matching ')'
+• Closing brackets should never exceed opening brackets
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/generate-parentheses/
+
+===========================================================
+INTUITION
+===========================================================
+For every position, we have two choices:
+• Add '('
+• Add ')'
+
+This generates all possible strings of length 2*n.
+
+Then:
+• Check whether the generated string is valid
+• If valid → add to result
+
+===========================================================
+APPROACH-1
+===========================================================
+1) Generate all possible combinations recursively
+2) Whenever string length becomes 2*n:
+   - Check validity using a counter
+3) Validity Rules:
+   - '('  → count++
+   - ')'  → count--
+   - If count becomes negative → invalid
+   - Final count must be 0
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+n = 3
+
+Generated Valid Parentheses:
+((()))
+(()())
+(())()
+()(())
+()()()
+
+===========================================================
+DRY RUN
+===========================================================
+n = 2
+
+Generated strings:
+(())
+()()
+))((
+(())
+
+Valid strings:
+(())
+()()
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(2^(2n) * n)
+
+Explanation:
+• Total generated strings = 2^(2n)
+• Each validity check takes O(n)
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(2^(2n) * n)
+
+• Result list stores valid strings
+• Recursive stack depth = O(2n)
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• This is a brute-force solution
+• Generates ALL combinations first
+• Then filters valid strings
+• Optimized backtracking solution exists
+===========================================================
+*/
+
+class Solution {
+
+    /*
+     * Function to check whether a parentheses string is valid
+     */
+    public boolean isValid(String str) {
+
+        int count = 0;
+
+        // Traverse each character
+        for (char ch : str.toCharArray()) {
+
+            // Opening bracket
+            if (ch == '(') {
+                count++;
+            }
+            // Closing bracket
+            else {
+                count--;
+            }
+
+            // Invalid if closing brackets exceed opening brackets
+            if (count < 0) {
+                return false;
+            }
+        }
+
+        // Valid only if all brackets are balanced
+        return count == 0;
+    }
+
+    /*
+     * Recursive function to generate all possible combinations
+     */
+    public void generate(String curr, int n, List<String> result) {
+
+        // Base case:
+        // String length becomes 2*n
+        if (curr.length() == 2 * n) {
+
+            // Add only if valid
+            if (isValid(curr)) {
+                result.add(curr);
+            }
+
+            return;
+        }
+
+        // ---------------------------------------------------
+        // Choice 1: Add opening bracket '('
+        // ---------------------------------------------------
+        curr += '(';
+
+        generate(curr, n, result);
+
+        // Backtrack:
+        // Remove last added character
+        curr = curr.substring(0, curr.length() - 1);
+
+        // ---------------------------------------------------
+        // Choice 2: Add closing bracket ')'
+        // ---------------------------------------------------
+        curr += ')';
+
+        generate(curr, n, result);
+    }
+
+    /*
+     * Main function
+     */
+    public List<String> generateParenthesis(int n) {
+
+        List<String> result = new ArrayList<>();
+
+        // Start recursive generation
+        generate("", n, result);
+
+        return result;
+    }
+}
+
+
+
+method-2
+
+
+
+/*
+===========================================================
+TITLE
+===========================================================
+Generate Parentheses (Optimized Backtracking)
+
+===========================================================
+PROBLEM STATEMENT
+===========================================================
+Given `n` pairs of parentheses, generate all combinations
+of well-formed (valid) parentheses.
+
+A valid parentheses string:
+• Every opening bracket '(' must have a matching ')'
+• Closing brackets should never exceed opening brackets
+
+===========================================================
+PROBLEM RESOURCE (links)
+===========================================================
+https://leetcode.com/problems/generate-parentheses/
+
+===========================================================
+INTUITION
+===========================================================
+Instead of generating all possible combinations and checking
+validity later, we directly generate ONLY valid strings.
+
+Rules:
+1) We can add '(' only if:
+   open < n
+
+2) We can add ')' only if:
+   close < open
+
+This ensures:
+• Invalid strings are never generated
+• Backtracking explores only valid states
+
+===========================================================
+APPROACH
+===========================================================
+Use recursion + backtracking.
+
+Maintain:
+• open  → number of '(' used
+• close → number of ')' used
+
+At every step:
+1) Add '(' if open < n
+2) Add ')' if close < open
+
+Base Case:
+• If current string length becomes 2*n:
+  → valid parentheses string formed
+  → add to result
+
+===========================================================
+EXAMPLE
+===========================================================
+Input:
+n = 3
+
+Output:
+[
+ "((()))",
+ "(()())",
+ "(())()",
+ "()(())",
+ "()()()"
+]
+
+===========================================================
+DRY RUN
+===========================================================
+n = 2
+
+Start:
+""
+
+Add '(':
+"("
+
+Add '(':
+"(("
+
+Add ')':
+"(()"
+
+Add ')':
+"(())"
+
+Backtrack...
+
+Generate:
+()()
+
+Final Output:
+[
+ "(())",
+ "()()"
+]
+
+===========================================================
+TIME COMPLEXITY
+===========================================================
+O(4^n / √n)
+
+• Total valid combinations are Catalan Numbers
+• Much better than brute force O(2^(2n))
+
+===========================================================
+SPACE COMPLEXITY
+===========================================================
+O(n)
+
+• Recursive stack depth
+• StringBuilder stores current string
+
+===========================================================
+SPECIAL NOTES FOR LOGIC
+===========================================================
+• This is an optimized backtracking solution
+• Invalid combinations are pruned early
+• StringBuilder is used for efficient modification
+• Backtracking step:
+    append(...)
+    recursive call
+    deleteCharAt(...)
+  is mandatory
+===========================================================
+*/
+
+class Solution {
+
+    /*
+     * Recursive backtracking function
+     *
+     * @param curr   Current parentheses string
+     * @param n      Total pairs of parentheses
+     * @param result Stores all valid combinations
+     * @param open   Count of opening brackets used
+     * @param close  Count of closing brackets used
+     */
+    public void generate(StringBuilder curr,
+                         int n,
+                         List<String> result,
+                         int open,
+                         int close) {
+
+        // Base case:
+        // Valid string of length 2*n formed
+        if (curr.length() == 2 * n) {
+
+            result.add(curr.toString());
+
+            return;
+        }
+
+        // ---------------------------------------------------
+        // Choice 1: Add opening bracket '('
+        // Allowed only if open brackets used < n
+        // ---------------------------------------------------
+        if (open < n) {
+
+            // Choose
+            curr.append('(');
+
+            // Explore
+            generate(curr, n, result, open + 1, close);
+
+            // Undo (Backtrack)
+            curr.deleteCharAt(curr.length() - 1);
+        }
+
+        // ---------------------------------------------------
+        // Choice 2: Add closing bracket ')'
+        // Allowed only if close < open
+        // ---------------------------------------------------
+        if (close < open) {
+
+            // Choose
+            curr.append(')');
+
+            // Explore
+            generate(curr, n, result, open, close + 1);
+
+            // Undo (Backtrack)
+            curr.deleteCharAt(curr.length() - 1);
+        }
+    }
+
+    /*
+     * Main function
+     */
+    public List<String> generateParenthesis(int n) {
+
+        // List to store valid parentheses strings
+        List<String> result = new ArrayList<>();
+
+        // StringBuilder for efficient string manipulation
+        StringBuilder str = new StringBuilder();
+
+        // Initially:
+        // open = 0
+        // close = 0
+        generate(str, n, result, 0, 0);
+
+        return result;
+    }
+}
